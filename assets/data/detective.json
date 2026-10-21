@@ -1,0 +1,273 @@
+{
+ "_not": "Bölüm 5 soruşturma verisi. tools/gen_case.py ile üretilir. Özgün kurgu.",
+ "culprit": "antikaci",
+ "needs": [
+  "kul_izi",
+  "bilezik_nuri",
+  "dayi_bilezik"
+ ],
+ "actionsPerNight": 2,
+ "wrongPenalty": 150,
+ "clues": {
+  "kul_izi": {
+   "title": "Tandır Arkasında Kül İzi",
+   "text": "Tandırın arka kapısında taze kül izi var: taşı kızakla sürüklemişler."
+  },
+  "kapi_kilit": {
+   "title": "Zorlanmamış Kilit",
+   "text": "Kilit kırılmamış. Ya anahtar kopyalanmış ya da biri akşam içerde saklanmış."
+  },
+  "kizak_izi": {
+   "title": "Kızak İzleri",
+   "text": "Arka sokakta iki tahta kızak izi çarşı yönüne gidiyor; ağır bir yük çekilmiş."
+  },
+  "kagit_parcasi": {
+   "title": "Yırtık Fiş",
+   "text": "Yerde 'Eski Çarşı Antika' yazılı yırtık bir fiş parçası duruyor."
+  },
+  "bilezik": {
+   "title": "Kırık Bakır Bilezik",
+   "text": "Çarşıda yerde yarım bir bakır bilezik buldun. Zanaat işi, eskiden kalma bir model."
+  },
+  "kalayci_alibi": {
+   "title": "Kalaycı'nın Mazereti",
+   "text": "Kalaycı, o gece şenlik hesabı yaptığını söyledi; mahalle bekçisi onu gördü."
+  },
+  "nuri_sordu": {
+   "title": "Nuru Taşı Sormuş",
+   "text": "Kalaycı'ya göre Galaycı Nuru geçen hafta tandır taşının fiyatını sormuş."
+  },
+  "maskeli_alibi": {
+   "title": "Maskeli'nin Mazereti",
+   "text": "Maskeli Müşteri, o gece hastanede kuzenini beklediğini söyledi; İtfaiyeci Mömet de orada imiş."
+  },
+  "bilezik_nuri": {
+   "title": "Bilezik Nuru'nun Tarzı",
+   "text": "Maskeli, bileziğin Galaycı Nuru'nun dükkânında satılan türden olduğunu söyledi."
+  },
+  "dayi_tanik": {
+   "title": "Gariban'ın Tanıklığı",
+   "text": "Gariban, gece yarısı çarşıya kızak çeken bir adam gördüğünü anlattı."
+  },
+  "dayi_bilezik": {
+   "title": "Adamın Bileziği",
+   "text": "Gariban, o adamın koluna tam böyle bir bakır bilezik taktığını, kızağı çekerken düştüğünü hatırladı."
+  },
+  "nuri_merak": {
+   "title": "Nuru'nun Merakı",
+   "text": "Nuru taşı sorduğunu inkâr etmedi: 'Meraklıyım, satılık mı diye baktım' dedi."
+  },
+  "nuri_yalan": {
+   "title": "Nuru'nun Tutarsızlığı",
+   "text": "Nuru 'evde uyuyordum' dedi ama bekçi Hasan o saatte onun dükkânının ışığının yandığını söylemiş."
+  },
+  "nuri_kacamak": {
+   "title": "Nuru Kaçamak Yaptı",
+   "text": "Bileziği sorunca Nuru 'benim dükkânımdan çok bilezik çıkar' diyerek konuyu değiştirdi."
+  }
+ },
+ "locations": [
+  {
+   "id": "firin",
+   "name": "Tandır ve Arka Kapı",
+   "desc": "Taşın durduğu yer. Zemin, kül ve kapı izleri.",
+   "inspect": [
+    {
+     "clue": "kul_izi"
+    },
+    {
+     "clue": "kapi_kilit"
+    }
+   ]
+  },
+  {
+   "id": "sokak",
+   "name": "Arka Sokak",
+   "desc": "Dükkânın arkasından çarşıya inen dar sokak.",
+   "inspect": [
+    {
+     "clue": "kizak_izi"
+    },
+    {
+     "clue": "kagit_parcasi"
+    }
+   ]
+  },
+  {
+   "id": "carsi",
+   "name": "Eski Çarşı",
+   "desc": "Antikacıların, kalaycıların sokağı.",
+   "inspect": [
+    {
+     "clue": "bilezik"
+    }
+   ]
+  }
+ ],
+ "suspects": [
+  {
+   "id": "rakip",
+   "name": "Kalaycı",
+   "title": "Rakip nohutçu",
+   "intro": "Karşı sokağın parlak nohutçusu. Taşa ilgisi olur mu?"
+  },
+  {
+   "id": "maskeli",
+   "name": "Maskeli Müşteri",
+   "title": "Gizemli müşteri",
+   "intro": "Kasa başında dolaşan, yüzünü hiç göstermeyen biri."
+  },
+  {
+   "id": "dayi",
+   "name": "Gariban",
+   "title": "Mahallenin gözü",
+   "intro": "Geceleri sokaklarda dolaşır; çok şey görür, az konuşur."
+  },
+  {
+   "id": "antikaci",
+   "name": "Galaycı Nuru",
+   "title": "Eski eşya satıcısı",
+   "intro": "Çarşıda tarihî eşya satıyor; tandır taşına meraklı."
+  }
+ ],
+ "talk": {
+  "rakip": [
+   {
+    "id": "r1",
+    "q": "Dün gece neredeydin?",
+    "a": [
+     {
+      "who": "rakip",
+      "to": "cirak",
+      "t": "Ben mi? Şenlik hesabını yapıyordum, bekçi Hasan beni dükkânda gördü. Sorsana ona."
+     }
+    ],
+    "clue": "kalayci_alibi"
+   },
+   {
+    "id": "r2",
+    "q": "Tandır taşından haberin var mı?",
+    "a": [
+     {
+      "who": "rakip",
+      "to": "cirak",
+      "t": "Ben taşla uğraşmam, nohutla uğraşırım. Ama geçen hafta Galaycı Nuru bana o taşın fiyatını sormuştu, ona bak."
+     }
+    ],
+    "clue": "nuri_sordu"
+   }
+  ],
+  "maskeli": [
+   {
+    "id": "m1",
+    "q": "Dün gece neredeydin?",
+    "a": [
+     {
+      "who": "maskeli",
+      "to": "cirak",
+      "t": "Hastanede kuzenimi bekledim. İtfaiyeci Mömet de oradaydı, istersen sor."
+     }
+    ],
+    "clue": "maskeli_alibi"
+   },
+   {
+    "id": "m2",
+    "q": "Bu bilezik sana tanıdık geldi mi?",
+    "requires": [
+     "bilezik"
+    ],
+    "a": [
+     {
+      "who": "maskeli",
+      "to": "cirak",
+      "t": "Bakır bilezik... Benim değil. Bu işi çarşıda satanı bilirim: Galaycı Nuru'nun dükkânında görürsün."
+     }
+    ],
+    "clue": "bilezik_nuri"
+   }
+  ],
+  "dayi": [
+   {
+    "id": "d1",
+    "q": "Gariban, gece bir şey gördün mü?",
+    "a": [
+     {
+      "who": "dayi",
+      "to": "cirak",
+      "t": "Gördüm evladım. Gece yarısı çarşıya doğru bi adam kızak çekiyordu. Yüzünü seçemedim."
+     }
+    ],
+    "clue": "dayi_tanik"
+   },
+   {
+    "id": "d2",
+    "q": "Adamın üstünde ya da elinde ayırt edici bir şey var mıydı?",
+    "requires": [
+     "dayi_tanik"
+    ],
+    "a": [
+     {
+      "who": "dayi",
+      "to": "cirak",
+      "t": "Koluna bakır bi bilezik takmıştı. Kızağı çekerken düştü, ışıkta parladı. Hiç unutmam."
+     }
+    ],
+    "clue": "dayi_bilezik"
+   }
+  ],
+  "antikaci": [
+   {
+    "id": "a1",
+    "q": "Tandır taşını sorduğun doğru mu?",
+    "a": [
+     {
+      "who": "antikaci",
+      "to": "cirak",
+      "t": "Meraklıyım, sorarım tabii. Satılık mı diye baktım. Suç mu bu?"
+     }
+    ],
+    "clue": "nuri_merak"
+   },
+   {
+    "id": "a2",
+    "q": "Dün gece neredeydin?",
+    "requires": [
+     "kizak_izi"
+    ],
+    "a": [
+     {
+      "who": "antikaci",
+      "to": "cirak",
+      "t": "Evde uyuyordum, nerede olacağım?"
+     },
+     {
+      "who": "antikaci",
+      "to": "cirak",
+      "t": "(Bekçi Hasan o saatte dükkânının ışığının yandığını söylemişti...)"
+     }
+    ],
+    "clue": "nuri_yalan"
+   },
+   {
+    "id": "a3",
+    "q": "Bu bilezik senin dükkânından mı?",
+    "requires": [
+     "bilezik"
+    ],
+    "a": [
+     {
+      "who": "antikaci",
+      "to": "cirak",
+      "t": "Benim dükkânımdan çok bilezik çıkar usta... Bakır bilezik her yerde var."
+     },
+     {
+      "who": "antikaci",
+      "to": "cirak",
+      "t": "(Konuyu çabuk değiştirdi.)"
+     }
+    ],
+    "clue": "nuri_kacamak"
+   }
+  ]
+ }
+}

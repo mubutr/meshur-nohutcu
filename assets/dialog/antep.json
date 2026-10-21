@@ -1,0 +1,952 @@
+{
+ "_not": "Antep ağzı replikleri. who/to: konuşan ve muhatap (usta, musteri, cirak). {hitap}: ustanın müşteriye hitabı, {ad}: müşteriden bahsederken adı, {adDat}: yönelme hâli, {ustaHitap}: müşterinin ustaya hitabı. Bu dosya tools/gen_dialog.py ile üretilir. Yerel ağız doğruluğu için gözden geçirilmeli.",
+ "banned": [
+  "gari"
+ ],
+ "order": {
+  "A": {
+   "open": {
+    "nohut": "Hele bi nohut dürümü ver de yiyek yav.",
+    "doner": "Hele bi döner dürümü sar da yiyek yav.",
+    "kavurma": "Hele bi kavurma dürümü ver de yiyek yav.",
+    "cigkofte": "Hele bi çiğ köfte dürümü sar da yiyek yav.",
+    "kizartma": "Hele bi kızartma dürümü ver de yiyek yav.",
+    "beyran": "Hele bi kâse beyran ver de içek yav."
+   },
+   "amount": {
+    "nohut": {
+     "1": "Nohudu az koy, ekmek görünsün.",
+     "2": "Nohudu kararında koy.",
+     "3": "Nohudu bol koy, gıcı gibi koyma."
+    },
+    "doner": {
+     "1": "Döner bi kat olsun.",
+     "2": "Dönerden bol koy, çift kat olsun."
+    },
+    "kavurma": {
+     "1": "Kavurma az olsun.",
+     "2": "Kavurmayı bol koy hele."
+    },
+    "cigkofte": {
+     "1": "Köfte az olsun, acısı yeter.",
+     "2": "Köfteyi bol koy yav."
+    },
+    "kizartma": {
+     "1": "Kızartma az olsun.",
+     "2": "Kızartmayı bol koy hele."
+    },
+    "beyran": {
+     "1": "Etini eksik etme."
+    }
+   },
+   "piyaz": {
+    "yes": "Piyazı da at hele.",
+    "no": "Piyaz koyma, soğan sevmem."
+   },
+   "aci": {
+    "yes": "Bi tutam da acı at yav.",
+    "no": "Acı olmasın, mideme dokunur."
+   },
+   "fried": {
+    "yes": "Yanına kızartma da koy hele.",
+    "no": "Kızartma koyma."
+   },
+   "sauceYes": "Üstüne {liste} da sür hele.",
+   "sauceNo": "Sos sürme, sumak da serpme.",
+   "sauceNames": {
+    "sos": "sos",
+    "ketcap": "ketçap",
+    "mayonez": "mayonez",
+    "nar": "nar ekşisi",
+    "sumak": "sumak"
+   }
+  },
+  "B": {
+   "open": {
+    "nohut": "Usta, bi nohut dürümü sar da yiyek.",
+    "doner": "Usta, bi döner dürümü sar da yiyek.",
+    "kavurma": "Usta, bi kavurma dürümü sar da yiyek.",
+    "cigkofte": "Usta, bi çiğ köfte dürümü sar da yiyek.",
+    "kizartma": "Usta, bi kızartma dürümü sar da yiyek.",
+    "beyran": "Usta, bi beyran ver de içek."
+   },
+   "amount": {
+    "nohut": {
+     "1": "Nohut azıcık olsun.",
+     "2": "Nohut orta olsun yav.",
+     "3": "Nohudu doldur hele, bol olsun."
+    },
+    "doner": {
+     "1": "Döner tek kat olsun.",
+     "2": "Döner çift kat olsun."
+    },
+    "kavurma": {
+     "1": "Kavurma azıcık olsun.",
+     "2": "Kavurmayı doldur hele."
+    },
+    "cigkofte": {
+     "1": "Köfte azıcık olsun.",
+     "2": "Köfteyi doldur hele."
+    },
+    "kizartma": {
+     "1": "Kızartma azıcık olsun.",
+     "2": "Kızartmayı doldur hele."
+    },
+    "beyran": {
+     "1": "Beyranın eti bol olsun."
+    }
+   },
+   "piyaz": {
+    "yes": "Piyazı eksik etme.",
+    "no": "Piyazsız olsun yav."
+   },
+   "aci": {
+    "yes": "Acıdan esirgeme.",
+    "no": "Acısız olsun hele."
+   },
+   "fried": {
+    "yes": "Kızartmayı da unutma.",
+    "no": "Kızartmasız olsun."
+   },
+   "sauceYes": "Üstüne {liste} sür, unutma.",
+   "sauceNo": "Sossuz olsun, sumak da yok.",
+   "sauceNames": {
+    "sos": "sos",
+    "ketcap": "ketçap",
+    "mayonez": "mayonez",
+    "nar": "nar ekşisi",
+    "sumak": "sumak"
+   }
+  },
+  "C": {
+   "open": {
+    "nohut": "Hele çabuk bi nohut dürümü sar yav, açlıktan gözüm karardı.",
+    "doner": "Hele çabuk bi döner dürümü sar yav, açlıktan gözüm karardı.",
+    "kavurma": "Hele çabuk bi kavurma dürümü sar yav, açlıktan gözüm karardı.",
+    "cigkofte": "Hele çabuk bi çiğ köfte dürümü sar yav, açlıktan gözüm karardı.",
+    "kizartma": "Hele çabuk bi kızartma dürümü sar yav, açlıktan gözüm karardı.",
+    "beyran": "Hele çabuk bi beyran ver yav, karnım zil çalıyo."
+   },
+   "amount": {
+    "nohut": {
+     "1": "Nohudu az koy, ekmek görünsün.",
+     "2": "Nohudu kararında koy.",
+     "3": "Nohudu bol koy, gıcı gibi koyma."
+    },
+    "doner": {
+     "1": "Döner bi kat olsun.",
+     "2": "Dönerden bol koy, çift kat olsun."
+    },
+    "kavurma": {
+     "1": "Kavurma az olsun.",
+     "2": "Kavurmayı bol koy hele."
+    },
+    "cigkofte": {
+     "1": "Köfte az olsun, acısı yeter.",
+     "2": "Köfteyi bol koy yav."
+    },
+    "kizartma": {
+     "1": "Kızartma az olsun.",
+     "2": "Kızartmayı bol koy hele."
+    },
+    "beyran": {
+     "1": "Etini eksik etme."
+    }
+   },
+   "piyaz": {
+    "yes": "Piyazı da at hele.",
+    "no": "Piyaz koyma, soğan sevmem."
+   },
+   "aci": {
+    "yes": "Bi tutam da acı at yav.",
+    "no": "Acı olmasın, mideme dokunur."
+   },
+   "fried": {
+    "yes": "Yanına kızartma da koy hele.",
+    "no": "Kızartma koyma."
+   },
+   "sauceYes": "Üstüne {liste} da sür yav.",
+   "sauceNo": "Sos da sumak da istemem.",
+   "sauceNames": {
+    "sos": "sos",
+    "ketcap": "ketçap",
+    "mayonez": "mayonez",
+    "nar": "nar ekşisi",
+    "sumak": "sumak"
+   }
+  }
+ },
+ "lines": {
+  "greet_usta": [
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Hoşgeldin {hitap}!"
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Gel hele gel, hoşgeldin {hitap}."
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Buyur {hitap}, hoşgeldin. Ne yiyek bugün?"
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Hoşgeldin {hitap}, nohutlar daha yeni haşlandı."
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Aaa hoşgeldin {hitap}, gözümüz yollarda kaldı yav."
+   }
+  ],
+  "greet_reply": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hoşbuldum {ustaHitap}."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hoşbulduk {ustaHitap}, eline sağlık."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hoşbuldum hele, karnım zil çalıyo."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hoşbuldum {ustaHitap}, bugün de kalabalık maşallah."
+   }
+  ],
+  "relay_riddle": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, {ad} bilmece sordu! Ne istediğini iyi düşün evlat."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hele çırak, {ad} bilmeceyle sipariş verdi. Kulak ver!"
+   }
+  ],
+  "usta_riddle_intro": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, bilmecede 'tutam' az, 'avuç' orta, 'dağ gibi' bol demek. Kırmızı toz sumak, kırmızı pul acıdır."
+   }
+  ],
+  "react_riddle_great": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Bildin evlat, bildin! Helal olsun usta, çırağın akıllıymış. Hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Tam istediğim bu! Bilmeceyi çözen çırak ender bulunur usta, hayırlı işler."
+   }
+  ],
+  "react_riddle_bad": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Bilemedin bilmeceyi usta. Çırak biraz daha dinlemeyi öğrensin, hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Yav bu mu benim istediğim? Bilmeceyi iyi dinlemeli! Hayırlı işler usta."
+   }
+  ],
+  "usta_riddle_great": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Bilmeceyi çözdün evlat, aferin!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Maşallah çırak, akıl da el de yerinde."
+   }
+  ],
+  "usta_riddle_bad": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Bilmeceyi bilemedin çırak, bi dahaki sefere iyi dinle."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Olsun evlat, bilmece zor iştir. Bi daha dene."
+   }
+  ],
+  "garip_greet": [
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Buyur Gariban, hoşgeldin. Yorulmuşsun, otur biraz."
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Hoşgeldin Gariban, nohutlar daha sıcak."
+   }
+  ],
+  "garip_ask": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, bu garibin karnı aç. Bi lokma nohut dürümü verir misin? Allah razı olsun."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, param yok ama karnım aç. Bi dürüm sevabına ver."
+   }
+  ],
+  "garip_relay": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, Gariban aç gelmiş. İstersen bi dürüm sar, sevabı bol."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, Gariban'ın karnı aç. Elin açık olsun, bi dürüm sar."
+   }
+  ],
+  "garip_thanks": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Allah razı olsun usta, hayırlı işler. Bu iyiliği unutmam."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Sağ ol evladım, hayırlı işler. Bu iyiliği unutmam."
+   }
+  ],
+  "garip_leave": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Zahmet verdim usta, Allah kolaylık versin. Ben gidek, hayırlı işler."
+   }
+  ],
+  "usta_garip_praise": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hayırlı iş yaptın evlat, Allah kabul etsin."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "İyi ki verdin çırak, bu dükkânın bereketi budur."
+   }
+  ],
+  "usta_garip_left": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Olsun çırak, Gariban yine uğrar. Bi dahaki sefere verirsin."
+   }
+  ],
+  "maskeli_greet": [
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Buyur müşteri, ne olacak?"
+   }
+  ],
+  "maskeli_relay": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, bu Maskeli Müşteri. Dikkat et, hata yaparsan kasadan para alır!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, maskeli geldi. Siparişi tam yap yoksa kasayı boşaltır!"
+   }
+  ],
+  "maskeli_great": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hm, tam dediğim gibi. Bu sefer bahşişi hak ettin usta, hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Fena değil usta, bu sefer kasayı bırakıyorum. Hayırlı işler."
+   }
+  ],
+  "maskeli_steal": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Yanlış dürüm! Hakkım kasada, hayırlı işler usta."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Bu mu benim siparişim? Kasadan hakkımı alıyorum usta, hayırlı işler!"
+   }
+  ],
+  "usta_stolen": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Eyvah çırak, Maskeli kasadan {miktar} lira aldı! Bi dahaki sefere dikkat et."
+   }
+  ],
+  "relay": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, {adDat} {ozet} lazım."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, {ad} bekliyo. {ozet} olacak, tez ol."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hele çırak, {adDat} {ozet} hazırla."
+   }
+  ],
+  "wait_mid": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, nohut mu haşlanıyo daha?"
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hele çabuk ol yav, karnım zil çalıyo."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, bi el at yav, hep mi bekleyek?"
+   }
+  ],
+  "wait_low": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, bu kadar bekletirsen gidek biz!"
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Yav ben mi sabırlıyım, çabuk ol hele!"
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, gözüm ekmekte kaldı yav."
+   }
+  ],
+  "usta_push": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, {ad} sabırsızlandı, tez ol!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, {ad} gidecek, yetiş!"
+   }
+  ],
+  "react_great": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Eline sağlık usta, tam dediğim gibi! Hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Ekmeği de nohudu da tam kararında usta, hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Vallaa böylesini görmedim, helal olsun usta! Hayırlı işler."
+   }
+  ],
+  "react_great_tip": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Eline sağlık usta, tam dediğim gibi! Üstü kalsın, hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Helal olsun usta, bu da bahşiş olsun. Hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Üstünü alma yav usta, hayırlı işler."
+   }
+  ],
+  "react_ok": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Fena del yav, ama bi daha dikkat edin. Hayırlı işler usta."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Idare eder usta, yiyek bakak. Hayırlı işler."
+   }
+  ],
+  "react_bad": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Yav ben bunu mu dedim usta? Neyse, hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Bu ne yav, ağzıma bi şey uymadı! Hayırlı işler usta."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Dediğim gibi del bu usta! Hayırlı işler."
+   }
+  ],
+  "leave": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hadi hayırlı işler usta, ben başka yerde yiyek."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Çok bekledim yav, gidek biz. Hayırlı işler usta, sağ ol."
+   }
+  ],
+  "usta_meh": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Fena del evlat, ama {ad} tam memnun olmadı."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Olur çırak, bi dahaki sefere siparişe iyi bak."
+   }
+  ],
+  "usta_scold": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, bu ne böyle? {ad} kızdı!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Dikkat et çırak, siparişi iyi dinle."
+   }
+  ],
+  "usta_after_leave": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Eyvah evlat, {ad} küsüp gitti."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Olsun çırak, bi dahaki sefere çabuk ol."
+   }
+  ],
+  "usta_trash": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Boşver evlat, yenisini yapak ama malzeme parası çöpe gitti, dikkat et."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Olur öyle şeyler çırak, yalnız harcanan para geri gelmez."
+   }
+  ],
+  "usta_delivery_new": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, Kapında'dan yeni paket siparişi düştü! Dürümü sar, kartına dokun."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, paket siparişi geldi. Kurye yakında, ısı kutusunu hazırla."
+   }
+  ],
+  "usta_delivery_ok": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Paket zamanında gitti evlat, Kapında'ya inat!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Kurye memnun gitti çırak, sıcak sıcak teslim oldu."
+   }
+  ],
+  "usta_delivery_cold": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Paket kutuda soğumuş evlat, kuryeyi bekletme!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Dürüm kutuda soğudu çırak, kurye gelmeden hazırla."
+   }
+  ],
+  "usta_delivery_late": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Paket geç kaldı evlat, müşteri söylenmiş."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Teslimat gecikti çırak, bi dahaki sefere tez ol."
+   }
+  ],
+  "usta_delivery_fail": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Eyvah çırak, paket yetişmedi, sipariş iptal oldu!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Paket siparişini kaçırdık evlat, kurye boş döndü."
+   }
+  ],
+  "usta_garden_hint": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Akşam bahçeye uğra çırak, sulamayı unutma!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, bahçedeki bitkiler susamasın, bi su ver."
+   }
+  ],
+  "usta_intro": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hoşgeldin çırak! Önce ekmeği al, nohudu koy, sar, sonra müşteriye uzat."
+   }
+  ],
+  "usta_day_start": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hayırlı işler çırak, tırnaklı ekmek taptaze!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Bugün de bereket versin evlat, dükkânı açak."
+   }
+  ],
+  "usta_day_end": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Gün bitti evlat, yorulduk ama kazandık."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Eline sağlık çırak, bugün de çok şükür."
+   }
+  ],
+  "usta_shop": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Kazandığımızı dükkâna koyak evlat."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hele şunu da alak evlat, dükkân güzelleşsin."
+   }
+  ],
+  "usta_hint_bread": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Önce tırnaklı ekmeği tezgâha al çırak."
+   }
+  ],
+  "usta_hint_wrap": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Malzeme tamamsa dürümü sar çırak."
+   }
+  ],
+  "usta_hint_serve": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Şimdi dürümü müşteriye ver evlat, bekletme."
+   }
+  ],
+  "usta_no_money": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, kasada para kalmadı! Bahşiş kavanozuna bak ya da bi reklam izle."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, malzemeye para yok. Kavanozdaki bahşişi kasaya al."
+   }
+  ],
+  "usta_avans": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Kasa boşalmış evlat, bu avansı al, geri vermek yok. Bu sefer dikkatli ol."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, cebimden kasaya avans koydum. Bi daha çöpe atma."
+   }
+  ],
+  "usta_tipjar": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Bahşiş kavanozu doldu evlat, kasaya dök."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, kavanozdaki bahşişi unutma."
+   }
+  ],
+  "usta_penalty": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Müşteri küsünce kasadan {ceza} lira gider evlat, çabuk ol."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Eyvah çırak, küsen müşteri {ceza} liraya mal oldu."
+   }
+  ],
+  "bonus_greet": [
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Hoşgeldin gezgin, uzak yoldan mı geldin?"
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Buyur gezgin, hoşgeldin. Antep'in nohudunu tatmadan gitme."
+   }
+  ],
+  "bonus_reply": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hoşbuldum usta, yollarda adın duyuldu."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Hoşbuldum usta, burnuma güzel koku geldi."
+   }
+  ],
+  "usta_bonus": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, bu gezgin kıymetli misafir. Güzel yap, bi hatıra bırakır."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, gezgin geldi! Hatasız bi dürüm yap, eli boş gitmez."
+   }
+  ],
+  "bonus_thanks": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Eline sağlık usta. Bu elması hatıra bırakıyorum, hayırlı işler."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Sana bi elmas armağan usta, hayırlı işler. Bi daha uğrarım."
+   }
+  ],
+  "kurye_ask": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, paketler hazır mı? Kapında bekletmez!"
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Usta, kurye geldi. Kutudakileri alayım da gidek."
+   }
+  ],
+  "kurye_thanks": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Eyvallah usta, paketler yolda. Hesap tamam, hayırlı işler!"
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Sağ ol usta, müşteriler bekliyor, hayırlı işler, ben kaçtım."
+   }
+  ],
+  "kurye_leave": [
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Boş kaldım usta, gidiyom. Hayırlı işler, bi dahaki sefere hazır olsun."
+   },
+   {
+    "who": "musteri",
+    "to": "usta",
+    "t": "Yetişemedik usta, kurye mola vermez. Hayırlı işler."
+   }
+  ],
+  "kurye_greet": [
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Hoşgeldin kurye, bi bakak paketlere."
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Gel kurye, kutuya bi göz atalım."
+   }
+  ],
+  "usta_courier": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, kurye geldi! Dokun da paketleri versin."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, kurye kapıda, paketleri teslim et."
+   }
+  ],
+  "usta_courier_paid": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Kurye paketleri aldı evlat, ödeme kasada."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Paketler yola çıktı çırak, hesap tamam."
+   }
+  ],
+  "usta_courier_left": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Kurye paketleri almadan gitti evlat, kutu soğur!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Eyvah çırak, kurye boş döndü, bi sonrakini kaçırma."
+   }
+  ],
+  "usta_bereket": [
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Bereket versin {hitap}, yine bekleriz."
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Sağ ol {hitap}, bereket versin. Yolun açık olsun."
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Bereket versin {hitap}, bi daha uğra."
+   },
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Hayrını gör {hitap}, bereket versin."
+   }
+  ],
+  "usta_bereket_garip": [
+   {
+    "who": "usta",
+    "to": "musteri",
+    "t": "Bereket versin Gariban, kapımız sana hep açık."
+   }
+  ]
+ }
+}

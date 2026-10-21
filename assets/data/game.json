@@ -1,0 +1,912 @@
+{
+ "customers": [
+  {
+   "id": "fatma",
+   "gender": "kadin",
+   "age": "yasli",
+   "patience": 1.15,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Fatma",
+     "ref": "Fatma bacı",
+     "dat": "Fatma bacıya"
+    }
+   ]
+  },
+  {
+   "id": "hattuc",
+   "gender": "kadin",
+   "age": "yasli",
+   "patience": 1.15,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Hattuç",
+     "ref": "Hattuç bacı",
+     "dat": "Hattuç bacıya"
+    }
+   ]
+  },
+  {
+   "id": "zennup",
+   "gender": "kadin",
+   "age": "yasli",
+   "patience": 1.15,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Zennup",
+     "ref": "Zennup bacı",
+     "dat": "Zennup bacıya"
+    }
+   ]
+  },
+  {
+   "id": "sehriban",
+   "gender": "kadin",
+   "age": "yasli",
+   "patience": 1.15,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Şehriban",
+     "ref": "Şehriban bacı",
+     "dat": "Şehriban bacıya"
+    }
+   ]
+  },
+  {
+   "id": "emine",
+   "gender": "kadin",
+   "age": "genc",
+   "patience": 1.0,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Emine",
+     "ref": "Emine bacı",
+     "dat": "Emine bacıya"
+    }
+   ]
+  },
+  {
+   "id": "hayce",
+   "gender": "kadin",
+   "age": "genc",
+   "patience": 1.0,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Hayce",
+     "ref": "Hayce bacı",
+     "dat": "Hayce bacıya"
+    }
+   ]
+  },
+  {
+   "id": "ayyus",
+   "gender": "kadin",
+   "age": "genc",
+   "patience": 1.0,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Ayyuş",
+     "ref": "Ayyuş bacı",
+     "dat": "Ayyuş bacıya"
+    }
+   ]
+  },
+  {
+   "id": "yumma",
+   "gender": "kadin",
+   "age": "genc",
+   "patience": 1.0,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Yumma",
+     "ref": "Yumma bacı",
+     "dat": "Yumma bacıya"
+    }
+   ]
+  },
+  {
+   "id": "lutfiye",
+   "gender": "kadin",
+   "age": "genc",
+   "patience": 1.0,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Lütfiye",
+     "ref": "Lütfiye bacı",
+     "dat": "Lütfiye bacıya"
+    }
+   ]
+  },
+  {
+   "id": "sakire",
+   "gender": "kadin",
+   "age": "genc",
+   "patience": 1.0,
+   "tip": 1.1,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Şakire",
+     "ref": "Şakire bacı",
+     "dat": "Şakire bacıya"
+    }
+   ]
+  },
+  {
+   "id": "maamed",
+   "gender": "erkek",
+   "age": "yasli",
+   "patience": 1.2,
+   "tip": 1.0,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Maamed",
+     "ref": "Maamed ammi",
+     "dat": "Maamed ammiye"
+    }
+   ]
+  },
+  {
+   "id": "huseyin",
+   "gender": "erkek",
+   "age": "yasli",
+   "patience": 1.2,
+   "tip": 1.0,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Hüseyin",
+     "ref": "Hüseyin ammi",
+     "dat": "Hüseyin ammiye"
+    }
+   ]
+  },
+  {
+   "id": "okkes",
+   "gender": "erkek",
+   "age": "yasli",
+   "patience": 1.2,
+   "tip": 1.0,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Ökkeş",
+     "ref": "Ökkeş ammi",
+     "dat": "Ökkeş ammiye"
+    }
+   ]
+  },
+  {
+   "id": "cimaali",
+   "gender": "erkek",
+   "age": "yasli",
+   "patience": 1.2,
+   "tip": 1.0,
+   "weight": 2,
+   "ustaHitap": "usta",
+   "names": [
+    {
+     "n": "Cımaali",
+     "ref": "Cımaali ammi",
+     "dat": "Cımaali ammiye"
+    }
+   ]
+  },
+  {
+   "id": "mustafa",
+   "gender": "erkek",
+   "age": "genc",
+   "patience": 0.8,
+   "tip": 1.3,
+   "weight": 1,
+   "ustaHitap": "Rafık",
+   "names": [
+    {
+     "n": "Mustafa",
+     "ref": "Mustafa",
+     "dat": "Mustafa",
+     "hitap": "Rafık"
+    }
+   ]
+  },
+  {
+   "id": "ahmet",
+   "gender": "erkek",
+   "age": "genc",
+   "patience": 0.8,
+   "tip": 1.3,
+   "weight": 1,
+   "ustaHitap": "Rafık",
+   "names": [
+    {
+     "n": "Ahmet",
+     "ref": "Ahmet",
+     "dat": "Ahmet",
+     "hitap": "Rafık"
+    }
+   ]
+  },
+  {
+   "id": "ali",
+   "gender": "erkek",
+   "age": "genc",
+   "patience": 0.8,
+   "tip": 1.3,
+   "weight": 1,
+   "ustaHitap": "Rafık",
+   "names": [
+    {
+     "n": "Ali",
+     "ref": "Ali",
+     "dat": "Ali",
+     "hitap": "Rafık"
+    }
+   ]
+  },
+  {
+   "id": "mehmetali",
+   "gender": "erkek",
+   "age": "genc",
+   "patience": 0.8,
+   "tip": 1.3,
+   "weight": 1,
+   "ustaHitap": "Rafık",
+   "names": [
+    {
+     "n": "Mehmet Ali",
+     "ref": "Mehmet Ali",
+     "dat": "Mehmet Ali",
+     "hitap": "Rafık"
+    }
+   ]
+  },
+  {
+   "id": "hogges",
+   "gender": "erkek",
+   "age": "genc",
+   "patience": 0.8,
+   "tip": 1.3,
+   "weight": 1,
+   "ustaHitap": "Rafık",
+   "names": [
+    {
+     "n": "Höggeş",
+     "ref": "Höggeş",
+     "dat": "Höggeş",
+     "hitap": "Rafık"
+    }
+   ]
+  },
+  {
+   "id": "memik",
+   "gender": "erkek",
+   "age": "genc",
+   "patience": 0.8,
+   "tip": 1.3,
+   "weight": 1,
+   "ustaHitap": "Rafık",
+   "names": [
+    {
+     "n": "Memik",
+     "ref": "Memik",
+     "dat": "Memik",
+     "hitap": "Rafık"
+    }
+   ]
+  }
+ ],
+ "specials": [
+  {
+   "kind": "garip",
+   "sprite": "dayi",
+   "patience": 1.7,
+   "minChapter": 2,
+   "chance": 0.16,
+   "maxPerDay": 1,
+   "ustaHitap": "usta",
+   "name": {
+    "n": "Gariban",
+    "ref": "Gariban",
+    "dat": "Garibana",
+    "hitap": "Gariban"
+   }
+  },
+  {
+   "kind": "maskeli",
+   "sprite": "maskeli",
+   "patience": 1.0,
+   "minChapter": 2,
+   "chance": 0.1,
+   "maxPerDay": 1,
+   "ustaHitap": "usta",
+   "name": {
+    "n": "Maskeli",
+    "ref": "Maskeli Müşteri",
+    "dat": "Maskeli Müşteriye",
+    "hitap": "müşteri"
+   }
+  },
+  {
+   "kind": "nine",
+   "sprite": "nine",
+   "patience": 1.6,
+   "minChapter": 2,
+   "chance": 0.2,
+   "maxPerDay": 1,
+   "ustaHitap": "usta",
+   "name": {
+    "n": "Nene",
+    "ref": "Taaf Nene",
+    "dat": "Taaf Neneye",
+    "hitap": "Nene"
+   }
+  },
+  {
+   "kind": "itfaiyeci",
+   "sprite": "itfaiyeci",
+   "patience": 1.2,
+   "minChapter": 3,
+   "chance": 0.14,
+   "maxPerDay": 1,
+   "ustaHitap": "usta",
+   "name": {
+    "n": "Mömet",
+    "ref": "İtfaiyeci Mömet",
+    "dat": "İtfaiyeci Mömete",
+    "hitap": "Mömet"
+   }
+  }
+ ],
+ "day": {
+  "customersBase": 8,
+  "customersPerDay": 2,
+  "customersMax": 30,
+  "spawnGapBase": 11.0,
+  "spawnGapMin": 6.0,
+  "spawnGapDropPerDay": 0.4,
+  "patienceBase": 46.0,
+  "patienceMin": 28.0,
+  "patienceDropPerDay": 1.2,
+  "maxQueue": 3
+ },
+ "economy": {
+  "rentBase": 40,
+  "rentPerChapter": 25,
+  "stealAmount": 60,
+  "investorBonus": 0.1,
+  "deliveryDeadline": 85,
+  "deliveryMul": 1.15,
+  "coldMul": 0.7,
+  "lateMul": 0.5,
+  "tipRate": 0.2,
+  "leavePenalty": 10,
+  "avans": 150,
+  "friedMinChapter": 2,
+  "friedChance": 0.25,
+  "sauceChance": 0.22,
+  "bonusEvery": 10,
+  "bonusDiamonds": 1,
+  "bonusTipMul": 2.0,
+  "adMoneyBase": 60,
+  "adMoneyPerChapter": 40,
+  "adMoneyMax": 3,
+  "adDiamondMax": 3,
+  "adSeconds": 5,
+  "streakDays": 3,
+  "streakDiamonds": 2,
+  "courierWait": 12,
+  "introSeconds": 3.7
+ },
+ "difficulty": [
+  {
+   "fromDay": 1,
+   "maxNohut": 2,
+   "piyazChance": 0.0,
+   "aciChance": 0.0
+  },
+  {
+   "fromDay": 2,
+   "maxNohut": 3,
+   "piyazChance": 0.55,
+   "aciChance": 0.0
+  },
+  {
+   "fromDay": 3,
+   "maxNohut": 3,
+   "piyazChance": 0.6,
+   "aciChance": 0.4
+  },
+  {
+   "fromDay": 5,
+   "maxNohut": 3,
+   "piyazChance": 0.7,
+   "aciChance": 0.5
+  }
+ ],
+ "upgrades": [
+  {
+   "id": "sabir",
+   "name": "Rahat Sandalye",
+   "desc": "Müşteriler daha sabırlı bekler",
+   "max": 6,
+   "costs": [
+    540,
+    1080,
+    2160,
+    4050,
+    7560,
+    13500
+   ],
+   "perLevel": 0.08,
+   "minChapter": 1
+  },
+  {
+   "id": "bahsis",
+   "name": "Güler Yüz",
+   "desc": "Bahşişler artar",
+   "max": 6,
+   "costs": [
+    540,
+    1080,
+    2160,
+    4050,
+    7560,
+    13500
+   ],
+   "perLevel": 0.15,
+   "minChapter": 1
+  },
+  {
+   "id": "tezgah",
+   "name": "Fırın Ustalığı",
+   "desc": "Her dürümden ekstra kazanç",
+   "max": 6,
+   "costs": [
+    810,
+    1620,
+    3240,
+    5940,
+    10800,
+    18900
+   ],
+   "perLevel": 0.06,
+   "minChapter": 1
+  },
+  {
+   "id": "yardimci",
+   "name": "Yardımcı Çırak",
+   "desc": "Çırak bir dürümü kendi hazırlar (hatası olabilir)",
+   "max": 4,
+   "costs": [
+    4050,
+    8100,
+    14850,
+    24300
+   ],
+   "perLevel": 0.1,
+   "minChapter": 3
+  },
+  {
+   "id": "parsel",
+   "name": "Bahçe Parseli",
+   "desc": "Bahçede yeni bir parsel açılır",
+   "max": 3,
+   "costs": [
+    2160,
+    4860,
+    9450
+   ],
+   "perLevel": 1.0,
+   "minChapter": 4
+  },
+  {
+   "id": "dagitim",
+   "name": "Dağıtım Motoru",
+   "desc": "Kurye daha sık gelir, ısı kutusu artar",
+   "max": 3,
+   "costs": [
+    2700,
+    5940,
+    11340
+   ],
+   "perLevel": 1.0,
+   "minChapter": 4
+  },
+  {
+   "id": "auto_ekmek",
+   "name": "Otomatik Ekmek Açıcı",
+   "desc": "Bekleyen müşteri varken ekmeği kendisi tezgâha serer.",
+   "max": 1,
+   "costs": [
+    4
+   ],
+   "perLevel": 0,
+   "minChapter": 2,
+   "currency": "diamond"
+  },
+  {
+   "id": "auto_ana",
+   "name": "Otomatik Nohut Koyucu",
+   "desc": "Siparişteki ana malzemeyi (nohut, döner…) porsiyon porsiyon koyar.",
+   "max": 1,
+   "costs": [
+    6
+   ],
+   "perLevel": 0,
+   "minChapter": 2,
+   "currency": "diamond"
+  },
+  {
+   "id": "auto_sar",
+   "name": "Otomatik Sarıcı",
+   "desc": "Dürüm tamamlanınca kendisi sarar.",
+   "max": 1,
+   "costs": [
+    8
+   ],
+   "perLevel": 0,
+   "minChapter": 3,
+   "currency": "diamond"
+  },
+  {
+   "id": "auto_ek",
+   "name": "Otomatik Ek Malzeme",
+   "desc": "Piyaz, acı, kızartma ve sosları siparişe göre ekler.",
+   "max": 1,
+   "costs": [
+    10
+   ],
+   "perLevel": 0,
+   "minChapter": 3,
+   "currency": "diamond"
+  }
+ ],
+ "decor": [
+  {
+   "id": "kilim",
+   "name": "El Dokuma Kilim",
+   "desc": "Pencerenin altına asılır",
+   "cost": 840,
+   "layer": "back",
+   "bonus": 0.03,
+   "minChapter": 1
+  },
+  {
+   "id": "saksi",
+   "name": "Sardunya Saksıları",
+   "desc": "Tezgâhın iki ucuna",
+   "cost": 600,
+   "layer": "front",
+   "bonus": 0.02,
+   "minChapter": 1
+  },
+  {
+   "id": "fener",
+   "name": "Bakır Fenerler",
+   "desc": "Tavandan sarkan sıcak ışık",
+   "cost": 1440,
+   "layer": "back",
+   "bonus": 0.03,
+   "minChapter": 1,
+   "diamonds": 1
+  },
+  {
+   "id": "fistik",
+   "name": "Antep Fıstığı Kaseleri",
+   "desc": "Rafa iki kase fıstık",
+   "cost": 1680,
+   "layer": "back",
+   "bonus": 0.03,
+   "minChapter": 2,
+   "diamonds": 1
+  },
+  {
+   "id": "foto",
+   "name": "Usta'nın Fotoğrafı",
+   "desc": "Fırının yanına, çerçeveli",
+   "cost": 1920,
+   "layer": "back",
+   "bonus": 0.04,
+   "minChapter": 2,
+   "diamonds": 2
+  },
+  {
+   "id": "saat",
+   "name": "Pirinç Duvar Saati",
+   "desc": "Dükkânın vakti belli olsun",
+   "cost": 1200,
+   "layer": "back",
+   "bonus": 0.02,
+   "minChapter": 2
+  },
+  {
+   "id": "bakir2",
+   "name": "İkinci Bakır Sıra",
+   "desc": "Sağ duvara üç bakır tabak",
+   "cost": 2640,
+   "layer": "back",
+   "bonus": 0.04,
+   "minChapter": 3,
+   "diamonds": 3
+  },
+  {
+   "id": "isik",
+   "name": "Tabela Işığı",
+   "desc": "Tabelanın etrafına sıcak ışık",
+   "cost": 3840,
+   "layer": "back",
+   "bonus": 0.05,
+   "minChapter": 3,
+   "diamonds": 4
+  },
+  {
+   "id": "kilim2",
+   "name": "İkinci Kilim",
+   "desc": "Kapı önüne serilen kalın Antep kilimi.",
+   "cost": 1200,
+   "diamonds": 2,
+   "layer": "back",
+   "bonus": 0.03,
+   "minChapter": 2
+  },
+  {
+   "id": "neon",
+   "name": "Neon Tabela",
+   "desc": "Gece sokağı aydınlatan nohut dürümü tabelası.",
+   "cost": 1800,
+   "diamonds": 4,
+   "layer": "back",
+   "bonus": 0.03,
+   "minChapter": 3
+  },
+  {
+   "id": "akvaryum",
+   "name": "Akvaryum",
+   "desc": "Bekleyenlerin gözünü dinlendiren balıklar.",
+   "cost": 2400,
+   "diamonds": 5,
+   "layer": "back",
+   "bonus": 0.04,
+   "minChapter": 3
+  },
+  {
+   "id": "avize",
+   "name": "Kristal Avize",
+   "desc": "Tavanda ışıl ışıl dönen avize.",
+   "cost": 3200,
+   "diamonds": 6,
+   "layer": "back",
+   "bonus": 0.05,
+   "minChapter": 4
+  },
+  {
+   "id": "altinsaat",
+   "name": "Altın Saat",
+   "desc": "Duvarda ağır ağır tıkırdayan altın kaplama saat.",
+   "cost": 3000,
+   "diamonds": 7,
+   "layer": "back",
+   "bonus": 0.05,
+   "minChapter": 5
+  },
+  {
+   "id": "sutun",
+   "name": "Mermer Sütun",
+   "desc": "Saray sofrasına yakışır iki mermer sütun.",
+   "cost": 4000,
+   "diamonds": 8,
+   "layer": "back",
+   "bonus": 0.06,
+   "minChapter": 5
+  }
+ ],
+ "garden": {
+  "plotsBase": 2,
+  "freshBonus": 0.04,
+  "marketPiyaz": 5,
+  "marketAci": 3,
+  "maxDry": 2,
+  "crops": [
+   {
+    "id": "maydanoz",
+    "name": "Maydanoz",
+    "seed": 6,
+    "days": 2,
+    "yield": 4
+   },
+   {
+    "id": "sogan",
+    "name": "Soğan",
+    "seed": 8,
+    "days": 3,
+    "yield": 4
+   },
+   {
+    "id": "biber",
+    "name": "Acı biber",
+    "seed": 8,
+    "days": 3,
+    "yield": 5
+   }
+  ]
+ },
+ "margin": 1.3,
+ "costs": {
+  "bread": 24,
+  "bowl": 14,
+  "piyaz": 12,
+  "aci": 5,
+  "fried": 18
+ },
+ "products": [
+  {
+   "id": "nohut",
+   "name": "Nohut Dürümü",
+   "fillName": "nohut",
+   "minChapter": 1,
+   "unit": 18,
+   "maxAmount": 3,
+   "weight": 5,
+   "allow": [
+    "piyaz",
+    "aci",
+    "fried",
+    "sauce",
+    "sumak"
+   ],
+   "desc": "Tırnaklı ekmeğin içine haşlanmış sıcak nohut, üstüne piyaz. Antep'in sabah dürümü."
+  },
+  {
+   "id": "doner",
+   "name": "Döner Dürümü",
+   "fillName": "döner",
+   "minChapter": 3,
+   "unit": 44,
+   "maxAmount": 2,
+   "weight": 3,
+   "allow": [
+    "piyaz",
+    "aci",
+    "fried",
+    "sauce",
+    "sumak"
+   ],
+   "desc": "Dikey şişten ince kesilmiş döner, tırnaklı ekmekte; piyaz ve sosla."
+  },
+  {
+   "id": "kavurma",
+   "name": "Kavurma Dürümü",
+   "fillName": "kavurma",
+   "minChapter": 4,
+   "unit": 52,
+   "maxAmount": 2,
+   "weight": 3,
+   "allow": [
+    "piyaz",
+    "aci",
+    "fried",
+    "sauce",
+    "sumak"
+   ],
+   "desc": "Kendi yağında kavrulmuş kuzu kavurma; tırnaklı ekmeğe sıcak sıcak."
+  },
+  {
+   "id": "cigkofte",
+   "name": "Çiğ Köfte Dürümü",
+   "fillName": "çiğ köfte",
+   "minChapter": 4,
+   "unit": 34,
+   "maxAmount": 2,
+   "weight": 3,
+   "allow": [
+    "piyaz",
+    "aci",
+    "fried",
+    "sauce",
+    "sumak"
+   ],
+   "desc": "Acılı, isotlu çiğ köfte; marul ve nar ekşisiyle sarılır."
+  },
+  {
+   "id": "kizartma",
+   "name": "Kızartma Dürümü",
+   "fillName": "kızartma",
+   "minChapter": 5,
+   "unit": 28,
+   "maxAmount": 2,
+   "weight": 3,
+   "allow": [
+    "piyaz",
+    "aci",
+    "fried",
+    "sauce",
+    "sumak"
+   ],
+   "desc": "Patates, patlıcan ve biber kızartması; ekmeğin içinde çıtır çıtır."
+  },
+  {
+   "id": "beyran",
+   "name": "Beyran",
+   "fillName": "beyran",
+   "minChapter": 5,
+   "unit": 66,
+   "maxAmount": 1,
+   "weight": 2,
+   "bowl": true,
+   "allow": [
+    "aci"
+   ],
+   "desc": "Antep'in sabah çorbası: kuzu etli, pirinçli, acı yağlı. Dürüm değil, kâsede servis edilir."
+  }
+ ],
+ "sauces": [
+  {
+   "id": "sos",
+   "name": "Sos",
+   "desc": "Dükkânın acılı kırmızı sosu.",
+   "cost": 5,
+   "minChapter": 2
+  },
+  {
+   "id": "ketcap",
+   "name": "Ketçap",
+   "desc": "Tatlı domates sosu.",
+   "cost": 5,
+   "minChapter": 2
+  },
+  {
+   "id": "mayonez",
+   "name": "Mayonez",
+   "desc": "Yumuşak, beyaz sos.",
+   "cost": 5,
+   "minChapter": 2
+  },
+  {
+   "id": "sumak",
+   "name": "Sumak",
+   "desc": "Ekşi, kırmızı toz; Antep'in baharı.",
+   "cost": 6,
+   "minChapter": 2
+  },
+  {
+   "id": "nar",
+   "name": "Nar ekşisi",
+   "desc": "Koyu, ekşi, kıvamlı. Döner ve çiğ köfteye yakışır.",
+   "cost": 8,
+   "minChapter": 3
+  }
+ ],
+ "_costScaleV3": true
+}

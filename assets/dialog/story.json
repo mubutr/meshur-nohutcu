@@ -1,0 +1,293 @@
+{
+ "_not": "Hikâye sahneleri. tools/gen_story.py ile üretilir.",
+ "scenes": {
+  "c1_intro": [
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Gaziantep, Bey Mahallesi. Sabahın köründe tandırın külü daha sıcak, nohut kazanı fokur fokur."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hoşgeldin çırak! Bu dükkânı babamdan devraldım. Tırnaklı ekmeğimizin, nohudumuzun adı bütün mahalleye yayılmıştı."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Ama şu karşıya bak evlat. Kalaycı Nohut Evi açılmış. Neon ışık, davul zurna... Müşteri hep oraya akıyor."
+   },
+   {
+    "who": "rakip",
+    "to": "usta",
+    "t": "Günaydın usta! Eski usul nohut kaç gün dayanır bakalım? Mahalle yenilikten hoşlanır."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Sakın tırsma evlat. Bizim elimiz ekmek bilir. Sen dürümü hazırla, ben müşteriyle konuşurum."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Önce ekmeği al, nohudu kararında koy, sar, müşteriye uzat. Siparişi iyi dinle! Hadi, hayırlı işler!"
+   }
+  ],
+  "c1_outro": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Gördün mü evlat? Mahalle bizi unutmamış. Kalaycı'nın neonu bir yere kadar."
+   },
+   {
+    "who": "rakip",
+    "to": "usta",
+    "t": "Hele hele... Çıraklık fena değilmiş usta. Ama şenlik yaklaşıyor, asıl sınav orada."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Şenlikten önce mahallenin Taaf Nene'si dükkânları sınar evlat. Sumak kâsesini de hazırlayalım, işimiz artacak."
+   }
+  ],
+  "c2_intro": [
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Mahallenin en yaşlı kadını Taaf Nene, şenlikten önce her dükkânı bilmeceyle sınar."
+   },
+   {
+    "who": "nine",
+    "to": "usta",
+    "t": "Usta, çırağın kulağı mı açık yoksa eli mi? Ben siparişimi bilmeceyle veririm. Doğru yaparsan şenliğe adın yazılır."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, bilmecede 'tutam' az, 'avuç' orta, 'dağ gibi' bol demek. Kırmızı toz sumaktır, kırmızı pul acıdır."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Bilmece soran müşterinin yanında seçenek rozeti olmaz. Kulak ver, düşün, sonra hazırla!"
+   },
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Dükkâna sumak kâsesi geldi. Siparişler artık daha lezzetli, daha zor."
+   }
+  ],
+  "c2_dayi_thanks": [
+   {
+    "who": "dayi",
+    "to": "usta",
+    "t": "Allah razı olsun usta, hayırlı işler. Bu iyiliği unutmam."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Gördün mü evlat, kimi zaman bir lokma bir ömre değer. Gariban'a kapımız hep açık."
+   }
+  ],
+  "c2_outro": [
+   {
+    "who": "nine",
+    "to": "usta",
+    "t": "Eline sağlık usta, çırağın akıllıymış. Şenlik defterinde adınız var."
+   },
+   {
+    "who": "rakip",
+    "to": "usta",
+    "t": "Şenlikte görüşürüz usta. Jüri benim dürümümü de tadacak."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Yarın şenlik başlıyor evlat. Dükkânın adı, mahallenin adı için en iyi dürümü yapacağız."
+   }
+  ],
+  "c3_intro": [
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Gaziantep Gastronomi Şenliği başladı! Bütün mahalle sokağa dökülmüş, tezgâhlar boy boy dizilmiş."
+   },
+   {
+    "who": "rakip",
+    "to": "usta",
+    "t": "Şenlikte jüri benim dürümüme bakacak usta. Sen nohuduna bakarsın."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Kalabalık çok olacak evlat. Tek başımıza yetişemeyiz; bi yardımcı çırak tutmanın zamanı geldi."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Şenlik boyunca para biriktirelim, Yardımcı Çırak'ı işe alak. Jüri 'Yılın Nohut Ustası'nı seçecek!"
+   }
+  ],
+  "c3_outro": [
+   {
+    "who": "nine",
+    "to": "usta",
+    "t": "Yılın Nohut Ustası bu dükkân oldu! Ben söylemiştim, bu çocuğun elinde hayır var."
+   },
+   {
+    "who": "rakip",
+    "to": "usta",
+    "t": "Bu sefer sen kazandın usta... Ama bitmedi. Kapında diye bir teslimat zinciri kuruyorum. Yakında kapına kurye yağacak."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Dinleme onu evlat. Biz de paket servise başlarız, arka bahçeyi de ekeriz. Malzemeyi kendimiz yetiştirelim."
+   }
+  ],
+  "c3_investor": [
+   {
+    "who": "yatirimci",
+    "to": "usta",
+    "t": "Beni tanımadın mı usta? Bir zamanlar kapınıza aç geldim, bir dürüm verdiniz. Hiç unutmadım."
+   },
+   {
+    "who": "yatirimci",
+    "to": "usta",
+    "t": "Şimdi işlerim yoluna girdi. Bu dükkâna yatırım yapmak istiyorum. Al şu kesemi, sevabın karşılığı."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Gördün mü evlat, yapılan iyilik yerde kalmaz. Bundan sonra her dürümden payımız bereketlenecek."
+   }
+  ],
+  "c4_intro": [
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Kalaycı Nohut Evi 'Kapında' adlı bir teslimat zinciri kurdu. Sokak motorlu kuryelerle doldu."
+   },
+   {
+    "who": "rakip",
+    "to": "usta",
+    "t": "Usta, artık müşteri dükkâna gelmiyor; biz müşterinin kapısına gidiyoruz. Yetiş bakalım!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Biz de Kapında'ya katılırız evlat. Ama bizim paketimiz sıcak gider: dürümü sar, sağdaki sipariş kartına dokun, ısı kutusuna girsin."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Kurye belli aralıkla gelir, kutudakileri alır. Kutuda çok bekletirsen soğur, geç kalırsan para kırılır. Aklında olsun!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Bi de arka bahçeyi açtım. Maydanoz, soğan, biber... Her akşam gün bitince bahçeye uğra, tohum ek, sula, olgunlaşanı topla."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Taze malzeme masrafı düşürür, dürümün tadı da artar. Sulamayı unutma çırak, susuz kalan bitki kurur!"
+   }
+  ],
+  "c4_outro": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Paket de bahçe de yoluna girdi evlat. Kalaycı'nın zinciri bizim sıcak dürümümüze yetişemedi."
+   },
+   {
+    "who": "antikaci",
+    "to": "usta",
+    "t": "Hoş geldiniz usta... Kalaycı'ya karşı güzel dayandınız. Ben eski eşyaya meraklıyım; sizin tandırdaki o tarihî taşı hep merak ederim."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "O taşı bilirsin evlat, babamdan kalma emanet. Gözün üstünde olsun, kimseye de emanet etme."
+   }
+  ],
+  "c5_intro": [
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Bir sabah usta dükkânı açtı ve tandırın yanındaki tarihî taşın yerinde olmadığını gördü."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Evlat, babamın bana emaneti tandır taşı kayıp! Kapı kilitliydi, kimse bir şey görmemiş."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Dükkâna da bakacağız, soruşturmaya da. Her akşam dükkân kapanınca iz süreriz; geceleri iki yere bakabiliriz."
+   },
+   {
+    "who": "nine",
+    "to": "usta",
+    "t": "Taşın başına bi hal gelirse mahallenin huzuru gider usta. Ben de kulak kesilirim."
+   }
+  ],
+  "c5_mid": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "İzler çarşıya doğru gidiyor evlat. Ama kimseyi peşin suçlama; yanlış suçlamanın bedeli ağırdır."
+   },
+   {
+    "who": "dayi",
+    "to": "usta",
+    "t": "Usta, gece yarısı çarşıda bi adam gördüm. Elinde kızak vardı. Yüzünü seçemedim ama ışıkta bi şey parladı."
+   }
+  ],
+  "c5_solved": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Tamam evlat, suçlu belli. Galaycı Nuru'yu çağırın!"
+   },
+   {
+    "who": "antikaci",
+    "to": "usta",
+    "t": "Beni yakaladınız usta... Taşı bi koleksiyoncuya satacaktım. Borcum vardı, aklımı kaybettim."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Taş yerine konsun. Nuru'nun borcu için de mahalle bi çare bulur; ama bu dükkânın kapısı hırsıza kapalıdır."
+   },
+   {
+    "who": "nine",
+    "to": "usta",
+    "t": "Bilmece çözüldü usta. Çırağın hem eli hem aklı yerinde."
+   }
+  ],
+  "c5_outro": [
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Tandır taşı yerine kondu. Mahalle sokağa dökülüp Bey Mahallesi'nin ustasını ve çırağını alkışladı."
+   },
+   {
+    "who": "rakip",
+    "to": "usta",
+    "t": "Kapında'nın kapısına bi tabela asıyorum usta: 'Bey Mahallesi'nin nohudunu kimse geçemez.' Eyvallah."
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Artık çırak değilsin evlat. Bu dükkânın kalbi senin elinde. Hayırlı olsun, hadi iş başına!"
+   },
+   {
+    "who": "anlatici",
+    "to": "cirak",
+    "t": "Hikâye burada biter, dükkân açık kalır. Yeni siparişler, yeni bilmeceler, yeni müşteriler seni bekliyor."
+   }
+  ]
+ }
+}

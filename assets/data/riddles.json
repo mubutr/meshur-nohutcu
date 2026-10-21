@@ -1,0 +1,20 @@
+{
+  "_not": "Bilmeceli siparişler. Nohut miktarı sözlüğü: tutam=1, avuç=2, dağ gibi=3. Her bilmece piyaz/acı/sumak durumunu açıkça (ya da 'hiçbir şey' ile) söyler.",
+  "riddles": [
+    {"id": "r_dag",   "minChapter": 2, "text": "Usta, dağ gibi nohut koy ama soğanın adı bile geçmesin. Kırmızı hiçbir şey de sokma aramıza.", "nohut": 3, "piyaz": false, "aci": false, "sumak": false},
+    {"id": "r_gul",   "minChapter": 2, "text": "Bi avuç nohut yeter usta. Üstüne gül kurusu gibi kırmızı toz serp ama dilimi yakma.", "nohut": 2, "piyaz": false, "aci": false, "sumak": true},
+    {"id": "r_dil",   "minChapter": 2, "text": "Dilim yansın, gönlüm yanmasın usta. Bi avuç nohut koy, yanına soğan da gelsin.", "nohut": 2, "piyaz": true, "aci": true, "sumak": false},
+    {"id": "r_gunes", "minChapter": 2, "text": "Güneş gibi sarı nohut, bulut gibi beyaz soğan. Kırmızıya yer yok usta, bi tutam yeter.", "nohut": 1, "piyaz": true, "aci": false, "sumak": false},
+    {"id": "r_iki",   "minChapter": 2, "text": "İki kırmızıyı da istiyorum usta: biri dili yakar, biri tatlı ekşi. Soğanı çıkar, bi avuç nohut.", "nohut": 2, "piyaz": false, "aci": true, "sumak": true},
+    {"id": "r_hepsi", "minChapter": 2, "text": "Usta, aklına ne geliyorsa koy: dağ gibi nohut, soğan, acı, sumak, hepsi olsun!", "nohut": 3, "piyaz": true, "aci": true, "sumak": true},
+    {"id": "r_sade",  "minChapter": 2, "text": "Süs yok püs yok usta. Bi tutam nohut, yalnız ekmekle nohut olsun.", "nohut": 1, "piyaz": false, "aci": false, "sumak": false},
+    {"id": "r_eksi",  "minChapter": 2, "text": "Dilimin ucu ekşi olsun ama yanmasın usta. Bi avuç nohut koy, soğansız.", "nohut": 2, "piyaz": false, "aci": false, "sumak": true},
+    {"id": "r_pul",   "minChapter": 2, "text": "Pul pul kırmızı bi şey gerek usta, tatlı olan değil acı olan. Ekşisi yok, soğanı yok, dağ gibi nohut.", "nohut": 3, "piyaz": false, "aci": true, "sumak": false},
+    {"id": "r_ince",  "minChapter": 2, "text": "Beyaz soğan ince ince doğransın, maydanoz da bulunsun. Dil yakan da ekşi de olmasın. Bi avuç nohut.", "nohut": 2, "piyaz": true, "aci": false, "sumak": false},
+    {"id": "r_nine1", "minChapter": 2, "giver": "nine", "text": "Evladım, iki gözüm. Hem ekşi hem acı bi dürüm yap bana, soğanı yeme dişim yok. Bi tutam nohut yeter.", "nohut": 1, "piyaz": false, "aci": true, "sumak": true},
+    {"id": "r_nine2", "minChapter": 2, "giver": "nine", "text": "Bu nene bi söz verdi: bi avuç nohutun üstüne yalnız soğan koyarsan sana duam var.", "nohut": 2, "piyaz": true, "aci": false, "sumak": false},
+    {"id": "r_nine3", "minChapter": 3, "giver": "nine", "text": "Dağ gibi nohut, soğan da sumak da olsun ama acı olmasın evlat. Bu nene acıya düşmandır.", "nohut": 3, "piyaz": true, "aci": false, "sumak": true},
+    {"id": "r_itf1",  "minChapter": 3, "giver": "itfaiyeci", "text": "Ateşle uğraşırım usta, acıdan uzak dur. Ağzım keskin tat ister, ekşisi olsun. Bi avuç nohut, soğan da kalsın.", "nohut": 2, "piyaz": true, "aci": false, "sumak": true},
+    {"id": "r_itf2",  "minChapter": 3, "giver": "itfaiyeci", "text": "Nöbetten geldim, dağ gibi yorgunum. Dağ gibi nohut ver, soğan olsun, acı da sumak da olmasın.", "nohut": 3, "piyaz": true, "aci": false, "sumak": false}
+  ]
+}

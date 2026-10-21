@@ -1,0 +1,879 @@
+{
+ "_not": "Bölümler, ana/yan/günlük görevler. Hedef türleri: serve, riddle, earn, tip, day_score, day_rep, no_lose, streak, upgrade, decor, npc, harvest, deliver, clue, day_reach.",
+ "chapters": [
+  {
+   "id": 1,
+   "title": "Çırak Elleri",
+   "subtitle": "Mahallenin güvenini kazan",
+   "intro": "c1_intro",
+   "outro": "c1_outro",
+   "quests": [
+    "c1q1",
+    "c1q2",
+    "c1q3",
+    "c1q4",
+    "c1q5",
+    "c1q6",
+    "c1q7"
+   ],
+   "reward": {
+    "money": 300,
+    "stars": 2
+   }
+  },
+  {
+   "id": 2,
+   "title": "Piyazın Sırrı",
+   "subtitle": "Taaf Nene'nin sınavı",
+   "intro": "c2_intro",
+   "outro": "c2_outro",
+   "quests": [
+    "c2q1",
+    "c2q2",
+    "c2q3",
+    "c2q4",
+    "c2q5",
+    "c2q6",
+    "c2q7"
+   ],
+   "reward": {
+    "money": 500,
+    "stars": 3
+   }
+  },
+  {
+   "id": 3,
+   "title": "Gastronomi Şenliği",
+   "subtitle": "Yılın Nohut Ustası",
+   "intro": "c3_intro",
+   "outro": "c3_outro",
+   "quests": [
+    "c3q1",
+    "c3q2",
+    "c3q3",
+    "c3q4",
+    "c3q5",
+    "c3q6",
+    "c3q7"
+   ],
+   "reward": {
+    "money": 800,
+    "stars": 4
+   }
+  },
+  {
+   "id": 4,
+   "title": "Sipariş Kapında",
+   "subtitle": "Paket servis ve arka bahçe",
+   "intro": "c4_intro",
+   "outro": "c4_outro",
+   "quests": [
+    "c4q1",
+    "c4q2",
+    "c4q3",
+    "c4q4",
+    "c4q5",
+    "c4q6",
+    "c4q7"
+   ],
+   "reward": {
+    "money": 1500,
+    "stars": 5
+   }
+  },
+  {
+   "id": 5,
+   "title": "Kayıp Tandır Taşı",
+   "subtitle": "Soruşturma zamanı",
+   "intro": "c5_intro",
+   "outro": "c5_outro",
+   "quests": [
+    "c5q1",
+    "c5q2",
+    "c5q3",
+    "c5q4",
+    "c5q5",
+    "c5q6",
+    "c5q7"
+   ],
+   "reward": {
+    "money": 3000,
+    "stars": 6
+   }
+  }
+ ],
+ "quests": {
+  "c1q1": {
+   "title": "İlk Müşteriler",
+   "desc": "Mahalle duysun: 20 dürüm servis et.",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 20
+    }
+   ],
+   "reward": {
+    "money": 80,
+    "stars": 1
+   }
+  },
+  "c1q2": {
+   "title": "Elin Dert Görmesin",
+   "desc": "14 dürümü sipariş neyse tam öyle ver (tam isabet).",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 14,
+     "filter": {
+      "verdict": "great"
+     }
+    }
+   ],
+   "reward": {
+    "money": 100,
+    "stars": 1
+   }
+  },
+  "c1q3": {
+   "title": "Nohudun Hası",
+   "desc": "Nohudu en az orta (2 kaşık) olan 10 dürümü tam isabetle ver.",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 10,
+     "filter": {
+      "verdict": "great",
+      "nohutMin": 2
+     }
+    }
+   ],
+   "reward": {
+    "money": 120,
+    "stars": 1
+   }
+  },
+  "c1q4": {
+   "title": "Mahalle Güveni",
+   "desc": "Bir günde en az 7 müşteriye servis yap ve memnuniyeti %80'in üstünde tut.",
+   "objectives": [
+    {
+     "type": "day_rep",
+     "target": 80,
+     "filter": {
+      "minServed": 7
+     }
+    }
+   ],
+   "reward": {
+    "money": 150,
+    "stars": 1
+   }
+  },
+  "c1q5": {
+   "title": "Kalaycı'ya Karşı",
+   "desc": "Karşı sokaktaki neon ışıklara inat: toplam 1800 ₺ kazan.",
+   "objectives": [
+    {
+     "type": "earn",
+     "target": 1800
+    }
+   ],
+   "reward": {
+    "money": 270,
+    "stars": 1
+   }
+  },
+  "c1q6": {
+   "title": "Cömert Müşteriler",
+   "desc": "Toplam 250 ₺ bahşiş topla: hızlı ve tam servis et.",
+   "objectives": [
+    {
+     "type": "tip",
+     "target": 250
+    }
+   ],
+   "reward": {
+    "money": 150,
+    "stars": 1
+   }
+  },
+  "c1q7": {
+   "title": "Dükkân Şenlensin",
+   "desc": "Dükkâna üç süs al (gün sonunda Dükkân).",
+   "objectives": [
+    {
+     "type": "decor",
+     "target": 3
+    }
+   ],
+   "reward": {
+    "money": 200,
+    "stars": 1
+   }
+  },
+  "c2q1": {
+   "title": "Sumağın Tadı",
+   "desc": "Sumaklı 10 dürümü tam isabetle ver. (Sumak kâsesi yeni geldi.)",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 10,
+     "filter": {
+      "verdict": "great",
+      "sumak": true
+     }
+    }
+   ],
+   "reward": {
+    "money": 180,
+    "stars": 1
+   }
+  },
+  "c2q2": {
+   "title": "Nene'nin İlk Bilmecesi",
+   "desc": "4 bilmeceli siparişi doğru çöz.",
+   "objectives": [
+    {
+     "type": "riddle",
+     "target": 4
+    }
+   ],
+   "reward": {
+    "money": 220,
+    "stars": 1
+   }
+  },
+  "c2q3": {
+   "title": "Gariban'a Eyvallah",
+   "desc": "Aç gelen Gariban'a bir dürüm ikram et.",
+   "objectives": [
+    {
+     "type": "npc",
+     "target": 1,
+     "filter": {
+      "id": "garip"
+     }
+    }
+   ],
+   "reward": {
+    "money": 150,
+    "stars": 1
+   },
+   "scene": "c2_dayi_thanks"
+  },
+  "c2q4": {
+   "title": "Piyazın Sırrı",
+   "desc": "Piyazlı 16 dürümü tam isabetle ver.",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 16,
+     "filter": {
+      "verdict": "great",
+      "piyaz": true
+     }
+    }
+   ],
+   "reward": {
+    "money": 250,
+    "stars": 1
+   }
+  },
+  "c2q5": {
+   "title": "Bilmeceler Bilmecesi",
+   "desc": "Toplam 10 bilmeceyi doğru çöz.",
+   "objectives": [
+    {
+     "type": "riddle",
+     "target": 10
+    }
+   ],
+   "reward": {
+    "money": 300,
+    "stars": 1
+   }
+  },
+  "c2q6": {
+   "title": "Kasa Bekçisi",
+   "desc": "Maskeli Müşteri'yi hatasız servis et; kasadan para alamasın.",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 1,
+     "filter": {
+      "verdict": "great",
+      "special": "maskeli"
+     }
+    }
+   ],
+   "reward": {
+    "money": 300,
+    "stars": 1
+   }
+  },
+  "c2q7": {
+   "title": "Nene'nin Defteri",
+   "desc": "Nene'nin şenlik defterine adın yazılsın: toplam 5000 ₺ kazan.",
+   "objectives": [
+    {
+     "type": "earn",
+     "target": 5000
+    }
+   ],
+   "reward": {
+    "money": 525,
+    "stars": 1
+   }
+  },
+  "c3q1": {
+   "title": "Şenlik Hazırlığı",
+   "desc": "Şenlik masrafı için toplam 6000 ₺ kazan.",
+   "objectives": [
+    {
+     "type": "earn",
+     "target": 6000
+    }
+   ],
+   "reward": {
+    "money": 375,
+    "stars": 1
+   }
+  },
+  "c3q2": {
+   "title": "Yardımcı Çırak",
+   "desc": "Dükkânda Yardımcı Çırak'ı işe al (Yükseltmeler).",
+   "objectives": [
+    {
+     "type": "upgrade",
+     "target": 1,
+     "filter": {
+      "id": "yardimci",
+      "level": 1
+     }
+    }
+   ],
+   "reward": {
+    "money": 300,
+    "stars": 1
+   }
+  },
+  "c3q3": {
+   "title": "Altın Kepçe",
+   "desc": "Bir günde art arda 8 dürümü tam isabetle ver.",
+   "objectives": [
+    {
+     "type": "streak",
+     "target": 8
+    }
+   ],
+   "reward": {
+    "money": 350,
+    "stars": 1
+   }
+  },
+  "c3q4": {
+   "title": "İtfaiyeci Mömet'in Sınavı",
+   "desc": "İtfaiyeci Mömet'in bilmecesini doğru çöz.",
+   "objectives": [
+    {
+     "type": "riddle",
+     "target": 1,
+     "filter": {
+      "giver": "itfaiyeci"
+     }
+    }
+   ],
+   "reward": {
+    "money": 350,
+    "stars": 1
+   }
+  },
+  "c3q5": {
+   "title": "Şenliğin Yıldızı",
+   "desc": "40 dürümü tam isabetle ver.",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 40,
+     "filter": {
+      "verdict": "great"
+     }
+    }
+   ],
+   "reward": {
+    "money": 400,
+    "stars": 1
+   }
+  },
+  "c3q6": {
+   "title": "Jüri Bahşişi",
+   "desc": "Toplam 800 ₺ bahşiş topla.",
+   "objectives": [
+    {
+     "type": "tip",
+     "target": 800
+    }
+   ],
+   "reward": {
+    "money": 450,
+    "stars": 1
+   }
+  },
+  "c3q7": {
+   "title": "Yılın Nohut Ustası",
+   "desc": "Bir günde en az 12 müşteriye servis yap, memnuniyet %85'in üstünde olsun.",
+   "objectives": [
+    {
+     "type": "day_rep",
+     "target": 85,
+     "filter": {
+      "minServed": 12
+     }
+    }
+   ],
+   "reward": {
+    "money": 600,
+    "stars": 2
+   }
+  },
+  "s_garip": {
+   "title": "Gariban'ın Hayrı",
+   "desc": "Gariban'a toplam 3 kez dürüm ikram et. İyilik yerde kalmaz.",
+   "objectives": [
+    {
+     "type": "npc",
+     "target": 3,
+     "filter": {
+      "id": "garip"
+     }
+    }
+   ],
+   "reward": {
+    "money": 800,
+    "stars": 2,
+    "investor": true
+   },
+   "scene": "c3_investor",
+   "unlockChapter": 2
+  },
+  "s_maskeli": {
+   "title": "Kasa Başında",
+   "desc": "Maskeli Müşteri'yi 3 kez hatasız servis et.",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 3,
+     "filter": {
+      "verdict": "great",
+      "special": "maskeli"
+     }
+    }
+   ],
+   "reward": {
+    "money": 400,
+    "stars": 1
+   },
+   "unlockChapter": 2
+  },
+  "s_bahsis": {
+   "title": "Bahşiş Avcısı",
+   "desc": "Toplam 900 ₺ bahşiş topla.",
+   "objectives": [
+    {
+     "type": "tip",
+     "target": 900
+    }
+   ],
+   "reward": {
+    "money": 300,
+    "stars": 1
+   },
+   "unlockChapter": 1
+  },
+  "c4q1": {
+   "title": "Arka Bahçe",
+   "desc": "Arka bahçeye tohum ek, sula ve 8 birim ürün hasat et. (Gün sonunda Bahçe.)",
+   "objectives": [
+    {
+     "type": "harvest",
+     "target": 8
+    }
+   ],
+   "reward": {
+    "money": 300,
+    "stars": 1
+   }
+  },
+  "c4q2": {
+   "title": "Parsel Açılsın",
+   "desc": "Bahçeye yeni bir parsel aç (Yükseltmeler).",
+   "objectives": [
+    {
+     "type": "upgrade",
+     "target": 1,
+     "filter": {
+      "id": "parsel",
+      "level": 1
+     }
+    }
+   ],
+   "reward": {
+    "money": 400,
+    "stars": 1
+   }
+  },
+  "c4q3": {
+   "title": "İlk Paketler",
+   "desc": "Kapında'dan düşen 4 paket siparişini teslim et. Dürümü sar, sağdaki sipariş kartına dokun; kurye alır.",
+   "objectives": [
+    {
+     "type": "deliver",
+     "target": 4
+    }
+   ],
+   "reward": {
+    "money": 400,
+    "stars": 1
+   }
+  },
+  "c4q4": {
+   "title": "Zamanında Teslimat",
+   "desc": "10 paketi zamanında teslim et.",
+   "objectives": [
+    {
+     "type": "deliver",
+     "target": 10,
+     "filter": {
+      "onTime": true
+     }
+    }
+   ],
+   "reward": {
+    "money": 600,
+    "stars": 1
+   }
+  },
+  "c4q5": {
+   "title": "Yeşil Parmaklar",
+   "desc": "Toplam 12 birim maydanoz hasat et.",
+   "objectives": [
+    {
+     "type": "harvest",
+     "target": 12,
+     "filter": {
+      "crop": "maydanoz"
+     }
+    }
+   ],
+   "reward": {
+    "money": 500,
+    "stars": 1
+   }
+  },
+  "c4q6": {
+   "title": "Dağıtım Motoru",
+   "desc": "Dağıtım Motoru'nu al (Yükseltmeler): kurye sıklaşır, ısı kutusu artar.",
+   "objectives": [
+    {
+     "type": "upgrade",
+     "target": 1,
+     "filter": {
+      "id": "dagitim",
+      "level": 1
+     }
+    }
+   ],
+   "reward": {
+    "money": 600,
+    "stars": 1
+   }
+  },
+  "c4q7": {
+   "title": "Kapında'ya Karşı",
+   "desc": "Kalaycı'nın zincirine inat: toplam 9000 ₺ kazan.",
+   "objectives": [
+    {
+     "type": "earn",
+     "target": 9000
+    }
+   ],
+   "reward": {
+    "money": 900,
+    "stars": 2
+   }
+  },
+  "c5q1": {
+   "title": "Boş Kalan Yer",
+   "desc": "Soruşturma Defteri'nden bir ipucu bul. (Gün sonunda Soruşturma; gece 2 hamle hakkın var.)",
+   "objectives": [
+    {
+     "type": "clue",
+     "target": 1
+    }
+   ],
+   "reward": {
+    "money": 500,
+    "stars": 1
+   }
+  },
+  "c5q2": {
+   "title": "İz Sürücü",
+   "desc": "Toplam 4 ipucu bul.",
+   "objectives": [
+    {
+     "type": "clue",
+     "target": 4
+    }
+   ],
+   "reward": {
+    "money": 700,
+    "stars": 1
+   },
+   "scene": "c5_mid"
+  },
+  "c5q3": {
+   "title": "Dükkân İşi Aksamasın",
+   "desc": "Soruşturma sürerken 30 dürümü tam isabetle ver.",
+   "objectives": [
+    {
+     "type": "serve",
+     "target": 30,
+     "filter": {
+      "verdict": "great"
+     }
+    }
+   ],
+   "reward": {
+    "money": 800,
+    "stars": 1
+   }
+  },
+  "c5q4": {
+   "title": "Tanıklar",
+   "desc": "Toplam 8 ipucu bul.",
+   "objectives": [
+    {
+     "type": "clue",
+     "target": 8
+    }
+   ],
+   "reward": {
+    "money": 900,
+    "stars": 1
+   }
+  },
+  "c5q5": {
+   "title": "Masraf Büyük",
+   "desc": "Soruşturma masrafı için toplam 10000 ₺ kazan.",
+   "objectives": [
+    {
+     "type": "earn",
+     "target": 10000
+    }
+   ],
+   "reward": {
+    "money": 1000,
+    "stars": 1
+   }
+  },
+  "c5q6": {
+   "title": "Suçlama",
+   "desc": "Yeterli kanıtı topla ve doğru kişiyi suçla.",
+   "objectives": [
+    {
+     "type": "clue",
+     "target": 1,
+     "filter": {
+      "id": "solved"
+     }
+    }
+   ],
+   "reward": {
+    "money": 1500,
+    "stars": 2
+   },
+   "scene": "c5_solved"
+  },
+  "c5q7": {
+   "title": "Tandır Taşı Yerinde",
+   "desc": "Bir günde en az 12 müşteriye servis yap, memnuniyet %88'in üstünde olsun.",
+   "objectives": [
+    {
+     "type": "day_rep",
+     "target": 88,
+     "filter": {
+      "minServed": 12
+     }
+    }
+   ],
+   "reward": {
+    "money": 1500,
+    "stars": 2
+   }
+  }
+ },
+ "side": [
+  "s_garip",
+  "s_maskeli",
+  "s_bahsis"
+ ],
+ "daily": [
+  {
+   "id": "d_serve",
+   "title": "Bugün {n} dürüm servis et",
+   "type": "serve",
+   "targets": [
+    4,
+    6,
+    8
+   ],
+   "money": [
+    40,
+    60,
+    80
+   ]
+  },
+  {
+   "id": "d_great",
+   "title": "{n} dürümü tam isabetle ver",
+   "type": "serve",
+   "filter": {
+    "verdict": "great"
+   },
+   "targets": [
+    3,
+    4,
+    5
+   ],
+   "money": [
+    50,
+    70,
+    90
+   ]
+  },
+  {
+   "id": "d_nohut3",
+   "title": "Nohudu bol {n} dürümü tam isabetle ver",
+   "type": "serve",
+   "filter": {
+    "verdict": "great",
+    "nohutMin": 3
+   },
+   "targets": [
+    2,
+    3
+   ],
+   "money": [
+    60,
+    90
+   ],
+   "minDay": 2
+  },
+  {
+   "id": "d_piyaz",
+   "title": "Piyazlı {n} dürüm ver",
+   "type": "serve",
+   "filter": {
+    "piyaz": true
+   },
+   "targets": [
+    2,
+    3,
+    4
+   ],
+   "money": [
+    50,
+    70,
+    90
+   ],
+   "minDay": 2
+  },
+  {
+   "id": "d_aci",
+   "title": "Acılı {n} dürüm ver",
+   "type": "serve",
+   "filter": {
+    "aci": true
+   },
+   "targets": [
+    2,
+    3
+   ],
+   "money": [
+    60,
+    85
+   ],
+   "minDay": 3
+  },
+  {
+   "id": "d_sumak",
+   "title": "Sumaklı {n} dürüm ver",
+   "type": "serve",
+   "filter": {
+    "sumak": true
+   },
+   "targets": [
+    2,
+    3
+   ],
+   "money": [
+    70,
+    95
+   ],
+   "minChapter": 2
+  },
+  {
+   "id": "d_streak",
+   "title": "Üst üste {n} tam isabet yap",
+   "type": "streak",
+   "targets": [
+    3,
+    4
+   ],
+   "money": [
+    80,
+    110
+   ]
+  },
+  {
+   "id": "d_nolose",
+   "title": "Hiç müşteri kaçırmadan günü bitir (en az 5 servis)",
+   "type": "no_lose",
+   "filter": {
+    "minServed": 5
+   },
+   "targets": [
+    1
+   ],
+   "money": [
+    90
+   ]
+  },
+  {
+   "id": "d_score",
+   "title": "Günün skoru {n} olsun",
+   "type": "day_score",
+   "targets": [
+    120,
+    180
+   ],
+   "money": [
+    80,
+    120
+   ],
+   "scaleWithDay": true
+  },
+  {
+   "id": "d_riddle",
+   "title": "Bugün bir bilmece çöz",
+   "type": "riddle",
+   "targets": [
+    1
+   ],
+   "money": [
+    110
+   ],
+   "minChapter": 2
+  }
+ ]
+}
