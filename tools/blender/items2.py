@@ -42,12 +42,12 @@ def _slices(name, n, rx, ry, z, hmax, mat, rnd, radius=0.13, flat=0.35, seed=1):
     return L.blob_cloud(name, pts, mat, radius=radius, jitter=0.35, seed=seed, subdiv=1, flat=flat)
 
 
-def _fries(n, rx, ry, z, hmax, rnd):
+def _fries(n, rx, ry, z, hmax, rnd, min_dist=0.2):
     """Patates çubukları + patlıcan dilimleri + yeşil biber (kızartma karışımı)."""
     potato = L.make_mat("Patates", (0.95, 0.74, 0.28), rough=0.6, bump=("fine", 40, 0.12))
     eggplant = L.make_mat("Patlican", (0.22, 0.08, 0.20), rough=0.35)
     pepper = L.make_mat("Biber", (0.25, 0.55, 0.15), rough=0.4)
-    pts = L.scatter_disc(n, rx, ry, rnd, min_dist=0.2, z=z, hmax=hmax)
+    pts = L.scatter_disc(n, rx, ry, rnd, min_dist=min_dist, z=z, hmax=hmax)
     for i, p in enumerate(pts):
         k = i % 5
         if k <= 2:
@@ -188,7 +188,7 @@ def build_trays(out):
     _prop_scene()
     s = steel()
     _bowl(s, s, r=0.85, h=0.5)
-    _fries(16, 0.55, 0.55, 0.42, 0.2, random.Random(11))
+    _fries(70, 0.66, 0.66, 0.58, 0.34, random.Random(11), min_dist=0.1)
     L.render(f"{out}/kizartma_kase.png", 512, 512)
 
 

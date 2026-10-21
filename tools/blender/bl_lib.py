@@ -161,14 +161,14 @@ def bread_material():
     # çukur (koyu kavrulma) -> kabuk (altın)
     ramp = nt.nodes.new("ShaderNodeValToRGB")
     ramp.color_ramp.elements[0].position = 0.06
-    ramp.color_ramp.elements[0].color = (0.30, 0.11, 0.02, 1)
+    ramp.color_ramp.elements[0].color = (0.62, 0.36, 0.14, 1)
     ramp.color_ramp.elements[1].position = 0.40
-    ramp.color_ramp.elements[1].color = (1.0, 0.80, 0.44, 1)
+    ramp.color_ramp.elements[1].color = (1.0, 0.90, 0.64, 1)
     nt.links.new(vor.outputs["Distance"], ramp.inputs["Fac"])
     # geniş leke: kabuğun rengi yer yer açılıp koyulaşır
     tone = nt.nodes.new("ShaderNodeValToRGB")
     tone.color_ramp.elements[0].position = 0.35
-    tone.color_ramp.elements[0].color = (0.78, 0.72, 0.66, 1)
+    tone.color_ramp.elements[0].color = (0.92, 0.88, 0.82, 1)
     tone.color_ramp.elements[1].position = 0.65
     tone.color_ramp.elements[1].color = (1.15, 1.1, 1.0, 1)
     nt.links.new(noise.outputs["Fac"], tone.inputs["Fac"])
@@ -188,7 +188,7 @@ def bread_material():
     nt.links.new(mp.outputs["Vector"], grad.inputs["Vector"])
     edge = nt.nodes.new("ShaderNodeValToRGB")
     edge.color_ramp.elements[0].position = 0.0
-    edge.color_ramp.elements[0].color = (0.48, 0.24, 0.08, 1)
+    edge.color_ramp.elements[0].color = (0.80, 0.52, 0.26, 1)
     edge.color_ramp.elements[1].position = 0.22
     edge.color_ramp.elements[1].color = (1, 1, 1, 1)
     nt.links.new(grad.outputs["Fac"], edge.inputs["Fac"])

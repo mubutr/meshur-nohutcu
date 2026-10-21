@@ -9,6 +9,7 @@ import 'leaderboard_overlay.dart';
 import 'mode_overlays.dart';
 import 'overlays.dart';
 import 'recipe_book.dart';
+import 'tutorial_overlay.dart';
 import 'widgets.dart';
 
 const double kW = 1600, kH = 900;
@@ -62,7 +63,6 @@ class _Scene extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final a = game.assembly;
     final playing = game.phase == Phase.playing && !game.paused;
     final theme = game.theme;
     final p = game.selectedProduct;
@@ -93,7 +93,7 @@ class _Scene extends StatelessWidget {
 
                 // müşteriler (paket servis paneli açıkken biraz sola kayar)
                 for (var i = 0; i < game.slotCount; i++)
-                  if (game.slots[i] != null) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: a.wrapped && playing),
+                  if (game.slots[i] != null) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: game.anyBoardWrapped && playing),
 
                 Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/tezgah_$theme.png', fit: BoxFit.fill))),
                 for (final d in front) Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/decor_${d.id}.png', fit: BoxFit.fill))),
@@ -117,19 +117,36 @@ class _Scene extends StatelessWidget {
 
           // çalışma tezgâhı (mekân temasına göre malzeme)
           Positioned(left: 0, right: 0, top: 676, bottom: 0, child: WoodPanel(theme: theme)),
-          const Positioned(left: 520, top: 706, child: RoleChip(text: 'ÇIRAK · SEN')),
+          const Positioned(left: 20, top: 634, child: RoleChip(text: 'ÇIRAK · SEN')),
 
           // taban (ekmek / kâse) ve ana malzeme
-          Station(left: 20, top: 668, width: 230, asset: p.bowl ? 'kase_yigin' : 'ekmek_yigin', label: p.bowl ? 'Kâse' : 'Tırnaklı ekmek', onTap: game.tapBread),
+          Station(
+            left: 20,
+            top: 668,
+            width: 230,
+            asset: p.bowl ? 'kase_yigin' : 'ekmek_yigin',
+            label: p.bowl ? 'Kâse' : 'Tırnaklı ekmek',
+            onTap: game.tapBread,
+            drag: IngredientDrag(Ingredient.bread, p.bowl ? 'kase_yigin' : 'ekmek'),
+            steam: p.bowl ? null : SteamAnim(width: 120, height: 90, animate: animations, puffs: 3),
+          ),
           _ProductSwitcher(game: game),
-          Station(left: 272, top: 678, width: 190, asset: _mainAsset(p.id), label: OrderIcons.cap(p.fillName), onTap: game.tapMain),
-          if (p.id == 'nohut') Positioned(left: 318, top: 590, child: SteamAnim(width: 100, height: 120, animate: animations)),
+          Station(
+            left: 272,
+            top: 678,
+            width: 190,
+            asset: _mainAsset(p.id),
+            label: OrderIcons.cap(p.fillName),
+            onTap: game.tapMain,
+            drag: IngredientDrag(Ingredient.main, _mainAsset(p.id)),
+            steam: SteamAnim(width: 110, height: 110, animate: animations),
+          ),
 
           // ekler (piyaz, acı, kızartma, sumak)
-          Station(left: 1010, top: 706, width: 140, asset: 'piyaz_kase', label: 'Piyaz', onTap: game.tapPiyaz, locked: !p.allows('piyaz'), lockedText: ''),
-          Station(left: 1150, top: 706, width: 140, asset: 'aci_kase', label: 'Acı', onTap: game.tapAci),
-          Station(left: 1290, top: 706, width: 140, asset: 'kizartma_kase', label: 'Kızartma', onTap: game.tapFried, locked: !game.friedUnlocked || !p.allows('fried'), lockedText: game.friedUnlocked ? '' : 'Bölüm 2'),
-          Station(left: 1430, top: 706, width: 140, asset: 'sumak_kase', label: 'Sumak', onTap: game.tapSumak, locked: !game.sumakUnlocked || !p.allows('sumak'), lockedText: game.sumakUnlocked ? '' : 'Bölüm 2'),
+          Station(left: 1010, top: 706, width: 140, asset: 'piyaz_kase', label: 'Piyaz', onTap: game.tapPiyaz, locked: !p.allows('piyaz'), lockedText: '', drag: const IngredientDrag(Ingredient.piyaz, 'piyaz_kase')),
+          Station(left: 1150, top: 706, width: 140, asset: 'aci_kase', label: 'Acı', onTap: game.tapAci, drag: const IngredientDrag(Ingredient.aci, 'aci_kase')),
+          Station(left: 1290, top: 706, width: 140, asset: 'kizartma_kase', label: 'Kızartma', onTap: game.tapFried, locked: !game.friedUnlocked || !p.allows('fried'), lockedText: game.friedUnlocked ? '' : 'Bölüm 2', drag: const IngredientDrag(Ingredient.fried, 'kizartma_kase'), steam: SteamAnim(width: 90, height: 70, animate: animations, puffs: 3)),
+          Station(left: 1430, top: 706, width: 140, asset: 'sumak_kase', label: 'Sumak', onTap: game.tapSumak, locked: !game.sumakUnlocked || !p.allows('sumak'), lockedText: game.sumakUnlocked ? '' : 'Bölüm 2', drag: const IngredientDrag(Ingredient.sumak, 'sumak_kase')),
 
           // sos rafı (Bölüm 2+): tezgâhın üstünde şişeler
           if (game.chapter >= 2)
@@ -141,6 +158,7 @@ class _Scene extends StatelessWidget {
                 asset: _sauceAssets.values.elementAt(i),
                 label: game.cfg.sauce(_sauceAssets.keys.elementAt(i)).name,
                 onTap: () => game.tapSauce(_sauceAssets.keys.elementAt(i)),
+                drag: IngredientDrag(Ingredient.sauce, _sauceAssets.values.elementAt(i), sauce: _sauceAssets.keys.elementAt(i)),
                 locked: !allowSauce || !game.sauces.any((s) => s.id == _sauceAssets.keys.elementAt(i)),
                 lockedText: game.sauces.any((s) => s.id == _sauceAssets.keys.elementAt(i)) ? '' : 'Bölüm 3',
               ),
@@ -148,16 +166,8 @@ class _Scene extends StatelessWidget {
           // bahşiş kavanozu
           Positioned(left: 1470, top: 470, child: TipJarView(game: game)),
 
-          // tahta: taban + katmanlar + bitmiş dürüm
-          Positioned(left: 560, top: 540, width: 400, height: 400, child: IgnorePointer(child: _Board(game: game, animations: animations))),
-
-          // butonlar (tahtanın altında yan yana)
-          Positioned(left: 560, top: 826, child: WoodButton(label: 'Çöpe at', icon: Icons.delete_outline, onTap: game.trash, enabled: !a.isEmpty && playing)),
-          Positioned(
-            left: 770,
-            top: 812,
-            child: WoodButton(label: p.bowl ? 'SERVİS ET' : 'SAR', icon: Icons.restaurant, onTap: game.wrap, enabled: a.bread && !a.wrapped && playing, big: true, color: const Color(0xFF2E7D5B)),
-          ),
+          // üç hazırlık tezgâhı: malzemeleri sürükle ya da dokun; hazır dürümü müşteriye sürükle
+          for (var i = 0; i < GameController.boardCount; i++) BoardSlot(game: game, index: i, left: 500.0 + i * 172, top: 684, animations: animations, playing: playing),
 
           // ipucu
           if (game.hint.isNotEmpty && playing) Positioned(left: 560, width: 480, top: 636, child: Center(child: HintChip(text: game.hint))),
@@ -173,6 +183,7 @@ class _Scene extends StatelessWidget {
           // faz kaplamaları
           if (game.phase == Phase.title) TitleOverlay(game: game),
           if (game.phase == Phase.dayEnd) DayEndOverlay(game: game),
+          if (game.phase == Phase.gameOver) GameOverOverlay(game: game),
           if (game.phase == Phase.shop) ShopOverlay(game: game),
           if (game.phase == Phase.garden) GardenOverlay(game: game),
           if (game.phase == Phase.detective && game.caseState != null) DetectiveOverlay(game: game),
@@ -182,6 +193,7 @@ class _Scene extends StatelessWidget {
           if (game.settingsOpen) SettingsOverlay(game: game),
           if (game.adMenuOpen) AdMenuOverlay(game: game),
           if (game.sceneLines != null) SceneOverlay(game: game),
+          if (game.tutorialActive) TutorialOverlay(game: game),
           if (game.adKind != null) AdWatchOverlay(game: game),
           if (game.introActive) IntroOverlay(game: game, animate: animations),
         ]);
@@ -198,7 +210,7 @@ class _ProductSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final multi = game.products.length > 1;
-    final can = multi && game.assembly.isEmpty && !game.assembly.wrapped;
+    final can = multi && game.anyBoardEmpty;
     Widget arrow(IconData i, int dir) => GestureDetector(
           key: ValueKey('wrap-${dir > 0 ? 'next' : 'prev'}'),
           onTap: can ? () => game.cycleWrap(dir) : null,
@@ -232,54 +244,132 @@ class _ProductSwitcher extends StatelessWidget {
   }
 }
 
-class _Board extends StatelessWidget {
-  const _Board({required this.game, required this.animations});
+/// Tek bir hazırlık tezgâhı: malzeme bırakılan hedef + hazır olunca müşteriye sürüklenen dürüm.
+class BoardSlot extends StatelessWidget {
+  const BoardSlot({super.key, required this.game, required this.index, required this.left, required this.top, required this.animations, required this.playing});
   final GameController game;
+  final int index;
+  final double left, top;
   final bool animations;
+  final bool playing;
 
   static String _top(String wrap, int n) => wrap == 'nohut' ? 'top_nohut_${n.clamp(1, 3)}' : 'top_${wrap}_${n.clamp(1, 2)}';
+  static String finishedAsset(Assembly a) => a.wrap == 'nohut' ? 'durum' : 'durum_${a.wrap}';
 
   @override
   Widget build(BuildContext context) {
-    final a = game.assembly;
+    final a = game.boards[index];
+    final active = game.activeBoard == index;
     final bowl = game.cfg.product(a.bread ? a.wrap : game.selectedWrap).bowl;
+    Widget content;
     if (!a.bread) {
-      return Center(
+      content = Center(
         child: Container(
-          width: 340,
-          height: 150,
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(80),
-            border: Border.all(color: Colors.white38, width: 3),
-            color: Colors.black12,
-          ),
-          child: Center(child: Text(bowl ? 'kâse' : 'ekmek', style: const TextStyle(color: Colors.white38, fontSize: 24, fontWeight: FontWeight.w700))),
+          width: 150,
+          height: 80,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(60), border: Border.all(color: Colors.white38, width: 2.5), color: Colors.black12),
+          child: Center(child: Text(bowl ? 'kâse' : 'ekmek', style: const TextStyle(color: Colors.white38, fontSize: 20, fontWeight: FontWeight.w700))),
         ),
       );
-    }
-    if (bowl) {
-      return Stack(alignment: Alignment.center, children: [
+    } else if (bowl) {
+      content = Stack(alignment: Alignment.center, children: [
         Image.asset('assets/sprites/beyran_tabla.png', fit: BoxFit.contain),
-        if (a.aci) const Positioned(top: 40, child: _Tag('+ acı yağı')),
-        if (a.wrapped) Positioned(top: 70, child: SteamAnim(width: 200, height: 120, animate: animations)),
+        if (a.aci) const Positioned(top: 4, child: _Tag('+ acı yağı')),
+        if (a.wrapped) Positioned(top: -30, child: SteamAnim(width: 120, height: 80, animate: animations, puffs: 3)),
+      ]);
+    } else if (a.wrapped) {
+      content = Stack(alignment: Alignment.center, clipBehavior: Clip.none, children: [
+        Image.asset('assets/sprites/${finishedAsset(a)}.png', width: 170),
+        Positioned(top: -34, child: SteamAnim(width: 110, height: 80, animate: animations, puffs: 3)),
+      ]);
+    } else {
+      content = Stack(fit: StackFit.expand, clipBehavior: Clip.none, children: [
+        Image.asset('assets/sprites/ekmek.png', fit: BoxFit.contain),
+        if (a.nohut > 0) Image.asset('assets/sprites/${_top(a.wrap, a.nohut)}.png', fit: BoxFit.contain),
+        if (a.piyaz) Image.asset('assets/sprites/top_piyaz.png', fit: BoxFit.contain),
+        if (a.fried) Image.asset('assets/sprites/top_fried.png', fit: BoxFit.contain),
+        if (a.aci) Image.asset('assets/sprites/top_aci.png', fit: BoxFit.contain),
+        if (a.sumak) Image.asset('assets/sprites/top_sumak.png', fit: BoxFit.contain),
+        for (final id in kSauceIds)
+          if (a.sauces.contains(id)) Image.asset('assets/sprites/top_$id.png', fit: BoxFit.contain),
+        Positioned(top: -30, left: 0, right: 0, child: Center(child: SteamAnim(width: 110, height: 80, animate: animations, puffs: 3))),
       ]);
     }
+    // hazır dürüm sürüklenebilir
     if (a.wrapped) {
-      final asset = a.wrap == 'nohut' ? 'durum' : 'durum_${a.wrap}';
-      return Center(child: Image.asset('assets/sprites/$asset.png', width: 400));
+      final asset = bowl ? 'beyran_kase' : finishedAsset(a);
+      content = Draggable<BoardDrag>(
+        data: BoardDrag(index, asset),
+        dragAnchorStrategy: pointerDragAnchorStrategy,
+        feedback: IgnorePointer(child: Transform.translate(offset: const Offset(-80, -60), child: Image.asset('assets/sprites/$asset.png', width: 160))),
+        childWhenDragging: Opacity(opacity: 0.3, child: content),
+        // saydam piksellerde de tutulabilsin diye saydam ama dokunmaya duyarlı zemin
+        child: SizedBox(width: 156, height: 142, child: ColoredBox(color: Colors.transparent, child: Center(child: content))),
+      );
     }
-    return Stack(fit: StackFit.expand, children: [
-      Image.asset('assets/sprites/ekmek.png', fit: BoxFit.contain),
-      if (a.nohut > 0) Image.asset('assets/sprites/${_top(a.wrap, a.nohut)}.png', fit: BoxFit.contain),
-      if (a.piyaz) Image.asset('assets/sprites/top_piyaz.png', fit: BoxFit.contain),
-      if (a.fried) Image.asset('assets/sprites/top_fried.png', fit: BoxFit.contain),
-      if (a.aci) Image.asset('assets/sprites/top_aci.png', fit: BoxFit.contain),
-      if (a.sumak) Image.asset('assets/sprites/top_sumak.png', fit: BoxFit.contain),
-      for (final id in kSauceIds)
-        if (a.sauces.contains(id)) Image.asset('assets/sprites/top_$id.png', fit: BoxFit.contain),
-    ]);
+    return Positioned(
+      left: left,
+      top: top,
+      width: 164,
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        DragTarget<IngredientDrag>(
+          key: ValueKey('board-$index'),
+          onWillAcceptWithDetails: (d) => playing && !a.wrapped,
+          onAcceptWithDetails: (d) => game.addIngredient(d.data.kind, board: index, sauceId: d.data.sauce),
+          builder: (context, candidates, _) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => game.selectBoard(index),
+            child: Container(
+              width: 164,
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22),
+                color: candidates.isNotEmpty ? const Color(0x5539B54A) : Colors.black.withValues(alpha: 0.12),
+                border: Border.all(color: candidates.isNotEmpty ? const Color(0xFF7CE08A) : (active ? const Color(0xFFFFD27A) : Colors.white24), width: candidates.isNotEmpty || active ? 3.5 : 2),
+              ),
+              child: Stack(clipBehavior: Clip.none, children: [
+                Positioned.fill(child: Padding(padding: const EdgeInsets.all(4), child: content)),
+                Positioned(left: 8, top: 4, child: Text('${index + 1}', style: const TextStyle(color: Colors.white70, fontSize: 18, fontWeight: FontWeight.w900))),
+              ]),
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        SizedBox(
+          height: 38,
+          width: 164,
+          child: FittedBox(fit: BoxFit.scaleDown, child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            if (a.bread && !a.wrapped)
+              _MiniButton(key: ValueKey('wrap-$index'), label: bowl ? 'SERVİS ET' : 'SAR', color: const Color(0xFF2E7D5B), onTap: () => game.wrap(board: index)),
+            if (a.bread) ...[
+              const SizedBox(width: 8),
+              _MiniButton(key: ValueKey('trash-$index'), icon: Icons.delete_outline, color: const Color(0xFF9A3D2B), onTap: () => game.trash(board: index)),
+            ],
+          ])),
+        ),
+      ]),
+    );
   }
+}
+
+class _MiniButton extends StatelessWidget {
+  const _MiniButton({super.key, this.label, this.icon, required this.color, required this.onTap});
+  final String? label;
+  final IconData? icon;
+  final Color color;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: label != null ? 14 : 10, vertical: 5),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(22), border: Border.all(color: Colors.white, width: 2.5), boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 5, offset: Offset(0, 2))]),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            if (icon != null) Icon(icon, color: Colors.white, size: 22),
+            if (label != null) Text(label!, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: 1)),
+          ]),
+        ),
+      );
 }
 
 class _Tag extends StatelessWidget {
@@ -377,10 +467,16 @@ class _CustomerView extends StatelessWidget {
       top: 40,
       width: 300,
       height: 610,
-      child: GestureDetector(
+      child: DragTarget<BoardDrag>(
+        key: ValueKey('customer-$slot'),
+        onWillAcceptWithDetails: (d) => serveReady && c.state == CustomerState.waiting && !c.isCourier,
+        onAcceptWithDetails: (d) => game.tapCustomer(slot, board: d.data.board),
+        builder: (context, candidates, _) => GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => game.tapCustomer(slot),
         child: Stack(clipBehavior: Clip.none, children: [
+          if (candidates.isNotEmpty)
+            Positioned(left: -40, right: -40, top: 230, bottom: 24, child: IgnorePointer(child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(40), border: Border.all(color: const Color(0xFF7CE08A), width: 5), color: const Color(0x2239B54A))))),
           // tam boy sprite: ayaklar tezgâhın arkasında kalır
           Positioned(
             left: -52,
@@ -440,6 +536,7 @@ class _CustomerView extends StatelessWidget {
           if (c.state == CustomerState.waiting) Positioned(left: 70, right: 70, top: 545, child: PatienceBar(fraction: frac)),
           if (c.state == CustomerState.reacting && c.gain != 0) Positioned(left: 0, right: 0, top: 190, child: Center(child: GainChip(amount: c.gain))),
         ]),
+      ),
       ),
     );
   }

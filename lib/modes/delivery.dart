@@ -49,6 +49,34 @@ class DeliveryState {
 
   int get boxedCount => orders.where((o) => o.isBoxed).length;
 
+  Map<String, dynamic> toJson() => {
+        'sp': spawnTimer,
+        'cl': courierLeft,
+        'ch': courierHere,
+        'cm': courierMisses,
+        'id': _nextId,
+        'o': [
+          for (final o in orders) {'i': o.id, 's': o.spec.toJson(), 'd': o.deadline, 'l': o.left, 'b': o.boxed?.toJson(), 'a': o.boxedAge}
+        ],
+      };
+
+  void fromJson(Map<String, dynamic> j) {
+    spawnTimer = (j['sp'] as num).toDouble();
+    courierLeft = (j['cl'] as num).toDouble();
+    courierHere = (j['ch'] as bool?) ?? false;
+    courierMisses = (j['cm'] as int?) ?? 0;
+    _nextId = (j['id'] as int?) ?? 1;
+    orders
+      ..clear()
+      ..addAll([
+        for (final m in (j['o'] as List).cast<Map<String, dynamic>>())
+          DeliveryOrder(id: m['i'] as int, spec: OrderSpec.fromJson(m['s'] as Map<String, dynamic>), deadline: (m['d'] as num).toDouble())
+            ..left = (m['l'] as num).toDouble()
+            ..boxed = m['b'] == null ? null : Assembly.fromJson(m['b'] as Map<String, dynamic>)
+            ..boxedAge = (m['a'] as num).toDouble()
+      ]);
+  }
+
   void reset(int dagitimLevel) {
     orders.clear();
     spawnTimer = 10;

@@ -17,7 +17,7 @@ void main() {
   testWidgets('başlık ekranı açılır', (t) async {
     final g = makeGame();
     await pumpGame(t, g);
-    expect(find.textContaining('Güzel Nohut Dürümü'), findsOneWidget);
+    expect(find.textContaining('Nohutçu'), findsOneWidget);
     expect(find.text('BAŞLA'), findsOneWidget);
     g.dispose();
   });

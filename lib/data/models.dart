@@ -31,6 +31,17 @@ class OrderSpec {
   int get amount => nohut;
   Set<String> get allSauces => {...sauces, if (sumak) 'sumak'};
 
+  Map<String, dynamic> toJson() => {'w': wrap, 'n': nohut, 'p': piyaz, 'a': aci, 's': sumak, 'f': fried, 'x': sauces.toList()};
+  factory OrderSpec.fromJson(Map<String, dynamic> j) => OrderSpec(
+        wrap: (j['w'] as String?) ?? kDefaultWrap,
+        nohut: j['n'] as int,
+        piyaz: j['p'] as bool,
+        aci: j['a'] as bool,
+        sumak: (j['s'] as bool?) ?? false,
+        fried: (j['f'] as bool?) ?? false,
+        sauces: {...((j['x'] as List?) ?? const []).cast<String>()},
+      );
+
   @override
   String toString() => 'OrderSpec($wrap x$nohut, piyaz: $piyaz, aci: $aci, sumak: $sumak, fried: $fried, sauces: $sauces)';
 }
@@ -88,6 +99,19 @@ class Assembly {
     ..wrapped = true;
 
   bool get isEmpty => !bread;
+
+  Map<String, dynamic> toJson() => {'w': wrap, 'b': bread, 'n': nohut, 'p': piyaz, 'a': aci, 's': sumak, 'f': fried, 'x': sauces.toList(), 'r': wrapped, 'c': spent};
+  factory Assembly.fromJson(Map<String, dynamic> j) => Assembly()
+    ..wrap = (j['w'] as String?) ?? kDefaultWrap
+    ..bread = (j['b'] as bool?) ?? false
+    ..nohut = (j['n'] as int?) ?? 0
+    ..piyaz = (j['p'] as bool?) ?? false
+    ..aci = (j['a'] as bool?) ?? false
+    ..sumak = (j['s'] as bool?) ?? false
+    ..fried = (j['f'] as bool?) ?? false
+    ..sauces.addAll(((j['x'] as List?) ?? const []).cast<String>())
+    ..wrapped = (j['r'] as bool?) ?? false
+    ..spent = (j['c'] as int?) ?? 0;
 }
 
 /// Satılan ürün (game.json "products"); tarif defteri ve sipariş üretimi aynı kaynağı kullanır.

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meşhur Nohutçu · Yönetim (TEST)</title>
+<style>
+  :root { --bg:#fff7e2; --ink:#3a200e; --wood:#5b3419; --ok:#2e7d5b; --bad:#9a3d2b; --line:#d9a25f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1e140b; --ink:#f4e6cf; --wood:#e0b27a; --line:#6b4a2a; } }
+  body { margin:0; font:15px system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:14px 18px; border-bottom:3px solid var(--wood); }
+  h1 { margin:0; font-size:20px; color:var(--wood); }
+  .warn { background:#ffe1a8; color:#5a3a00; padding:6px 10px; border-radius:8px; font-size:13px; }
+  main { padding:14px 18px; overflow-x:auto; }
+  table { border-collapse:collapse; min-width:900px; width:100%; }
+  th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:middle; }
+  th { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--wood); }
+  input[type=number], input[type=text] { width:92px; padding:5px 6px; border:1px solid var(--line); border-radius:6px; background:transparent; color:inherit; font:inherit; }
+  input.name { width:130px; }
+  button { padding:6px 12px; border:0; border-radius:8px; background:var(--ok); color:#fff; font-weight:700; cursor:pointer; }
+  button.del { background:var(--bad); }
+  button:disabled { opacity:.5; }
+  .dim { color:#8a7a68; font-size:12px; }
+  .pending { color:#c27a00; font-weight:700; }
+  #status { font-size:13px; margin-left:auto; }
+  .row-changed input { border-color:#e0861a; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Meşhur Nohutçu · Yönetim</h1>
+  <span class="warn">Test sayfası: oyuncunun para, elmas, gün ve skorunu değiştirir. Oyun birkaç saniye içinde alır. Canlıya geçince kapatılacak.</span>
+  <label>Anahtar <input id="token" type="text" placeholder="ADMIN_TOKEN" style="width:150px"></label>
+  <span id="status" class="dim">…</span>
+</header>
+<main>
+  <table>
+    <thead>
+      <tr><th>Oyuncu</th><th>Gün</th><th>Bölüm</th><th>Para ₺</th><th>Elmas</th><th>Skor (tüm zamanlar)</th><th>Hafta</th><th>Son görülme</th><th></th></tr>
+    </thead>
+    <tbody id="rows"><tr><td colspan="9" class="dim">Yükleniyor…</td></tr></tbody>
+  </table>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const tokenEl = $('#token');
+try { tokenEl.value = localStorage.getItem('adminToken') || ''; } catch (_) {}
+tokenEl.addEventListener('change', () => { try { localStorage.setItem('adminToken', tokenEl.value.trim()); } catch (_) {} load(true); });
+
+const dirty = new Set(); // düzenlenen satırlar otomatik yenilemede ezilmesin
+let data = [];
+
+async function api(path, body) {
+  const r = await fetch(path, {
+    method: body === undefined ? 'GET' : 'POST',
+    headers: { 'x-admin-token': tokenEl.value.trim(), 'content-type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.reason || r.status);
+  return j;
+}
+
+function ago(ms) {
+  if (!ms) return '—';
+  const s = Math.max(0, Math.round((Date.now() - ms) / 1000));
+  return s < 60 ? `${s} sn önce` : s < 3600 ? `${Math.round(s / 60)} dk önce` : `${Math.round(s / 3600)} sa önce`;
+}
+
+function render() {
+  const tb = $('#rows');
+  if (!data.length) { tb.innerHTML = '<tr><td colspan="9" class="dim">Henüz oyuncu yok. Oyunu sunucu adresiyle açıp bir süre bekleyin.</td></tr>'; return; }
+  tb.innerHTML = '';
+  for (const p of data) {
+    const tr = document.createElement('tr');
+    tr.dataset.id = p.device;
+    if (dirty.has(p.device)) tr.className = 'row-changed';
+    const num = (k, v) => `<input type="number" min="0" data-k="${k}" value="${v ?? ''}">`;
+    tr.innerHTML = `
+      <td><input class="name" type="text" data-k="name" value="${(p.name || '').replace(/"/g, '&quot;')}"><div class="dim">${p.device.slice(0, 8)}…${p.pending ? ' <span class="pending">· bekliyor</span>' : ''}</div></td>
+      <td>${num('day', p.day)}</td><td class="dim">${p.chapter ?? '—'}</td>
+      <td>${num('money', p.money)}</td><td>${num('diamonds', p.diamonds)}</td>
+      <td>${num('scoreAll', p.scoreAll)}</td><td class="dim">${p.scoreWeek}</td>
+      <td class="dim">${ago(p.seen)}</td>
+      <td><button data-act="save">Kaydet</button> <button class="del" data-act="del">Sil</button></td>`;
+    tb.appendChild(tr);
+  }
+}
+
+$('#rows').addEventListener('input', (e) => {
+  const tr = e.target.closest('tr');
+  if (tr) { dirty.add(tr.dataset.id); tr.className = 'row-changed'; }
+});
+$('#rows').addEventListener('click', async (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const tr = b.closest('tr');
+  const id = tr.dataset.id;
+  try {
+    if (b.dataset.act === 'del') {
+      if (!confirm('Bu oyuncu sıralamadan silinsin mi?')) return;
+      await api(`/admin/api/players/${id}/delete`, {});
+    } else {
+      const body = {};
+      for (const i of tr.querySelectorAll('input')) {
+        const k = i.dataset.k;
+        body[k] = k === 'name' ? i.value : (i.value === '' ? undefined : Number(i.value));
+      }
+      await api(`/admin/api/players/${id}`, body);
+    }
+    dirty.delete(id);
+    $('#status').textContent = 'Kaydedildi ✓';
+    await load(true);
+  } catch (err) {
+    $('#status').textContent = 'Hata: ' + err.message;
+  }
+});
+
+async function load(force) {
+  try {
+    const j = await api('/admin/api/players');
+    data = j.players;
+    if (force || dirty.size === 0) render();
+    $('#status').textContent = 'Canlı · ' + new Date().toLocaleTimeString('tr-TR');
+  } catch (err) {
+    $('#status').textContent = err.message === 'yetkisiz' ? 'Anahtarı girin' : 'Hata: ' + err.message;
+  }
+}
+load(true);
+setInterval(() => load(false), 3000);
+</script>
+</body>
+</html>

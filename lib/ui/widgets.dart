@@ -211,14 +211,32 @@ class _GrainPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
-/// Dokununca hafifçe büyüyüp küçülen malzeme istasyonu.
+/// Sürüklenen malzeme: istasyondan bir tezgâha bırakılır.
+class IngredientDrag {
+  const IngredientDrag(this.kind, this.asset, {this.sauce});
+  final Ingredient kind;
+  final String asset; // sürüklerken parmağın altında görünen sprite
+  final String? sauce;
+}
+
+/// Hazır dürümü bir müşteriye ya da paket siparişine sürüklemek için.
+class BoardDrag {
+  const BoardDrag(this.board, this.asset);
+  final int board;
+  final String asset;
+}
+
+/// Dokununca hafifçe büyüyüp küçülen, sürüklenebilen malzeme istasyonu.
 class Station extends StatefulWidget {
-  const Station({super.key, required this.left, required this.top, required this.width, required this.asset, required this.label, required this.onTap, this.locked = false, this.lockedText = ''});
+  const Station({super.key, required this.left, required this.top, required this.width, required this.asset, required this.label, required this.onTap, this.locked = false, this.lockedText = '', this.drag, this.steam});
   final double left, top, width;
   final String asset, label;
   final VoidCallback onTap;
   final bool locked; // kilitliyse soluk görünür, dokunulmaz
   final String lockedText;
+  final IngredientDrag? drag;
+  final Widget? steam; // sıcak yemekler için üstünden yükselen buhar
+
   @override
   State<Station> createState() => _StationState();
 }
@@ -227,6 +245,35 @@ class _StationState extends State<Station> {
   bool _down = false;
   @override
   Widget build(BuildContext context) {
+    Widget core = AnimatedScale(
+      scale: _down && !widget.locked ? 0.93 : 1.0,
+      duration: const Duration(milliseconds: 90),
+      child: Opacity(
+        opacity: widget.locked ? 0.35 : 1,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Stack(alignment: Alignment.center, clipBehavior: Clip.none, children: [
+            Image.asset('assets/sprites/${widget.asset}.png', width: widget.width, fit: BoxFit.contain),
+            if (widget.steam != null && !widget.locked) Positioned(top: -widget.width * 0.42, child: widget.steam!),
+            if (widget.locked) const Icon(Icons.lock, color: Colors.white, size: 44),
+          ]),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+            decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(12)),
+            child: Text(widget.locked && widget.lockedText.isNotEmpty ? widget.lockedText : widget.label, style: const TextStyle(color: kCream, fontSize: 17, fontWeight: FontWeight.w800)),
+          ),
+        ]),
+      ),
+    );
+    final d = widget.drag;
+    if (d != null && !widget.locked) {
+      core = Draggable<IngredientDrag>(
+        data: d,
+        dragAnchorStrategy: pointerDragAnchorStrategy,
+        feedback: IgnorePointer(child: Transform.translate(offset: const Offset(-55, -55), child: Image.asset('assets/sprites/${d.asset}.png', width: 110))),
+        childWhenDragging: Opacity(opacity: 0.45, child: core),
+        child: core,
+      );
+    }
     return Positioned(
       left: widget.left,
       top: widget.top,
@@ -237,24 +284,7 @@ class _StationState extends State<Station> {
         onTapCancel: () => setState(() => _down = false),
         onTapUp: (_) => setState(() => _down = false),
         onTap: widget.locked ? null : widget.onTap,
-        child: AnimatedScale(
-          scale: _down && !widget.locked ? 0.93 : 1.0,
-          duration: const Duration(milliseconds: 90),
-          child: Opacity(
-            opacity: widget.locked ? 0.35 : 1,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Stack(alignment: Alignment.center, children: [
-                Image.asset('assets/sprites/${widget.asset}.png', width: widget.width, fit: BoxFit.contain),
-                if (widget.locked) const Icon(Icons.lock, color: Colors.white, size: 44),
-              ]),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(12)),
-                child: Text(widget.locked && widget.lockedText.isNotEmpty ? widget.lockedText : widget.label, style: const TextStyle(color: kCream, fontSize: 17, fontWeight: FontWeight.w800)),
-              ),
-            ]),
-          ),
-        ),
+        child: core,
       ),
     );
   }
@@ -286,7 +316,7 @@ class WoodButton extends StatelessWidget {
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (icon != null) Icon(icon, color: Colors.white, size: big ? 32 : 22),
             if (icon != null) const SizedBox(width: 8),
-            Text(label, style: TextStyle(color: Colors.white, fontSize: big ? 30 : 19, fontWeight: FontWeight.w900, letterSpacing: 1)),
+            Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(label, style: TextStyle(color: Colors.white, fontSize: big ? 30 : 19, fontWeight: FontWeight.w900, letterSpacing: 1)))),
           ]),
         ),
       ),
@@ -341,6 +371,10 @@ class Hud extends StatelessWidget {
       Pill(text: '${game.diamonds}', icon: Icons.diamond, iconColor: kDiamond, small: true),
       const SizedBox(width: 8),
       Pill(text: 'Bölüm ${game.chapter}', icon: Icons.menu_book, small: true),
+      if (game.gameOverEnabled) ...[
+        const SizedBox(width: 8),
+        Pill(text: '${game.lives}/${game.maxLives}', icon: Icons.favorite, iconColor: game.lives <= 1 ? const Color(0xFFFF6B5E) : const Color(0xFFFF8A80), small: true),
+      ],
     ]);
   }
 }

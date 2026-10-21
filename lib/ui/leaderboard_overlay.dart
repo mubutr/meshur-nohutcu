@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../leaderboard/leaderboard.dart';
@@ -15,8 +17,18 @@ class _LeaderboardOverlayState extends State<LeaderboardOverlay> {
   bool _editing = false;
   late final TextEditingController _name = TextEditingController(text: widget.manager.name);
 
+  Timer? _auto;
+
+  @override
+  void initState() {
+    super.initState();
+    // sunucudaki değişiklikler (başka oyuncular, yönetim sayfası) açıkken canlı görünsün
+    if (widget.manager.hasRemote) _auto = Timer.periodic(const Duration(seconds: 3), (_) => widget.manager.refresh(silent: true));
+  }
+
   @override
   void dispose() {
+    _auto?.cancel();
     _name.dispose();
     super.dispose();
   }

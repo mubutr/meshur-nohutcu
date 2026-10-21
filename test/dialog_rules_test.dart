@@ -211,7 +211,7 @@ void main() {
       g.dispose();
     });
 
-    test('hitaplar: yaşlı erkek ammi, kadın bacı, genç erkek Rafık; 10 kadın + 10 erkek, her biri tek ve benzersiz ad', () {
+    test('hitaplar: yaşlı erkek ammi, yaşlı kadın deze, genç kadın bacı, genç erkek Rafık; 10 kadın + 10 erkek, her biri tek ve benzersiz ad', () {
       final cfg = loadCfg();
       expect(cfg.customers.where((t) => t.gender == 'kadin'), hasLength(10));
       expect(cfg.customers.where((t) => t.gender == 'erkek'), hasLength(10));
@@ -220,7 +220,10 @@ void main() {
         expect(t.names, hasLength(1), reason: t.id);
         final n = t.names.single;
         expect(names.add(n.n), isTrue, reason: 'ad tekrarı: ${n.n}');
-        if (t.gender == 'kadin') {
+        if (t.gender == 'kadin' && t.age == 'yasli') {
+          expect(n.ref, endsWith('deze'), reason: 'Antep ağzı: teyze = deze');
+          expect(n.dat, endsWith('dezeye'));
+        } else if (t.gender == 'kadin') {
           expect(n.ref, endsWith('bacı'));
           expect(n.dat, endsWith('bacıya'));
         } else if (t.age == 'yasli') {
@@ -232,7 +235,7 @@ void main() {
       }
       // kullanıcının verdiği listeden
       const women = {'Fatma', 'Emine', 'Hattuç', 'Hayce', 'Zennup', 'Ayyuş', 'Şehriban', 'Yumma', 'Şakire', 'Lütfiye'};
-      const men = {'Maamed', 'Mustafa', 'Ahmet', 'Ali', 'Hüseyin', 'Ökkeş', 'Mehmet Ali', 'Höggeş', 'Memik', 'Cımaali'};
+      const men = {'Maamed', 'Mustafa', 'Ahmet', 'Ali', 'Hösün', 'Ökkeş', 'Mehmet Ali', 'Höggeş', 'Memik', 'Cımaali'};
       expect(cfg.customers.where((t) => t.gender == 'kadin').map((t) => t.names.single.n).toSet(), women);
       expect(cfg.customers.where((t) => t.gender == 'erkek').map((t) => t.names.single.n).toSet(), men);
     });

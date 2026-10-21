@@ -2,7 +2,7 @@
   "name": "nohut-siralama",
   "version": "1.0.0",
   "private": true,
-  "description": "İyi Nohut Dürümü, Güzel Nohut Dürümü için bağımlılıksız sıralama sunucusu",
+  "description": "Meşhur Nohutçu için bağımlılıksız sıralama sunucusu",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

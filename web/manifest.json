@@ -1,6 +1,6 @@
 {
-    "name": "nohut_durumu",
-    "short_name": "nohut_durumu",
+    "name": "Meşhur Nohutçu",
+    "short_name": "Nohutçu",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -58,6 +58,7 @@ e.update({
     "adSeconds": 5,
     "streakDays": 3,           # ardışık günlük görev günü
     "streakDiamonds": 2,
+    "lives": 5,                # günlük müşteri kaçırma hakkı (bitince oyun kaybedilir; reklamla devam)
     "introSeconds": 3.7,      # "Ya Fettah, Ya Rezzak" kepenk açılışı (ses 3.26 sn + payı)
     "courierWait": 12,         # kurye dokunulmazsa gitmeden önce bekleme (sn)
 })

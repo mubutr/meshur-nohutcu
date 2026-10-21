@@ -11,8 +11,8 @@
    "names": [
     {
      "n": "Fatma",
-     "ref": "Fatma bacı",
-     "dat": "Fatma bacıya"
+     "ref": "Fatma deze",
+     "dat": "Fatma dezeye"
     }
    ]
   },
@@ -27,8 +27,8 @@
    "names": [
     {
      "n": "Hattuç",
-     "ref": "Hattuç bacı",
-     "dat": "Hattuç bacıya"
+     "ref": "Hattuç deze",
+     "dat": "Hattuç dezeye"
     }
    ]
   },
@@ -43,8 +43,8 @@
    "names": [
     {
      "n": "Zennup",
-     "ref": "Zennup bacı",
-     "dat": "Zennup bacıya"
+     "ref": "Zennup deze",
+     "dat": "Zennup dezeye"
     }
    ]
   },
@@ -59,8 +59,8 @@
    "names": [
     {
      "n": "Şehriban",
-     "ref": "Şehriban bacı",
-     "dat": "Şehriban bacıya"
+     "ref": "Şehriban deze",
+     "dat": "Şehriban dezeye"
     }
    ]
   },
@@ -186,9 +186,9 @@
    "ustaHitap": "usta",
    "names": [
     {
-     "n": "Hüseyin",
-     "ref": "Hüseyin ammi",
-     "dat": "Hüseyin ammiye"
+     "n": "Hösün",
+     "ref": "Hösün ammi",
+     "dat": "Hösün ammiye"
     }
    ]
   },
@@ -427,7 +427,8 @@
   "streakDays": 3,
   "streakDiamonds": 2,
   "courierWait": 12,
-  "introSeconds": 3.7
+  "introSeconds": 3.7,
+  "lives": 5
  },
  "difficulty": [
   {

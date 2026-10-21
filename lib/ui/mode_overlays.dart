@@ -42,7 +42,7 @@ class DeliveryPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final d = game.delivery;
     final cap = d.boxCapacity(game.level('dagitim'));
-    final ready = game.assembly.wrapped;
+    final ready = game.anyBoardWrapped;
     return Positioned(
       left: 1446,
       top: 84,
@@ -84,7 +84,11 @@ class _DeliveryCard extends StatelessWidget {
       for (final sc in game.sauces.where((x) => x.id != 'sumak' && s.sauces.contains(x.id))) sc.name,
     ];
     final cold = order.boxedAge > DeliveryState.coldAfter;
-    return GestureDetector(
+    return DragTarget<BoardDrag>(
+      key: ValueKey('delivery-$index'),
+      onWillAcceptWithDetails: (d) => !order.isBoxed,
+      onAcceptWithDetails: (d) => game.serveDelivery(index, board: d.data.board),
+      builder: (context, candidates, _) => GestureDetector(
       onTap: () => game.serveDelivery(index),
       child: Container(
         margin: const EdgeInsets.only(bottom: 6),
@@ -100,8 +104,9 @@ class _DeliveryCard extends StatelessWidget {
           Text(parts.join(' · '), style: TextStyle(color: order.isBoxed ? Colors.white : kWoodDark, fontSize: 13, height: 1.15, fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
           PatienceBar(fraction: order.fraction),
-          if (canBox) const Padding(padding: EdgeInsets.only(top: 3), child: Text('Dokun: kutuya koy', style: TextStyle(color: Color(0xFF2E7D5B), fontSize: 12, fontWeight: FontWeight.w900))),
+          if (canBox || candidates.isNotEmpty) const Padding(padding: EdgeInsets.only(top: 3), child: Text('Dokun ya da sürükle: kutuya koy', style: TextStyle(color: Color(0xFF2E7D5B), fontSize: 12, fontWeight: FontWeight.w900))),
         ]),
+      ),
       ),
     );
   }

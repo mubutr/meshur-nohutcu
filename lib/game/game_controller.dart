@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -16,9 +17,12 @@ import '../quest/quest_models.dart';
 import 'events.dart';
 import 'scoring.dart';
 
-enum Phase { title, playing, dayEnd, shop, garden, detective }
+enum Phase { title, playing, dayEnd, shop, garden, detective, gameOver }
 
 enum Mood { normal, happy, angry }
+
+/// Sürüklenebilen malzeme türleri.
+enum Ingredient { bread, main, piyaz, aci, fried, sumak, sauce }
 
 enum CustomerState { greeting, waiting, reacting }
 
@@ -101,6 +105,8 @@ class GameController extends ChangeNotifier {
     this.leaderboard,
     this.sfx,
     this.introEnabled = false,
+    this.tutorialEnabled = false,
+    this.gameOverEnabled = false,
   }) : _rnd = random ?? Random() {
     quests = QuestEngine(
       questData,
@@ -129,6 +135,87 @@ class GameController extends ChangeNotifier {
   final LeaderboardManager? leaderboard;
   final Sfx? sfx;
   final Random _rnd;
+
+  /// İlk oyunda oynanışı gösteren tanıtım (testlerde kapalı).
+  final bool tutorialEnabled;
+  bool tutorialDone = false;
+  int tutorialStep = -1; // -1: kapalı
+  bool _tutorialPending = false;
+  bool get tutorialActive => tutorialStep >= 0;
+  static const int tutorialStepCount = 7;
+
+  void startTutorial() {
+    if (phase != Phase.playing) return;
+    tutorialStep = 0;
+    notifyListeners();
+  }
+
+  void nextTutorial() {
+    if (tutorialStep < 0) return;
+    if (tutorialStep + 1 >= tutorialStepCount) {
+      skipTutorial();
+      return;
+    }
+    tutorialStep++;
+    notifyListeners();
+  }
+
+  /// Ayarlardan "Oynanışı göster": sonraki oyun başlangıcında (ya da şimdi, oyun açıksa) tanıtım yeniden oynar.
+  void replayTutorial() {
+    tutorialDone = false;
+    prefs?.setBool('tutorial_done', false);
+    settingsOpen = false;
+    if (phase == Phase.playing) {
+      tutorialStep = 0;
+    } else {
+      _tutorialPending = true;
+    }
+    notifyListeners();
+  }
+
+  void skipTutorial() {
+    tutorialStep = -1;
+    tutorialDone = true;
+    prefs?.setBool('tutorial_done', true);
+    notifyListeners();
+  }
+
+  /// Kaybetme (müşteri hakkı biterse) etkin mi?
+  final bool gameOverEnabled;
+
+  // ------------------------------------------------------------- kaybetme ve reklamla devam
+  int lives = 5; // bugünkü müşteri kaçırma hakkı
+  bool reviveUsedToday = false;
+  Map<String, dynamic>? _dayStartState;
+  int get maxLives => cfg.eco('lives').round();
+
+  /// Reklam izleyerek devam: canlar yenilenir, bekleyen müşterilerin sabrı dolar.
+  void _revive() {
+    lives = maxLives;
+    reviveUsedToday = true;
+    for (final c in slots.whereType<Customer>()) {
+      if (c.state == CustomerState.waiting) c.patience = c.maxPatience;
+    }
+    phase = Phase.playing;
+    _toCirak('usta_revive');
+  }
+
+  /// Gün başındaki duruma dönüp günü baştan başlatır (kasa, elmas, görev ilerlemesi dahil).
+  void restartDay() {
+    final d = _dayStartState;
+    if (d != null) {
+      money = d['money'] as int;
+      diamonds = d['diamonds'] as int;
+      tipJar = d['tipJar'] as int;
+      servedSinceBonus = d['since'] as int;
+      bonusDue = d['bonusDue'] as bool;
+      try {
+        garden.fromJsonString(d['garden'] as String);
+        quests.fromJson((d['quests'] as Map).cast<String, dynamic>());
+      } catch (_) {}
+    }
+    startDay();
+  }
 
   /// "Ya Fettah, Ya Rezzak" kepenk açılışı: her yeni gün başında oynar (testlerde kapalı).
   final bool introEnabled;
@@ -188,6 +275,7 @@ class GameController extends ChangeNotifier {
   Phase phase = Phase.title;
   int day = 1;
   int money = 0;
+  int totalScore = 0; // tüm günlerin toplam puanı (sıralama sunucusuyla eşitlenir)
   int diamonds = 0; // ikinci para birimi: reklam, bonus müşteri, görev serisi
   int tipJar = 0; // bahşiş kavanozunda biriken (dokununca kasaya geçer)
   final Map<String, int> upgrades = {};
@@ -227,7 +315,20 @@ class GameController extends ChangeNotifier {
   double _satSum = 0;
   int _satCount = 0;
   final Map<String, int> _specialsToday = {};
-  final Assembly assembly = Assembly();
+  /// Aynı anda 3 dürüm hazırlanabilir (sürükle-bırak ya da dokunma); [assembly] etkin tezgâhtır.
+  static const int boardCount = 3;
+  final List<Assembly> boards = List.generate(boardCount, (_) => Assembly());
+  int activeBoard = 0;
+  Assembly get assembly => boards[activeBoard];
+
+  void selectBoard(int i) {
+    if (i < 0 || i >= boardCount || i == activeBoard) return;
+    activeBoard = i;
+    notifyListeners();
+  }
+
+  bool get anyBoardEmpty => boards.any((b) => b.isEmpty);
+  bool get anyBoardWrapped => boards.any((b) => b.wrapped);
   final HelperState helper = HelperState();
   late final GardenState garden = GardenState(cfg.garden);
   late final DeliveryState delivery;
@@ -255,7 +356,7 @@ class GameController extends ChangeNotifier {
   String get ustaText => usta?.text ?? '';
   double get reputationToday => _satCount == 0 ? 0 : _satSum / _satCount;
   int get chapter => quests.chapter;
-  bool get paused => sceneLines != null || notebookOpen || recipeOpen || adKind != null || adMenuOpen || introActive;
+  bool get paused => sceneLines != null || notebookOpen || recipeOpen || adKind != null || adMenuOpen || introActive || tutorialActive;
 
   /// Mekân teması (bölümle lüksleşir): t1 esnaf · t2 çarşı · t3 Antep lokantası · t4 saray sofrası.
   String get theme => chapter >= 5 ? 't4' : (chapter == 4 ? 't3' : (chapter >= 2 ? 't2' : 't1'));
@@ -280,13 +381,16 @@ class GameController extends ChangeNotifier {
     }
     day = p.getInt('day') ?? 1;
     money = p.getInt('money') ?? 0;
+    totalScore = p.getInt('totalScore') ?? 0;
     diamonds = p.getInt('diamonds') ?? 0;
     tipJar = p.getInt('tipJar') ?? 0;
     servedSinceBonus = p.getInt('sinceBonus') ?? 0;
     bonusDue = p.getBool('bonusDue') ?? false;
     selectedWrap = p.getString('wrap') ?? kDefaultWrap;
     investor = p.getBool('investor') ?? false;
+    hasResumable = p.getString(_snapKey) != null;
     comfortMode = p.getBool('comfort') ?? false;
+    tutorialDone = p.getBool('tutorial_done') ?? false;
     soundOn = p.getBool('sound') ?? true;
     riddleIntroShown = p.getBool('riddleIntro') ?? false;
     for (final u in cfg.upgrades) {
@@ -310,11 +414,204 @@ class GameController extends ChangeNotifier {
     quests.load(p);
   }
 
+  // ------------------------------------------------------------- gün ortası kaydı (kapatıp açınca kaldığın yerden)
+  static const String _snapKey = 'day_snapshot';
+  bool hasResumable = false; // kayıtlı yarım gün var mı
+  double _snapTimer = 0;
+
+  Map<String, dynamic> _customerJson(int slot, Customer c) => {
+        'slot': slot,
+        'type': c.type.id,
+        'name': {'n': c.name.n, 'ref': c.name.ref, 'dat': c.name.dat, 'hitap': c.name.hitap},
+        'kind': c.kind.name,
+        'sprite': c.sprite,
+        'spec': c.spec.toJson(),
+        'order': c.order.text,
+        'maxP': c.maxPatience,
+        'p': c.patience,
+        'st': c.state.name,
+        'riddle': c.riddle?.id,
+        'giver': c.giver,
+        'mood': c.mood.name,
+        'relayed': c.orderRelayed,
+        'claim': c.helperClaim,
+      };
+
+  Customer? _customerFrom(Map<String, dynamic> m) {
+    final type = cfg.customers.firstWhere((t) => t.id == m['type'], orElse: () => cfg.customers.first);
+    final nm = m['name'] as Map<String, dynamic>;
+    final kind = CustomerKind.values.firstWhere((k) => k.name == m['kind'], orElse: () => CustomerKind.normal);
+    Riddle? riddle;
+    if (m['riddle'] != null) riddle = riddles.where((r) => r.id == m['riddle']).firstOrNull;
+    final c = Customer(
+      type: type,
+      name: CustomerName(n: nm['n'] as String, ref: nm['ref'] as String, dat: nm['dat'] as String, hitap: nm['hitap'] as String?),
+      spec: OrderSpec.fromJson(m['spec'] as Map<String, dynamic>),
+      maxPatience: (m['maxP'] as num).toDouble(),
+      order: DialogLine(who: 'musteri', to: 'usta', text: m['order'] as String),
+      kind: kind,
+      sprite: m['sprite'] as String?,
+      riddle: riddle,
+      giver: m['giver'] as String?,
+    )
+      ..patience = (m['p'] as num).toDouble()
+      ..orderRelayed = true
+      ..helperClaim = (m['claim'] as bool?) ?? false;
+    c.state = m['st'] == 'reacting' ? CustomerState.reacting : CustomerState.waiting;
+    if (c.state == CustomerState.reacting) return null; // giden müşteri geri çağrılmaz
+    c.bubble = _customerSays(c, c.order);
+    return c;
+  }
+
+  Map<String, dynamic> toDaySnapshot() => {
+        'v': 1,
+        'day': day,
+        'toSpawn': toSpawn,
+        'dayTotal': _dayTotal,
+        'spawnTimer': spawnTimer,
+        'served': servedToday,
+        'lost': lostToday,
+        'earned': earnedToday,
+        'tips': tipsToday,
+        'great': greatToday,
+        'score': scoreToday,
+        'streak': streak,
+        'supplies': suppliesToday,
+        'stolen': stolenToday,
+        'wasted': wastedToday,
+        'penalty': penaltyToday,
+        'adsM': adsMoneyToday,
+        'adsD': adsDiamondToday,
+        'avans': avansGivenToday,
+        'satSum': _satSum,
+        'satCount': _satCount,
+        'specials': _specialsToday,
+        'delivered': deliveredToday,
+        'deliveryIncome': deliveryIncomeToday,
+        'wrap': selectedWrap,
+        'active': activeBoard,
+        'lives': lives,
+        'reviveUsed': reviveUsedToday,
+        'boards': [for (final b in boards) b.toJson()],
+        'customers': [
+          for (var i = 0; i < slots.length; i++)
+            if (slots[i] != null && slots[i]!.state != CustomerState.reacting) _customerJson(i, slots[i]!)
+        ],
+        'helper': {'progress': helper.progress, 'ready': helper.ready?.toJson()},
+        'delivery': delivery.toJson(),
+        'dayStart': _dayStartState,
+      };
+
+  /// Kayıtlı yarım günü geri yükler. Başarısızsa false döner (o zaman yeni gün başlatılır).
+  bool restoreDaySnapshot(Map<String, dynamic> j) {
+    try {
+      if (j['day'] != day) return false;
+      phase = Phase.playing;
+      toSpawn = j['toSpawn'] as int;
+      _dayTotal = j['dayTotal'] as int;
+      spawnTimer = (j['spawnTimer'] as num).toDouble();
+      servedToday = j['served'] as int;
+      lostToday = j['lost'] as int;
+      earnedToday = j['earned'] as int;
+      tipsToday = j['tips'] as int;
+      greatToday = j['great'] as int;
+      scoreToday = j['score'] as int;
+      streak = j['streak'] as int;
+      suppliesToday = j['supplies'] as int;
+      stolenToday = j['stolen'] as int;
+      wastedToday = j['wasted'] as int;
+      penaltyToday = j['penalty'] as int;
+      adsMoneyToday = j['adsM'] as int;
+      adsDiamondToday = j['adsD'] as int;
+      avansGivenToday = j['avans'] as bool;
+      _satSum = (j['satSum'] as num).toDouble();
+      _satCount = j['satCount'] as int;
+      _specialsToday
+        ..clear()
+        ..addAll((j['specials'] as Map<String, dynamic>).map((k, v) => MapEntry(k, v as int)));
+      deliveredToday = j['delivered'] as int;
+      deliveryIncomeToday = j['deliveryIncome'] as int;
+      selectedWrap = (j['wrap'] as String?) ?? kDefaultWrap;
+      activeBoard = (j['active'] as int?) ?? 0;
+      lives = (j['lives'] as int?) ?? cfg.eco('lives').round();
+      reviveUsedToday = (j['reviveUsed'] as bool?) ?? false;
+      final bs = (j['boards'] as List).cast<Map<String, dynamic>>();
+      for (var i = 0; i < boardCount; i++) {
+        boards[i]
+          ..reset()
+          ..wrap = kDefaultWrap;
+        if (i < bs.length) {
+          final a = Assembly.fromJson(bs[i]);
+          boards[i]
+            ..wrap = a.wrap
+            ..bread = a.bread
+            ..nohut = a.nohut
+            ..piyaz = a.piyaz
+            ..aci = a.aci
+            ..sumak = a.sumak
+            ..fried = a.fried
+            ..sauces.addAll(a.sauces)
+            ..wrapped = a.wrapped
+            ..spent = a.spent;
+        }
+      }
+      slots = List.filled(slotCount, null);
+      for (final m in (j['customers'] as List).cast<Map<String, dynamic>>()) {
+        final c = _customerFrom(m);
+        final slot = m['slot'] as int;
+        if (c != null && slot < slotCount) slots[slot] = c;
+      }
+      final h = j['helper'] as Map<String, dynamic>;
+      helper
+        ..progress = (h['progress'] as num).toDouble()
+        ..ready = h['ready'] == null ? null : Assembly.fromJson(h['ready'] as Map<String, dynamic>);
+      delivery.fromJson(j['delivery'] as Map<String, dynamic>);
+      _dayStartState = (j['dayStart'] as Map?)?.cast<String, dynamic>();
+      usta = null;
+      _ustaQueue.clear();
+      introLeft = 0;
+      tutorialStep = -1;
+      _toCirak('usta_day_start');
+      _timer?.cancel();
+      _timer = Timer.periodic(const Duration(milliseconds: 100), (_) => tick(0.1));
+      hasResumable = false;
+      if (gameOverEnabled && lives <= 0) phase = Phase.gameOver;
+      notifyListeners();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// "BAŞLA / DEVAM": kayıtlı yarım gün varsa onu sürdürür, yoksa yeni gün başlatır.
+  void continueGame() {
+    final raw = prefs?.getString(_snapKey);
+    if (raw != null && hasResumable) {
+      try {
+        if (restoreDaySnapshot(jsonDecode(raw) as Map<String, dynamic>)) return;
+      } catch (_) {}
+    }
+    hasResumable = false;
+    startDay();
+  }
+
+  void _writeSnapshot() {
+    final p = prefs;
+    if (p == null) return;
+    if (phase == Phase.playing || phase == Phase.gameOver || (phase == Phase.title && hasResumable)) {
+      if (phase != Phase.title) p.setString(_snapKey, jsonEncode(toDaySnapshot()));
+    } else {
+      p.remove(_snapKey);
+    }
+  }
+
   Future<void> save() async {
     final p = prefs;
     if (p == null) return;
+    _writeSnapshot();
     await p.setInt('day', day);
     await p.setInt('money', money);
+    await p.setInt('totalScore', totalScore);
     await p.setInt('diamonds', diamonds);
     await p.setInt('tipJar', tipJar);
     await p.setInt('sinceBonus', servedSinceBonus);
@@ -331,9 +628,22 @@ class GameController extends ChangeNotifier {
     await quests.save(p);
   }
 
+  /// Sıralama sunucusundaki yönetim sayfasından gelen düzenleme (test amaçlı): oyunda anında görünür.
+  void applyRemotePatch({int? money, int? diamonds, int? day, int? totalScore}) {
+    if (money != null) this.money = max(0, money);
+    if (diamonds != null) this.diamonds = max(0, diamonds);
+    if (day != null && day >= 1) this.day = day;
+    if (totalScore != null) this.totalScore = max(0, totalScore);
+    save();
+    notifyListeners();
+  }
+
   Future<void> resetSave() async {
+    prefs?.remove(_snapKey);
+    hasResumable = false;
     day = 1;
     money = 0;
+    totalScore = 0;
     diamonds = 0;
     tipJar = 0;
     servedSinceBonus = 0;
@@ -466,7 +776,10 @@ class GameController extends ChangeNotifier {
     _specialsToday.clear();
     _satSum = 0;
     _satCount = 0;
-    assembly.reset();
+    for (final b in boards) {
+      b.reset();
+    }
+    activeBoard = 0;
     helper
       ..progress = 0
       ..ready = null;
@@ -482,6 +795,19 @@ class GameController extends ChangeNotifier {
     _toCirak(day == 1 && !quests.done.contains('c1q1') ? 'usta_intro' : 'usta_day_start');
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(milliseconds: 100), (_) => tick(0.1));
+    lives = cfg.eco('lives').round();
+    reviveUsedToday = false;
+    _dayStartState = {
+      'money': money,
+      'diamonds': diamonds,
+      'tipJar': tipJar,
+      'since': servedSinceBonus,
+      'bonusDue': bonusDue,
+      'garden': garden.toJsonString(),
+      'quests': quests.toJson(),
+    };
+    hasResumable = false;
+    if (tutorialEnabled && !tutorialDone) _tutorialPending = true;
     if (introEnabled) {
       introLeft = cfg.eco('introSeconds');
       _sfx('kepenk.wav');
@@ -707,6 +1033,11 @@ class GameController extends ChangeNotifier {
       introLeft = max(0, introLeft - dt);
       notifyListeners();
     }
+    if (_tutorialPending && introLeft <= 0 && sceneLines == null && phase == Phase.playing) {
+      _tutorialPending = false;
+      tutorialStep = 0;
+      notifyListeners();
+    }
     // reklam geri sayımı
     if (adKind != null) {
       adLeft -= dt;
@@ -728,6 +1059,11 @@ class GameController extends ChangeNotifier {
       return;
     }
     _tickUsta(dt);
+    _snapTimer += dt;
+    if (_snapTimer >= 3) {
+      _snapTimer = 0;
+      _writeSnapshot();
+    }
 
     // yeni müşteri
     if (toSpawn > 0) {
@@ -791,12 +1127,12 @@ class GameController extends ChangeNotifier {
     final base = selectedProduct.bowl ? 'kâseyi' : 'tırnaklı ekmeği';
     if (hint == _noMoneyHint && _noMoneyTimer > 0) {
       _noMoneyTimer -= dt;
-    } else if (assembly.isEmpty && slots.any((c) => c?.state == CustomerState.waiting)) {
-      hint = 'Tezgâha $base al';
-    } else if (assembly.bread && !assembly.wrapped) {
-      hint = selectedProduct.bowl ? 'Acı ekle, sonra SERVİS ET' : 'Malzemeleri ekle, sonra SAR';
-    } else if (assembly.wrapped) {
-      hint = selectedProduct.bowl ? 'Beyranı müşteriye ver' : 'Dürümü müşteriye ver';
+    } else if (boards.every((b) => b.isEmpty) && slots.any((c) => c?.state == CustomerState.waiting)) {
+      hint = 'Tezgâha $base sürükle';
+    } else if (anyBoardWrapped) {
+      hint = 'Hazır dürümü müşteriye sürükle';
+    } else if (boards.any((b) => b.bread)) {
+      hint = selectedProduct.bowl ? 'Acı ekle, sonra SERVİS ET' : 'Malzemeleri sürükle, sonra SAR';
     } else {
       hint = '';
     }
@@ -810,7 +1146,7 @@ class GameController extends ChangeNotifier {
 
   /// Kasa bitip hazırlık imkânsız kalırsa usta günde bir kez avans verir.
   void _checkBroke() {
-    if (avansGivenToday || !assembly.isEmpty || tipJar > 0) return;
+    if (avansGivenToday || !boards.every((b) => b.isEmpty) || tipJar > 0) return;
     final waiting = slots.whereType<Customer>().where((c) => c.state == CustomerState.waiting && !c.isCourier && !c.free);
     if (waiting.isEmpty) return;
     if (money >= waiting.map((c) => ingredientCost(cfg, c.spec)).reduce(min)) return;
@@ -906,8 +1242,11 @@ class GameController extends ChangeNotifier {
   }
 
   /// Hazırladığın dürümü [index]. paket siparişinin ısı kutusuna koy.
-  void serveDelivery(int index) {
-    if (phase != Phase.playing || paused || !assembly.wrapped || !deliveryActive) return;
+  void serveDelivery(int index, {int? board}) {
+    if (phase != Phase.playing || paused || !deliveryActive) return;
+    if (board != null) activeBoard = board;
+    if (!assembly.wrapped) _pickWrappedBoard(null);
+    if (!assembly.wrapped) return;
     if (delivery.box(index, assembly, level('dagitim'))) {
       assembly.reset();
       _sfx('wrap');
@@ -1122,7 +1461,10 @@ class GameController extends ChangeNotifier {
   }
 
   void tapHelper() {
-    if (phase != Phase.playing || helper.ready == null || !assembly.isEmpty) return;
+    if (phase != Phase.playing || helper.ready == null) return;
+    final free = boards.indexWhere((b) => b.isEmpty);
+    if (free < 0) return;
+    activeBoard = free;
     assembly
       ..reset()
       ..wrap = helper.ready!.wrap
@@ -1146,13 +1488,21 @@ class GameController extends ChangeNotifier {
   Customer? get autoTarget => slots.whereType<Customer>().where((c) => c.state == CustomerState.waiting && (c.kind == CustomerKind.normal || c.kind == CustomerKind.maskeli || c.kind == CustomerKind.bonus)).firstOrNull;
 
   void _tickAuto(double dt) {
-    if (!_hasAuto || assembly.wrapped) return;
+    if (!_hasAuto) return;
     final t = autoTarget;
     if (t == null) return;
     autoTimer += dt;
     if (autoTimer < 1.2) return;
     autoTimer = 0;
     final s = t.spec;
+    // hedefe uyan yarım bir dürüm varsa onu sürdürür, yoksa boş bir tezgâha ekmek koyar
+    final partial = boards.indexWhere((b) => b.bread && !b.wrapped && b.wrap == s.wrap && b.nohut <= s.nohut && (!b.piyaz || s.piyaz) && (!b.aci || s.aci) && (!b.fried || s.fried) && (!b.sumak || s.sumak) && b.sauces.difference(s.sauces).isEmpty);
+    final free = boards.indexWhere((b) => b.isEmpty);
+    if (partial >= 0) {
+      activeBoard = partial;
+    } else if (free >= 0) {
+      activeBoard = free;
+    }
     final a = assembly;
     if (a.isEmpty) {
       if (level('auto_ekmek') > 0) {
@@ -1204,6 +1554,11 @@ class GameController extends ChangeNotifier {
     money -= fine;
     penaltyToday += fine;
     c.gain = -fine;
+    lives = max(0, lives - 1);
+    if (gameOverEnabled && lives <= 0 && phase == Phase.playing) {
+      phase = Phase.gameOver;
+      _toCirak('usta_game_over');
+    }
     _toCirak(penaltyToday == fine && fine > 0 ? 'usta_penalty' : 'usta_after_leave', vars: {..._vars(c), 'ceza': '$fine'});
     emit(CustomerLeftEvent(customerId: c.type.id, special: c.kind == CustomerKind.maskeli ? 'maskeli' : null));
   }
@@ -1222,6 +1577,7 @@ class GameController extends ChangeNotifier {
     money -= paid;
     netToday = earnedToday + tipsToday - suppliesToday - rentToday - stolenToday - penaltyToday;
     day += 1; // gelir servis anında eklendi; sonraki gün hazır
+    totalScore += scoreToday;
     emit(DayEndedEvent(
       day: finishedDay,
       served: servedToday,
@@ -1255,7 +1611,7 @@ class GameController extends ChangeNotifier {
 
   /// Tezgâhta hazırlanacak ürünü seç (yalnızca tezgâh boşken ve ürün açıksa).
   void selectWrap(String id) {
-    if (!assembly.isEmpty || assembly.wrapped) return;
+    if (!anyBoardEmpty) return;
     if (!products.any((p) => p.id == id)) return;
     selectedWrap = id;
     notifyListeners();
@@ -1264,15 +1620,23 @@ class GameController extends ChangeNotifier {
   /// Ürün seçicideki oklar: bir sonraki / önceki açık ürün.
   void cycleWrap(int dir) {
     final list = products;
-    if (list.length < 2 || !assembly.isEmpty || assembly.wrapped) return;
+    if (list.length < 2 || !anyBoardEmpty) return;
     final i = max(0, list.indexWhere((p) => p.id == selectedWrap));
     selectedWrap = list[(i + dir + list.length) % list.length].id;
     notifyListeners();
   }
 
   /// Taban: tırnaklı ekmek (beyranda kâse).
-  void tapBread() {
-    if (phase != Phase.playing || paused || assembly.bread) return;
+  void tapBread({int? board}) {
+    if (phase != Phase.playing || paused) return;
+    if (board != null) {
+      activeBoard = board;
+    } else if (assembly.bread) {
+      final free = boards.indexWhere((b) => b.isEmpty);
+      if (free < 0) return;
+      activeBoard = free;
+    }
+    if (assembly.bread) return;
     if (!_spend(cfg.baseCost(selectedWrap))) return;
     assembly.wrap = selectedWrap;
     assembly.bread = true;
@@ -1281,7 +1645,8 @@ class GameController extends ChangeNotifier {
   }
 
   /// Ana malzeme (nohut, döner, kavurma…): her dokunuş bir porsiyon.
-  void tapMain() {
+  void tapMain({int? board}) {
+    if (board != null) activeBoard = board;
     if (!_canAdd) return;
     final p = cfg.product(assembly.wrap);
     if (assembly.nohut >= p.maxAmount || !_spend(p.unit)) return;
@@ -1292,28 +1657,32 @@ class GameController extends ChangeNotifier {
 
   void tapNohut() => tapMain();
 
-  void tapPiyaz() {
+  void tapPiyaz({int? board}) {
+    if (board != null) activeBoard = board;
     if (!_canAdd || assembly.piyaz || !cfg.product(assembly.wrap).allows('piyaz') || !_spend(cfg.costs['piyaz']!)) return;
     assembly.piyaz = true;
     _sfx('pop');
     notifyListeners();
   }
 
-  void tapAci() {
+  void tapAci({int? board}) {
+    if (board != null) activeBoard = board;
     if (!_canAdd || assembly.aci || !cfg.product(assembly.wrap).allows('aci') || !_spend(cfg.costs['aci']!)) return;
     assembly.aci = true;
     _sfx('pop');
     notifyListeners();
   }
 
-  void tapFried() {
+  void tapFried({int? board}) {
+    if (board != null) activeBoard = board;
     if (!_canAdd || assembly.fried || !friedUnlocked || !cfg.product(assembly.wrap).allows('fried') || !_spend(cfg.costs['fried']!)) return;
     assembly.fried = true;
     _sfx('pop');
     notifyListeners();
   }
 
-  void tapSumak() {
+  void tapSumak({int? board}) {
+    if (board != null) activeBoard = board;
     if (!_canAdd || assembly.sumak || !sauces.any((s) => s.id == 'sumak') || !cfg.product(assembly.wrap).allows('sumak') || !_spend(cfg.sauceCost('sumak'))) return;
     assembly.sumak = true;
     _sfx('pop');
@@ -1321,7 +1690,8 @@ class GameController extends ChangeNotifier {
   }
 
   /// sos | ketcap | mayonez | nar (sumak için [tapSumak]).
-  void tapSauce(String id) {
+  void tapSauce(String id, {int? board}) {
+    if (board != null) activeBoard = board;
     if (id == 'sumak') return tapSumak();
     if (!_canAdd || assembly.sauces.contains(id) || !sauces.any((s) => s.id == id) || !cfg.product(assembly.wrap).allows('sauce') || !_spend(cfg.sauceCost(id))) return;
     assembly.sauces.add(id);
@@ -1329,9 +1699,46 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sürükle-bırak: bir malzemeyi [board]. tezgâha bırak.
+  void addIngredient(Ingredient kind, {required int board, String? sauceId}) {
+    switch (kind) {
+      case Ingredient.bread:
+        tapBread(board: board);
+      case Ingredient.main:
+        tapMain(board: board);
+      case Ingredient.piyaz:
+        tapPiyaz(board: board);
+      case Ingredient.aci:
+        tapAci(board: board);
+      case Ingredient.fried:
+        tapFried(board: board);
+      case Ingredient.sumak:
+        tapSumak(board: board);
+      case Ingredient.sauce:
+        tapSauce(sauceId ?? 'sos', board: board);
+    }
+  }
+
+  /// Hazır (sarılmış) tezgâhlardan müşteriye en uygun olanı etkin yapar (sürükleme yoksa).
+  void _pickWrappedBoard(Customer? c) {
+    if (assembly.wrapped && c == null) return;
+    var best = -1;
+    var bestErr = 999;
+    for (var i = 0; i < boardCount; i++) {
+      if (!boards[i].wrapped) continue;
+      final e = c == null ? 0 : orderErrors(c.spec, boards[i]);
+      if (e < bestErr || (e == bestErr && i == activeBoard)) {
+        best = i;
+        bestErr = e;
+      }
+    }
+    if (best >= 0) activeBoard = best;
+  }
+
   bool get _canAdd => phase == Phase.playing && !paused && assembly.bread && !assembly.wrapped;
 
-  void wrap() {
+  void wrap({int? board}) {
+    if (board != null) activeBoard = board;
     if (phase != Phase.playing || paused || !assembly.bread || assembly.wrapped) return;
     assembly.wrapped = true;
     _sfx('wrap');
@@ -1339,7 +1746,8 @@ class GameController extends ChangeNotifier {
   }
 
   /// Çöpe atılan dürümün malzeme parası geri gelmez.
-  void trash() {
+  void trash({int? board}) {
+    if (board != null) activeBoard = board;
     if (phase != Phase.playing || paused || assembly.isEmpty) return;
     wastedToday += assembly.spent;
     assembly.reset();
@@ -1381,7 +1789,7 @@ class GameController extends ChangeNotifier {
   }
 
   int get adMoneyReward => (cfg.eco('adMoneyBase') + cfg.eco('adMoneyPerChapter') * chapter).round();
-  bool canWatchAd(String kind) => kind == 'diamond' ? adsDiamondToday < cfg.eco('adDiamondMax') : adsMoneyToday < cfg.eco('adMoneyMax');
+  bool canWatchAd(String kind) => kind == 'revive' ? (!reviveUsedToday && phase == Phase.gameOver) : kind == 'diamond' ? adsDiamondToday < cfg.eco('adDiamondMax') : adsMoneyToday < cfg.eco('adMoneyMax');
   int adsLeft(String kind) => (kind == 'diamond' ? cfg.eco('adDiamondMax').round() - adsDiamondToday : cfg.eco('adMoneyMax').round() - adsMoneyToday).clamp(0, 99);
 
   void startAd(String kind) {
@@ -1410,25 +1818,34 @@ class GameController extends ChangeNotifier {
     } else if (k == 'money') {
       adsMoneyToday++;
       money += adMoneyReward;
+    } else if (k == 'revive') {
+      _revive();
     }
     save();
     notifyListeners();
   }
 
   /// Müşteriye dokunuş: kuryeyse paketleri verir, değilse hazırlanan dürümü servis eder.
-  void tapCustomer(int slot) {
+  void tapCustomer(int slot, {int? board}) {
     final c = slots[slot];
     if (c == null || phase != Phase.playing || paused) return;
     if (c.isCourier) {
       if (c.state != CustomerState.reacting) _courierHandOver(slot, c);
       return;
     }
-    serve(slot);
+    serve(slot, board: board);
   }
 
-  void serve(int slot) {
-    if (phase != Phase.playing || paused || !assembly.wrapped) return;
+  void serve(int slot, {int? board}) {
+    if (phase != Phase.playing || paused) return;
     final c = slots[slot];
+    if (board != null) {
+      if (!boards[board].wrapped) return;
+      activeBoard = board;
+    } else {
+      _pickWrappedBoard(c);
+    }
+    if (!assembly.wrapped) return;
     if (c == null || c.state != CustomerState.waiting) return;
     final vars = _vars(c);
     if (c.isCourier) return; // kuryeye dürüm verilmez; paketler için tapCustomer
@@ -1604,9 +2021,14 @@ class GameController extends ChangeNotifier {
   }
 
   void toTitle() {
+    if (phase == Phase.playing || phase == Phase.gameOver) {
+      save(); // kasa, elmas ve yarım gün birlikte kaydedilir
+      hasResumable = prefs != null;
+    }
     _timer?.cancel();
     adKind = null;
     introLeft = 0;
+    tutorialStep = -1;
     phase = Phase.title;
     notifyListeners();
   }

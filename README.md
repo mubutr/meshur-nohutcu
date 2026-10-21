@@ -1,14 +1,14 @@
-# İyi Nohut Dürümü, Güzel Nohut Dürümü
+# Meşhur Nohutçu
 
 Gaziantep'te bir nohut dürümü dükkânında geçen, Flutter ile yazılmış 2.5D restoran oyunu (çalışma adı).
 Müşteriler ve usta **Antep ağzıyla** konuşur. Tüm görseller ve sesler betikle sıfırdan üretilir.
 
-> **Marka notu:** Oyun adı, başka bir oyunun adının birebir paralelidir. Mağaza yayınından önce ayırt edici bir ad seçilmesi önerilir.
+> **Marka notu:** Oyun adı **Meşhur Nohutçu**; yapımcı markası **bigsoft games** (açılış ekranı). Mağaza yayınından önce ad için marka/mağaza taraması yapılmalıdır.
 > **Temiz-oda ilkesi:** Kod, sanat, ses, metin, ürün/karakter adı ve denge değerlerinin tamamı bu depoda sıfırdan yazılmıştır; başka bir oyundan kopyalanmış hiçbir şey yoktur. Başka oyunlardan yalnızca tür düzeyindeki fikirler (bölümlü hikâye, günlük görevler, bahçe, paket servis, dedektiflik) alınmıştır.
 
 ## Oynanış
 1. Müşteri gelir, **usta** karşılar ("Hoşgeldin Rafık"), müşteri siparişini ustaya söyler; usta siparişi **çırağa (sen)** iletir. Her balonda *kim → kime* yazar. Sipariş tek bir tonda, ürünü, porsiyonu, ekleri ve sosları eksiksiz söyleyen bir cümledir.
-2. Ürünü seç (◀ ▶), tabanı al (**tırnaklı ekmek**; beyranda **kâse**), ana malzemeyi (nohut, döner…) porsiyon porsiyon ekle, piyaz / acı / kızartma / sosları ekle → **SAR** (beyran: **SERVİS ET**) → müşteriye ver.
+2. Ürünü seç (◀ ▶), tabanı al (**tırnaklı ekmek**; beyranda **kâse**), ana malzemeyi (nohut, döner…) porsiyon porsiyon ekle, piyaz / acı / kızartma / sosları ekle → **SAR** (beyran: **SERVİS ET**) → müşteriye ver. Her şey hem **dokunarak** hem **sürükleyerek** yapılır: malzemeyi tezgâha, hazır dürümü müşteriye sürükle. Tezgâhta **aynı anda 3 dürüm** hazırlanır; sıcak yemeklerin (ekmek, nohut, dürümler) üstünden buhar çıkar.
 3. **Her malzeme kasadan para düşer**; satış fiyatı = malzeme maliyeti × 1,3 (**%30 kâr**). Çöpe atılan ya da yanlış yapılan dürümün parası geri gelmez. Kasa bitince usta günde bir kez avans verir.
 4. Tam tutarsa tam ücret, 1 hata %60, 2+ hata %25. **Bahşiş kavanoza** düşer, kavanoza dokununca kasaya geçer. **Yetişemediğin müşteri −10 ₺** cezası getirir.
 5. Gün 07:00'de başlar, müşteriler bitince 23:00'te kapanır; pencerede güneş ve ay yürür, akşam turuncu, gece mavi olur, lambalar yanar. Gün sonu bilançosu: kazanç, bahşiş, kira, malzeme (çöpe giden), ceza, net kâr, elmas.
@@ -37,6 +37,9 @@ Müşteriler ve usta **Antep ağzıyla** konuşur. Tüm görseller ve sesler bet
 | 4 | Sipariş Kapında | Arka bahçe (maydanoz/soğan/biber) ve Kapında paket servis (kutu + kurye) |
 | 5 | Kayıp Tandır Taşı | Soruşturma: mekân incele, şüpheli sorgula, ipucu topla, suçla |
 
+7. **5 hakkın** var: yetişemeyip giden her müşteri bir hak götürür. Haklar bitince oyun biter; **reklam izleyerek** (günde bir kez) kaldığın yerden devam edersin ya da günü baştan başlarsın.
+8. Oyunu kapatıp açınca **DEVAM** ile yarım kalan günden devam edersin (müşteriler, tezgâhlar, sayaçlar kaydedilir). İlk açılışta kısa bir **oynanış tanıtımı** gösterilir (Ayarlar → *Oynanışı göster* ile tekrar).
+
 Her bölümde ana görev zinciri, yan görevler ve her gün 3 günlük görev ("Usta'nın Defteri"). Gariban'a yardım edersen (iyilik) sonra yatırımcı olarak döner; Maskeli Müşteri yanlış siparişte kasadan para çalar.
 
 ## Ayarlar ve sıralama
@@ -54,12 +57,13 @@ node server.js                            # PORT=8787, DATA_FILE=data.json, MAX_
 node --test test/*.test.js                # sunucu testleri
 ```
 Uygulamayı sunucuya bağlamak için derlerken: `flutter build apk --dart-define=LEADERBOARD_URL=https://sunucu.example --dart-define=LEADERBOARD_SECRET=...` (adres verilmezse yalnızca yerel sıralama çalışır).
-Sunucu: `POST /scores`, `GET /leaderboard?period=week|all&device=…`, istek başına hız sınırı, gövde sınırı, skor üst sınırı, gün sırası ve imza (HMAC) denetimi, tekrar gönderim engeli.
+**Canlı eşitleme ve yönetim sayfası (yalnızca test amaçlı):** oyun her ~3 sn'de para/elmas/gün/toplam puanını `POST /profile` ile bildirir. `ADMIN_TOKEN` ortam değişkeni verilirse `http://sunucu/admin` sayfası açılır (`start-local.ps1` bunu `.admin` dosyasından üretir ve yazdırır); oradan oyuncunun para, elmas, gün, skor ve takma adı düzenlenir ya da oyuncu silinir, oyun değişikliği birkaç saniye içinde alır (sürüm numarası + ack protokolü; değişiklik oyuncunun eski durumuyla ezilmez). Sıralama ekranı açıkken 3 sn'de bir kendini yeniler. **Canlıya geçerken `ADMIN_TOKEN` verme: yönetim sayfası ve API kapanır.**
+Sunucu: `POST /scores`, `POST /profile`, `GET /leaderboard?period=week|all&device=…`, `/admin` (anahtarlı), istek başına hız sınırı, gövde sınırı, skor üst sınırı, gün sırası ve imza (HMAC) denetimi, tekrar gönderim engeli.
 **Sınırlama:** HMAC anahtarı uygulamanın içinde olduğu için yalnızca sıradan oynamayı engeller; kararlı bir hileciyi durdurmaz. Takma ad dışında kişisel veri toplanmaz; yayından önce bir gizlilik metni eklenmelidir.
 Gerçek sunucuya karşı uçtan uca deneme: sunucuyu başlatıp `$env:LB_URL='http://127.0.0.1:8787'; flutter test test/e2e_leaderboard_test.dart`.
 
 ## Karakterler ve konuşma kuralları
-- **20 müşteri:** 10 kadın (Fatma, Hattuç, Zennup, Şehriban, Emine, Hayce, Ayyuş, Yumma, Lütfiye, Şakire) ve 10 erkek (Maamed, Hüseyin, Ökkeş, Cımaali, Mustafa, Ahmet, Ali, Mehmet Ali, Höggeş, Memik); her birinin kendine ait ad ve görünümü var. Yaşlı erkeğe usta **"ammi"** der (Antep ağzındaki söyleyiş), kadına "bacı", genç erkeğe "Rafık".
+- **20 müşteri:** 10 kadın (Fatma, Hattuç, Zennup, Şehriban, Emine, Hayce, Ayyuş, Yumma, Lütfiye, Şakire) ve 10 erkek (Maamed, Hösün, Ökkeş, Cımaali, Mustafa, Ahmet, Ali, Mehmet Ali, Höggeş, Memik); her birinin kendine ait ad ve görünümü var. Yaşlı erkeğe usta **"ammi"** der (Antep ağzındaki söyleyiş), yaşlı kadına "deze" (teyze), genç kadına "bacı", genç erkeğe "Rafık".
 - **Hikâye karakterleri:** Gariban, Taaf Nene, Galaycı Nuru, İtfaiyeci Mömet, Maskeli Müşteri (iç kimlikleri `dayi / nine / antikaci / itfaiyeci / maskeli`).
 - **Hayırlı işler / bereket versin:** Müşteri giderken **"hayırlı işler"** der, "bereket versin" demez; **"bereket versin"i yalnızca usta söyler** (`usta_bereket`). Kural `test/dialog_rules_test.dart` ile korunur.
 - **Açılış:** Her yeni günün başında kepenk açılır, ekranda **"Ya Fettah, Ya Rezzak"** yazar (`assets/sfx/yafettah.mp3` kullanıcının kaydı + üretilmiş `kepenk.wav`); dokununca atlanır (`lib/ui/intro_overlay.dart`).

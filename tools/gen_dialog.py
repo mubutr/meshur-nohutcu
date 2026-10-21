@@ -289,6 +289,14 @@ add("usta_bereket", "usta", "musteri",
 add("usta_bereket_garip", "usta", "musteri",
     "Bereket versin Gariban, kapımız sana hep açık.")
 
+# ------------------------------------------------------------- kaybetme ve reklamla devam
+add("usta_game_over", "usta", "cirak",
+    "Eyvah evlat, çok müşteri küstü, dükkân bugün zora girdi!",
+    "Çırak, yetişemedik; müşteriler dağıldı. Ne yapak şimdi?")
+add("usta_revive", "usta", "cirak",
+    "Hadi evlat, kalan müşteriler geri döndü, bu sefer yetişelim!",
+    "Maşallah çırak, bi şans daha verdik, tez ol!")
+
 OUT = {
     "_not": "Antep ağzı replikleri. who/to: konuşan ve muhatap (usta, musteri, cirak). {hitap}: ustanın müşteriye hitabı, "
             "{ad}: müşteriden bahsederken adı, {adDat}: yönelme hâli, {ustaHitap}: müşterinin ustaya hitabı. "

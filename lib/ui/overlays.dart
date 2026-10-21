@@ -50,14 +50,14 @@ class TitleOverlay extends StatelessWidget {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             const Text('Gaziantep’in en lezzetli köşesi', style: TextStyle(color: Color(0xFFFFD27A), fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: 2)),
             const SizedBox(height: 10),
-            const Text('İyi Nohut Dürümü,\nGüzel Nohut Dürümü',
+            const Text('Meşhur\nNohutçu',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: kCream, fontSize: 82, height: 1.02, fontWeight: FontWeight.w900, shadows: [Shadow(color: Colors.black87, blurRadius: 14, offset: Offset(0, 5))])),
             const SizedBox(height: 18),
             if (started)
               Text('Bölüm ${game.chapter}: ${game.quests.chapterDef.title}', style: const TextStyle(color: Color(0xFFFFE9A8), fontSize: 28, fontWeight: FontWeight.w800)),
             const SizedBox(height: 18),
-            WoodButton(label: started ? 'DEVAM  (Gün ${game.day})' : 'BAŞLA', icon: Icons.play_arrow, big: true, color: const Color(0xFF2E7D5B), onTap: game.startDay),
+            WoodButton(label: started ? (game.hasResumable ? 'DEVAM  (Gün ${game.day}, kaldığın yerden)' : 'DEVAM  (Gün ${game.day})') : 'BAŞLA', icon: Icons.play_arrow, big: true, color: const Color(0xFF2E7D5B), onTap: game.continueGame),
             const SizedBox(height: 18),
             Wrap(alignment: WrapAlignment.center, spacing: 16, children: [
               WoodButton(label: 'Ayarlar', icon: Icons.settings, onTap: game.toggleSettings, color: const Color(0xFF6B5A4A)),
@@ -113,11 +113,45 @@ class SettingsOverlay extends StatelessWidget {
             const Divider(height: 24, thickness: 2, color: kWood),
             _toggle('Rahat mod', 'Müşteriler %25 daha sabırlı. Acele yok, keyfine bak.', game.comfortMode, game.toggleComfort, key: const ValueKey('toggle-comfort')),
             _toggle('Ses efektleri', 'Zil, çıtırtı, para sesi…', game.soundOn, game.toggleSound, key: const ValueKey('toggle-sound')),
+            const SizedBox(height: 10),
+            WoodButton(label: 'Oynanışı göster', icon: Icons.school, onTap: game.replayTutorial, color: const Color(0xFF9A5B1E)),
             const SizedBox(height: 14),
             WoodButton(label: 'Tamam', icon: Icons.check, onTap: game.toggleSettings, color: const Color(0xFF2E7D5B)),
           ]),
         ),
       );
+}
+
+// ------------------------------------------------------------------ kaybetme
+/// Müşteri kaçırma hakkı bitti: reklam izleyip kaldığın yerden devam et ya da günü baştan başlat.
+class GameOverOverlay extends StatelessWidget {
+  const GameOverOverlay({super.key, required this.game});
+  final GameController game;
+  @override
+  Widget build(BuildContext context) {
+    final canRevive = game.canWatchAd('revive');
+    return _Dim(
+      opacity: 0.72,
+      child: _Card(
+        width: 820,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Icon(Icons.heart_broken, size: 72, color: Color(0xFF9A3D2B)),
+          const SizedBox(height: 6),
+          const Text('Müşteriler küstü!', style: TextStyle(fontSize: 48, fontWeight: FontWeight.w900, color: kWood)),
+          const SizedBox(height: 6),
+          Text('Bugün ${game.lostToday} müşteri yetişemeden gitti; ${game.maxLives} hakkın bitti.', textAlign: TextAlign.center, style: const TextStyle(fontSize: 24, color: kWoodDark)),
+          const SizedBox(height: 4),
+          Text('Reklam izlersen kaldığın yerden devam edersin: hakların yenilenir, bekleyen müşterilerin sabrı dolar.', textAlign: TextAlign.center, style: const TextStyle(fontSize: 20, color: Color(0xFF7A5A3A), fontStyle: FontStyle.italic)),
+          const SizedBox(height: 22),
+          Wrap(alignment: WrapAlignment.center, spacing: 18, runSpacing: 12, children: [
+            WoodButton(label: 'Reklam izle, devam et', icon: Icons.smart_display, enabled: canRevive, onTap: () => game.startAd('revive'), color: const Color(0xFF2F7FA8), big: true),
+            WoodButton(label: 'Günü baştan başla', icon: Icons.restart_alt, onTap: game.restartDay, color: const Color(0xFF9A5B1E), big: true),
+          ]),
+          if (!canRevive) const Padding(padding: EdgeInsets.only(top: 10), child: Text('Bugünkü devam hakkını kullandın.', style: TextStyle(fontSize: 18, color: Color(0xFF9A3D2B)))),
+        ]),
+      ),
+    );
+  }
 }
 
 // ------------------------------------------------------------------ gün sonu

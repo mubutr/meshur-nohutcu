@@ -147,7 +147,14 @@ void main() {
       await t.pump();
       await t.tap(find.byKey(const ValueKey('wrap-next')));
       await t.pump();
-      expect(g.selectedWrap, 'nohut', reason: 'tezgâh doluyken ürün değişmez');
+      expect(g.selectedWrap, 'doner', reason: 'boş tezgâh varken sıradaki dürüm için ürün seçilebilir');
+      g.tapBread();
+      g.tapBread();
+      expect(g.anyBoardEmpty, isFalse);
+      await t.pump();
+      await t.tap(find.byKey(const ValueKey('wrap-next')));
+      await t.pump();
+      expect(g.selectedWrap, 'doner', reason: '3 tezgâh da doluyken ürün değişmez');
       g.dispose();
     });
 
@@ -236,6 +243,7 @@ void main() {
       g.money = 1000;
       await show(t, g);
       g.selectWrap('beyran');
+      g.tapBread();
       await t.pump();
       expect(find.text('Kâse'), findsOneWidget);
       expect(find.text('SERVİS ET'), findsOneWidget);

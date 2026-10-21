@@ -947,6 +947,30 @@
     "to": "musteri",
     "t": "Bereket versin Gariban, kapımız sana hep açık."
    }
+  ],
+  "usta_game_over": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Eyvah evlat, çok müşteri küstü, dükkân bugün zora girdi!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Çırak, yetişemedik; müşteriler dağıldı. Ne yapak şimdi?"
+   }
+  ],
+  "usta_revive": [
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Hadi evlat, kalan müşteriler geri döndü, bu sefer yetişelim!"
+   },
+   {
+    "who": "usta",
+    "to": "cirak",
+    "t": "Maşallah çırak, bi şans daha verdik, tez ol!"
+   }
   ]
  }
 }

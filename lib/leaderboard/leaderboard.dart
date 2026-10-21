@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -7,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../game/events.dart';
+import '../game/game_controller.dart';
 
 /// Sıralama dönemi: son 7 gün ya da tüm zamanlar.
 enum BoardPeriod { week, all }
@@ -40,10 +42,33 @@ class Board {
   final bool offline; // sunucuya ulaşılamadı; yalnızca bu cihazın kayıtları
 }
 
+/// Oyunun sunucuya bildirdiği anlık durum.
+class ProfileState {
+  const ProfileState({required this.money, required this.diamonds, required this.day, required this.chapter, required this.totalScore});
+  final int money;
+  final int diamonds;
+  final int day;
+  final int chapter;
+  final int totalScore;
+}
+
+/// Sunucudaki yönetim sayfasından gelen düzenleme (rev: ack için sürüm numarası).
+class ProfilePatch {
+  const ProfilePatch({required this.rev, this.money, this.diamonds, this.day, this.totalScore});
+  final int rev;
+  final int? money;
+  final int? diamonds;
+  final int? day;
+  final int? totalScore;
+}
+
 abstract class LeaderboardService {
   /// Başarısızsa istisna fırlatır; çağıran kuyruğa geri koyar.
   Future<void> submit(String device, String name, ScoreSubmission s);
   Future<Board> fetch(String device, BoardPeriod period);
+
+  /// Durumu bildirir; sunucuda bekleyen yönetici düzenlemesi varsa döndürür. Sunucusuz hizmette null.
+  Future<ProfilePatch?> syncProfile(String device, String name, ProfileState state, int ack) async => null;
 }
 
 /// Sunucusuz yedek: bu cihazdaki serilerin toplam puanları.
@@ -67,6 +92,9 @@ class LocalLeaderboard implements LeaderboardService {
       }
     } catch (_) {}
   }
+
+  @override
+  Future<ProfilePatch?> syncProfile(String device, String name, ProfileState state, int ack) async => null;
 
   @override
   Future<void> submit(String device, String name, ScoreSubmission s) async {
@@ -120,6 +148,38 @@ class RemoteLeaderboard implements LeaderboardService {
     if (r.statusCode >= 500 || r.statusCode == 429) throw http.ClientException('sunucu ${r.statusCode}');
   }
 
+  static String signProfile(String secret, String device, ProfileState s) {
+    final msg = '$device|${s.money}|${s.diamonds}|${s.day}|${s.totalScore}';
+    return Hmac(sha256, utf8.encode(secret)).convert(utf8.encode(msg)).toString();
+  }
+
+  @override
+  Future<ProfilePatch?> syncProfile(String device, String name, ProfileState s, int ack) async {
+    final r = await _client
+        .post(
+          Uri.parse('$baseUrl/profile'),
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode({
+            'device': device,
+            'name': name,
+            'money': s.money,
+            'diamonds': s.diamonds,
+            'day': s.day,
+            'chapter': s.chapter,
+            'totalScore': s.totalScore,
+            'ack': ack,
+            'sig': secret.isEmpty ? '' : signProfile(secret, device, s),
+          }),
+        )
+        .timeout(timeout);
+    if (r.statusCode != 200) throw http.ClientException('sunucu ${r.statusCode}');
+    final j = jsonDecode(utf8.decode(r.bodyBytes)) as Map<String, dynamic>;
+    final p = j['patch'];
+    if (p is! Map<String, dynamic>) return null;
+    int? n(String k) => p[k] is int ? p[k] as int : null;
+    return ProfilePatch(rev: (p['rev'] as int?) ?? 0, money: n('money'), diamonds: n('diamonds'), day: n('day'), totalScore: n('totalScore'));
+  }
+
   @override
   Future<Board> fetch(String device, BoardPeriod period) async {
     final r = await _client.get(Uri.parse('$baseUrl/leaderboard?period=${period.name}&device=$device')).timeout(timeout);
@@ -151,6 +211,7 @@ class LeaderboardManager extends ChangeNotifier {
         }
       } catch (_) {}
     }
+    ackRev = p?.getInt('lb_rev') ?? 0;
     p?.setString('lb_device', device);
     p?.setString('lb_name', name);
     p?.setString('lb_run', run);
@@ -165,6 +226,10 @@ class LeaderboardManager extends ChangeNotifier {
   late String name;
   late String run;
   final List<ScoreSubmission> _queue = [];
+  int ackRev = 0; // uygulanan son yönetici düzenlemesi
+  GameController? _game;
+  Timer? _syncTimer;
+  bool _syncing = false;
 
   bool open = false;
   bool loading = false;
@@ -175,6 +240,43 @@ class LeaderboardManager extends ChangeNotifier {
   int get pending => _queue.length;
 
   String _hex(int bytes) => List.generate(bytes, (_) => _rnd.nextInt(256).toRadixString(16).padLeft(2, '0')).join();
+
+  /// Oyunla eşitlemeyi başlatır: durum her [every] sürede sunucuya bildirilir, yönetici düzenlemesi oyunda anında görünür.
+  /// [every] null ise zamanlayıcı kurulmaz (testler [syncNow] çağırır).
+  void attach(GameController game, {Duration? every = const Duration(seconds: 3)}) {
+    _game = game;
+    _syncTimer?.cancel();
+    if (remote != null && every != null) _syncTimer = Timer.periodic(every, (_) => syncNow());
+  }
+
+  /// Toplam puan (sıralama başlığında gösterilir).
+  int get totalScore => _game?.totalScore ?? 0;
+
+  Future<void> syncNow() async {
+    final g = _game;
+    final r = remote;
+    if (g == null || r == null || _syncing) return;
+    _syncing = true;
+    try {
+      final patch = await r.syncProfile(device, name, ProfileState(money: g.money, diamonds: g.diamonds, day: g.day, chapter: g.chapter, totalScore: g.totalScore), ackRev);
+      if (patch != null && patch.rev > ackRev) {
+        g.applyRemotePatch(money: patch.money, diamonds: patch.diamonds, day: patch.day, totalScore: patch.totalScore);
+        ackRev = patch.rev;
+        await prefs?.setInt('lb_rev', ackRev);
+        if (open) unawaited(refresh(silent: true));
+      }
+    } catch (_) {
+      // ağ yok: bir sonraki turda yeniden denenir
+    } finally {
+      _syncing = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _syncTimer?.cancel();
+    super.dispose();
+  }
 
   /// GameController olay aboneliği.
   void handle(GameEvent e) {
@@ -240,9 +342,12 @@ class LeaderboardManager extends ChangeNotifier {
     await refresh();
   }
 
-  Future<void> refresh() async {
-    loading = true;
-    notifyListeners();
+  /// [silent]: otomatik yenileme; "Yükleniyor" yanıp sönmesin.
+  Future<void> refresh({bool silent = false}) async {
+    if (!silent) {
+      loading = true;
+      notifyListeners();
+    }
     Board? b;
     final r = remote;
     if (r != null) {

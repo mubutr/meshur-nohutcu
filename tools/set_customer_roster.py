@@ -12,7 +12,10 @@ j = json.loads(P.read_text(encoding="utf-8"))
 
 def person(pid, ad, gender, age):
     """age: 'yasli' | 'genc'. Yaşlı erkek 'ammi', kadın 'bacı', genç erkek ustaya/ustadan 'Rafık'."""
-    if gender == "kadin":
+    if gender == "kadin" and age == "yasli":  # Antep ağzı: teyze -> deze
+        ref, dat, hitap, usta = f"{ad} deze", f"{ad} dezeye", None, "usta"
+        patience, tip, weight = 1.15, 1.1, 2
+    elif gender == "kadin":
         ref, dat, hitap, usta = f"{ad} bacı", f"{ad} bacıya", None, "usta"
         patience, tip, weight = (1.15, 1.1, 2) if age == "yasli" else (1.0, 1.1, 2)
     elif age == "yasli":
@@ -41,7 +44,7 @@ ROSTER = [
     person("sakire", "Şakire", "kadin", "genc"),
     # erkekler
     person("maamed", "Maamed", "erkek", "yasli"),
-    person("huseyin", "Hüseyin", "erkek", "yasli"),
+    person("huseyin", "Hösün", "erkek", "yasli"),
     person("okkes", "Ökkeş", "erkek", "yasli"),
     person("cimaali", "Cımaali", "erkek", "yasli"),
     person("mustafa", "Mustafa", "erkek", "genc"),

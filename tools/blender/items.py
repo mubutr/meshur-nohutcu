@@ -167,16 +167,16 @@ def build_bowls(out):
     rnd = random.Random(8)
     onion = L.make_mat("Sogan", (0.93, 0.72, 0.80), rough=0.35, sss=0.4)
     parsley = L.make_mat("Maydanoz", (0.18, 0.5, 0.14), rough=0.55)
-    for i in range(70):
+    for i in range(190):
         a = rnd.uniform(0, math.tau)
         r = math.sqrt(rnd.random()) * 0.85
-        h = 0.38 + 0.18 * (1 - r * r) + rnd.uniform(0, 0.05)
-        L.torus((r * math.cos(a), r * math.sin(a), h), major=0.12, minor=0.014, mat=onion,
+        h = 0.60 + 0.24 * (1 - r * r) + rnd.uniform(0, 0.07)
+        L.torus((r * math.cos(a), r * math.sin(a), h), major=0.15, minor=0.02, mat=onion,
                 rot=(rnd.uniform(0, 80), rnd.uniform(0, 80), rnd.uniform(0, 360)))
-    for i in range(80):
+    for i in range(230):
         a = rnd.uniform(0, math.tau)
         r = math.sqrt(rnd.random()) * 0.85
-        L.sphere((r * math.cos(a), r * math.sin(a), 0.42 + 0.15 * (1 - r * r) + rnd.uniform(0, 0.05)), 0.055,
+        L.sphere((r * math.cos(a), r * math.sin(a), 0.62 + 0.22 * (1 - r * r) + rnd.uniform(0, 0.07)), 0.07,
                  (rnd.uniform(1, 2.2), 1, 0.35), parsley, seg=10, rings=6, rot=(0, 0, rnd.uniform(0, 360)))
     L.render(f"{out}/piyaz_kase.png", 512, 512)
 
@@ -186,8 +186,8 @@ def build_bowls(out):
     _bowl(ceramic, ceramic, r=0.8, h=0.45)
     rnd = random.Random(21)
     flake = L.make_mat("PulBiber", (0.62, 0.06, 0.02), rough=0.55, bump=("noise", 60, 0.3))
-    pts = L.scatter_disc(420, 0.65, 0.65, rnd, min_dist=0.0, z=0.3, hmax=0.2, tries=1)
-    L.blob_cloud("Acı", pts, flake, radius=0.03, jitter=0.4, seed=4, subdiv=1, flat=0.6)
+    pts = L.scatter_disc(1800, 0.66, 0.66, rnd, min_dist=0.0, z=0.47, hmax=0.34, tries=1)
+    L.blob_cloud("Acı", pts, flake, radius=0.05, jitter=0.4, seed=4, subdiv=1, flat=0.8)
     L.render(f"{out}/aci_kase.png", 512, 512)
 
 
@@ -259,8 +259,8 @@ def build_sumak(out):
     _bowl(ceramic, ceramic, r=0.8, h=0.45)
     rnd = random.Random(33)
     dust = L.make_mat("Sumak", sumak_col, rough=0.9, bump=("noise", 80, 0.25))
-    pts = L.scatter_disc(520, 0.66, 0.66, rnd, min_dist=0.0, z=0.3, hmax=0.2, tries=1)
-    L.blob_cloud("Sumak", pts, dust, radius=0.028, jitter=0.45, seed=6, subdiv=1, flat=0.6)
+    pts = L.scatter_disc(2000, 0.66, 0.66, rnd, min_dist=0.0, z=0.47, hmax=0.34, tries=1)
+    L.blob_cloud("Sumak", pts, dust, radius=0.046, jitter=0.45, seed=6, subdiv=1, flat=0.8)
     L.render(f"{out}/sumak_kase.png", 512, 512)
 
 

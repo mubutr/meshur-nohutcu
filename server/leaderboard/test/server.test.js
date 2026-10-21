@@ -118,7 +118,71 @@ test('HTTP: büyük gövde ve hız sınırı', async () => {
     const big = await fetch(`${base}/scores`, { method: 'POST', body: 'x'.repeat(5000) }).catch(() => ({ status: 413 }));
     assert.equal(big.status, 413);
     let last = 0;
-    for (let i = 0; i < 70; i++) last = (await fetch(`${base}/health`)).status;
+    for (let i = 0; i < 260; i++) last = (await fetch(`${base}/health`)).status;
     assert.equal(last, 429);
+  });
+});
+
+const prof = (o) => ({ device: dev(7), name: 'Hösün', money: 500, diamonds: 3, day: 4, chapter: 1, totalScore: 900, ack: 0, ...o });
+
+test('profil: istemci durumu kaydedilir, yönetici düzenlemesi patch olarak döner, ack ile kapanır', () => {
+  const s = new Store();
+  assert.equal(s.profile(prof()).status, 200);
+  assert.equal(s.adminList()[0].money, 500);
+  assert.deepEqual(s.adminEdit(dev(7), { money: 9999, diamonds: 50 }), { status: 200, ok: true, rev: 1 });
+  // henüz ack yok: istemcinin eski durumu sunucuyu ezmemeli, patch dönmeli
+  const r1 = s.profile(prof({ money: 510 }));
+  assert.equal(r1.patch.rev, 1);
+  assert.equal(r1.patch.money, 9999);
+  assert.equal(r1.patch.diamonds, 50);
+  assert.equal(s.adminList()[0].money, 9999);
+  // istemci uyguladı ve ack gönderdi
+  const r2 = s.profile(prof({ money: 9999, diamonds: 50, ack: 1 }));
+  assert.equal(r2.patch, null);
+  assert.equal(s.adminList()[0].pending, false);
+});
+
+test('profil: doğrulama ve imza', () => {
+  const s = new Store({ secret: 'gizli' });
+  assert.equal(s.profile(prof()).status, 403);
+  const { signProfile } = require('../store');
+  const b = prof();
+  b.sig = signProfile('gizli', b.device, b.money, b.diamonds, b.day, b.totalScore);
+  assert.equal(s.profile(b).status, 200);
+  assert.equal(new Store().profile(prof({ money: -1 })).status, 400);
+  assert.equal(new Store().profile(prof({ device: 'x' })).status, 400);
+});
+
+test('yönetici: skor düzeltmesi sıralamaya yansır, silme oyuncuyu kaldırır', () => {
+  const s = new Store();
+  s.submit(sub({ device: dev(7), name: 'Hösün', score: 100 }));
+  s.profile(prof());
+  assert.equal(s.adminEdit(dev(7), { scoreAll: 5000 }).ok, true);
+  assert.equal(s.leaderboard('all', dev(7)).entries[0].score, 5000);
+  assert.equal(s.adminEdit(dev(7), { name: 'X' }).status, 400);
+  assert.equal(s.adminEdit(dev(7), { money: -5 }).status, 400);
+  assert.equal(s.adminEdit(dev(99), { money: 5 }).status, 404);
+  assert.equal(s.adminDelete(dev(7)).ok, true);
+  assert.equal(s.leaderboard('all', '').entries.length, 0);
+});
+
+test('HTTP: /admin anahtarsız kapalı, anahtarla çalışır', async () => {
+  await withServer({ store: {}, app: { adminToken: 'tok123' } }, async (base) => {
+    assert.equal((await fetch(`${base}/profile`, { method: 'POST', body: JSON.stringify(prof()) })).status, 200);
+    assert.equal((await fetch(`${base}/admin/api/players`)).status, 401);
+    const h = { 'x-admin-token': 'tok123' };
+    const list = await (await fetch(`${base}/admin/api/players`, { headers: h })).json();
+    assert.equal(list.players.length, 1);
+    const ed = await fetch(`${base}/admin/api/players/${dev(7)}`, { method: 'POST', headers: h, body: JSON.stringify({ money: 123 }) });
+    assert.equal(ed.status, 200);
+    const p = await (await fetch(`${base}/profile`, { method: 'POST', body: JSON.stringify(prof()) })).json();
+    assert.equal(p.patch.money, 123);
+    const page = await fetch(`${base}/admin`);
+    assert.equal(page.status, 200);
+    assert.match(await page.text(), /Meşhur Nohutçu/);
+  });
+  await withServer({ store: {}, app: {} }, async (base) => {
+    assert.equal((await fetch(`${base}/admin`)).status, 404);
+    assert.equal((await fetch(`${base}/admin/api/players`, { headers: { 'x-admin-token': '' } })).status, 404);
   });
 });
