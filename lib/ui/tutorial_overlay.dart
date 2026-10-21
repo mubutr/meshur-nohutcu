@@ -31,7 +31,7 @@ const List<TutorialStep> kTutorialSteps = [
   ),
   TutorialStep(
     title: '3 · Nohut ve ekler',
-    text: 'Nohutu, piyazı, acıyı, kızartmayı, sumağı ve sosları da sürükleyerek tezgâhtaki dürüme bırak. ◀ ▶ ile hazırlayacağın ürünü seç. Her malzeme para harcar!',
+    text: 'Nohutu, piyazı, acıyı, kızartmayı, sumağı ve sosları da sürükleyerek tezgâhtaki dürüme bırak. Ürün seçici oklarıyla hazırlayacağın ürünü seç. Her malzeme para harcar!',
     spot: Rect.fromLTWH(262, 625, 245, 270),
     cardAt: Alignment.topLeft,
   ),
@@ -108,14 +108,14 @@ class _SpotPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final full = Path()..addRect(Offset.zero & size);
     final scrim = Paint()..color = Colors.black.withValues(alpha: 0.72);
     if (spot == null) {
-      canvas.drawPath(full, scrim);
+      canvas.drawRect(Offset.zero & size, scrim);
       return;
     }
     final hole = RRect.fromRectAndRadius(spot!.inflate(6), const Radius.circular(24));
-    canvas.drawPath(Path.combine(PathOperation.difference, full, Path()..addRRect(hole)), scrim);
+    // evenOdd: dış dikdörtgen boyanır, iç kalan delik boş kalır (Path.combine web'de güvenilir değil)
+    canvas.drawPath(Path()..fillType = PathFillType.evenOdd..addRect(Offset.zero & size)..addRRect(hole), scrim);
     canvas.drawRRect(hole, Paint()..style = PaintingStyle.stroke..strokeWidth = 5..color = const Color(0xFFFFD27A));
   }
 

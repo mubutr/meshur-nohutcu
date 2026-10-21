@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:nohut_durumu/data/models.dart';
 import 'package:nohut_durumu/game/game_controller.dart';
 import 'package:nohut_durumu/leaderboard/leaderboard.dart';
 import 'package:nohut_durumu/ui/game_screen.dart';
