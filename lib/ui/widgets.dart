@@ -292,6 +292,15 @@ class _StationState extends State<Station> {
   }
 }
 
+/// Küçük ekranda düğme/simge büyütme çarpanı (GameScreen.textBoost). Kaplama kartlarının yazı çarpanı sınırlı olsa da düğmeler büyür.
+class UiScale extends InheritedWidget {
+  const UiScale({super.key, required this.boost, required super.child});
+  final double boost;
+  static double of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<UiScale>()?.boost ?? 1.0;
+  @override
+  bool updateShouldNotify(UiScale old) => old.boost != boost;
+}
+
 class WoodButton extends StatelessWidget {
   const WoodButton({super.key, required this.label, required this.onTap, this.icon, this.enabled = true, this.big = false, this.color});
   final String label;
@@ -302,13 +311,14 @@ class WoodButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = color ?? const Color(0xFF9A3D2B);
+    final k = 1 + (UiScale.of(context) - 1) * 0.7; // telefonda %35'e kadar büyür
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 150),
         opacity: enabled ? 1 : 0.4,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: big ? 34 : 20, vertical: big ? 16 : 10),
+          padding: EdgeInsets.symmetric(horizontal: (big ? 34 : 20) * k, vertical: (big ? 16 : 10) * k),
           decoration: BoxDecoration(
             color: c,
             borderRadius: BorderRadius.circular(40),
@@ -316,9 +326,9 @@ class WoodButton extends StatelessWidget {
             boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 8, offset: Offset(0, 4))],
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            if (icon != null) Icon(icon, color: Colors.white, size: big ? 32 : 22),
+            if (icon != null) Icon(icon, color: Colors.white, size: (big ? 32 : 22) * k),
             if (icon != null) const SizedBox(width: 8),
-            Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(label, style: TextStyle(color: Colors.white, fontSize: big ? 30 : 19, fontWeight: FontWeight.w900, letterSpacing: 1)))),
+            Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(label, style: TextStyle(color: Colors.white, fontSize: (big ? 30 : 19) * k, fontWeight: FontWeight.w900, letterSpacing: 1)))),
           ]),
         ),
       ),
@@ -344,16 +354,19 @@ class Pill extends StatelessWidget {
   final Color iconColor;
   final bool small;
   @override
-  Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: text.isEmpty ? 14 : (small ? 12 : 16), vertical: small ? 6 : 8),
+  Widget build(BuildContext context) {
+    final k = text.isEmpty ? 1 + (UiScale.of(context) - 1) * 0.9 : 1.0; // yalnız simge düğmeleri telefonda büyür
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: text.isEmpty ? 14 * k : (small ? 12 : 16), vertical: text.isEmpty ? 6 * k : (small ? 6 : 8)),
         decoration: BoxDecoration(color: const Color(0xCC2A1A0C), borderRadius: BorderRadius.circular(24), border: Border.all(color: const Color(0xFFD9A25F), width: 2)),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           // text boşsa yalnızca simge (üst çubuk düğmeleri)
-          if (icon != null) Icon(icon, color: iconColor, size: text.isEmpty ? 30 : (small ? 20 : 24)),
+          if (icon != null) Icon(icon, color: iconColor, size: text.isEmpty ? 30 * k : (small ? 20 : 24)),
           if (icon != null && text.isNotEmpty) SizedBox(width: small ? 6 : 8),
           if (text.isNotEmpty) Text(text, style: TextStyle(color: kCream, fontSize: small ? 20 : 24, fontWeight: FontWeight.w800)),
         ]),
       );
+  }
 }
 
 const Color kDiamond = Color(0xFF7FD6FF);

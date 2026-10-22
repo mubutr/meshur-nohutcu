@@ -42,12 +42,18 @@ class GameScreen extends StatelessWidget {
         final scale = (c.maxWidth / w).clamp(0.0, c.maxHeight / kH);
         final extra = (w - kW) / 2;
         final mq = MediaQuery.of(context);
+        // alt tezgâh büyütmesi: yatayda çentik payına taşmasın (içerik ≈1550 birim geniş)
+        final notch = math.max(inset.left, inset.right) / scale;
+        final maxCounter = math.max(1.0, (w - 2 * notch - 24) / 1550);
+        final counterScale = math.min(1 + (textBoost(scale) - 1) * 0.5, maxCounter);
         return Center(
           child: FittedBox(
             fit: BoxFit.contain,
             child: MediaQuery(
               data: mq.copyWith(textScaler: TextScaler.linear(textBoost(scale))),
-              child: SizedBox(
+              child: UiScale(
+                boost: textBoost(scale),
+                child: SizedBox(
                 width: w,
                 height: kH,
                 child: ListenableBuilder(
@@ -60,10 +66,11 @@ class GameScreen extends StatelessWidget {
                       top: 0,
                       width: kW,
                       height: kH,
-                      child: _Scene(game: game, animations: animations, hudLeft: 14 + inset.left / scale - extra, hudRight: 14 + inset.right / scale - extra, hudTop: 14 + inset.top / scale),
+                      child: _Scene(game: game, animations: animations, counterScale: counterScale, hudLeft: 14 + inset.left / scale - extra, hudRight: 14 + inset.right / scale - extra, hudTop: 14 + inset.top / scale),
                     ),
                   ]),
                 ),
+              ),
               ),
             ),
           ),
@@ -139,9 +146,10 @@ String _mainAsset(String id) => switch (id) {
 const _sauceAssets = {'sos': 'sos_sise', 'ketcap': 'ketcap_sise', 'mayonez': 'mayonez_sise', 'nar': 'nar_sise'};
 
 class _Scene extends StatelessWidget {
-  const _Scene({required this.game, required this.animations, this.hudLeft = 14, this.hudRight = 14, this.hudTop = 14});
+  const _Scene({required this.game, required this.animations, this.counterScale = 1.0, this.hudLeft = 14, this.hudRight = 14, this.hudTop = 14});
   final GameController game;
   final bool animations;
+  final double counterScale; // alt tezgâhın büyütme çarpanı (telefon)
   final double hudLeft;
   final double hudRight;
   final double hudTop;
@@ -178,7 +186,7 @@ class _Scene extends StatelessWidget {
 
                 // müşteriler (paket servis paneli açıkken biraz sola kayar)
                 for (var i = 0; i < game.slotCount; i++)
-                  if (game.slots[i] != null) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: game.anyBoardWrapped && playing),
+                  if (game.slots[i] != null) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: game.anyBoardWrapped && playing, lift: (counterScale - 1) * 320),
 
                 Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/tezgah_$theme.png', fit: BoxFit.fill))),
                 for (final d in front) Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/decor_${d.id}.png', fit: BoxFit.fill))),
@@ -200,62 +208,71 @@ class _Scene extends StatelessWidget {
           // yardımcı çırak etiketleri
           if (game.level('yardimci') > 0) _HelperTags(game: game),
 
-          // çalışma tezgâhı (mekân temasına göre malzeme)
-          Positioned(left: 0, right: 0, top: 676, bottom: 0, child: WoodPanel(theme: theme)),
-          const Positioned(left: 20, top: 634, child: RoleChip(text: 'ÇIRAK · SEN')),
+          // alt tezgâh: küçük ekranda büyütülür (dokunma hedefleri ve etiketler okunur kalsın); tabanı sabit, yatayda ortadan
+          Positioned.fill(
+            child: Transform.scale(
+              scale: counterScale,
+              alignment: Alignment.bottomCenter,
+              child: Stack(clipBehavior: Clip.none, children: [
+              // çalışma tezgâhı (mekân temasına göre malzeme)
+              Positioned(left: 0, right: 0, top: 676, bottom: 0, child: WoodPanel(theme: theme)),
+              const Positioned(left: 20, top: 634, child: RoleChip(text: 'ÇIRAK · SEN')),
 
-          // taban (ekmek / kâse) ve ana malzeme
-          Station(
-            left: 20,
-            top: 668,
-            width: 230,
-            asset: p.bowl ? 'kase_yigin' : 'ekmek_yigin',
-            label: p.bowl ? 'Kâse' : 'Tırnaklı ekmek',
-            onTap: game.tapBread,
-            drag: IngredientDrag(Ingredient.bread, p.bowl ? 'kase_yigin' : 'ekmek'),
-            steam: p.bowl ? null : SteamAnim(width: 120, height: 90, animate: animations, puffs: 3),
-          ),
-          _ProductSwitcher(game: game),
-          Station(
-            left: 272,
-            top: 678,
-            width: 190,
-            asset: _mainAsset(p.id),
-            label: OrderIcons.cap(p.fillName),
-            onTap: game.tapMain,
-            drag: IngredientDrag(Ingredient.main, _mainAsset(p.id)),
-            steam: SteamAnim(width: 110, height: 110, animate: animations),
-          ),
-
-          // ekler (piyaz, acı, kızartma, sumak)
-          Station(left: 1010, top: 706, width: 140, asset: 'piyaz_kase', label: 'Piyaz', onTap: game.tapPiyaz, locked: !p.allows('piyaz'), lockedText: '', drag: const IngredientDrag(Ingredient.piyaz, 'piyaz_kase')),
-          Station(left: 1150, top: 706, width: 140, asset: 'aci_kase', label: 'Acı', onTap: game.tapAci, drag: const IngredientDrag(Ingredient.aci, 'aci_kase')),
-          Station(left: 1290, top: 706, width: 140, asset: 'kizartma_kase', label: 'Kızartma', onTap: game.tapFried, locked: !game.friedUnlocked || !p.allows('fried'), lockedText: game.friedUnlocked ? '' : 'Bölüm 2', drag: const IngredientDrag(Ingredient.fried, 'kizartma_kase'), steam: SteamAnim(width: 90, height: 70, animate: animations, puffs: 3)),
-          Station(left: 1430, top: 706, width: 140, asset: 'sumak_kase', label: 'Sumak', onTap: game.tapSumak, locked: !game.sumakUnlocked || !p.allows('sumak'), lockedText: game.sumakUnlocked ? '' : 'Bölüm 2', drag: const IngredientDrag(Ingredient.sumak, 'sumak_kase')),
-
-          // sos rafı (Bölüm 2+): tezgâhın üstünde şişeler
-          if (game.chapter >= 2)
-            for (var i = 0; i < _sauceAssets.length; i++)
+              // taban (ekmek / kâse) ve ana malzeme
               Station(
-                left: 1010.0 + i * 118,
-                top: 556,
-                width: 112,
-                asset: _sauceAssets.values.elementAt(i),
-                label: game.cfg.sauce(_sauceAssets.keys.elementAt(i)).name,
-                onTap: () => game.tapSauce(_sauceAssets.keys.elementAt(i)),
-                drag: IngredientDrag(Ingredient.sauce, _sauceAssets.values.elementAt(i), sauce: _sauceAssets.keys.elementAt(i)),
-                locked: !allowSauce || !game.sauces.any((s) => s.id == _sauceAssets.keys.elementAt(i)),
-                lockedText: game.sauces.any((s) => s.id == _sauceAssets.keys.elementAt(i)) ? '' : 'Bölüm 3',
+                left: 20,
+                top: 668,
+                width: 230,
+                asset: p.bowl ? 'kase_yigin' : 'ekmek_yigin',
+                label: p.bowl ? 'Kâse' : 'Tırnaklı ekmek',
+                onTap: game.tapBread,
+                drag: IngredientDrag(Ingredient.bread, p.bowl ? 'kase_yigin' : 'ekmek'),
+                steam: p.bowl ? null : SteamAnim(width: 120, height: 90, animate: animations, puffs: 3),
+              ),
+              _ProductSwitcher(game: game),
+              Station(
+                left: 272,
+                top: 678,
+                width: 190,
+                asset: _mainAsset(p.id),
+                label: OrderIcons.cap(p.fillName),
+                onTap: game.tapMain,
+                drag: IngredientDrag(Ingredient.main, _mainAsset(p.id)),
+                steam: SteamAnim(width: 110, height: 110, animate: animations),
               ),
 
-          // bahşiş kavanozu
-          Positioned(left: 1470, top: 470, child: TipJarView(game: game)),
+              // ekler (piyaz, acı, kızartma, sumak)
+              Station(left: 1010, top: 706, width: 140, asset: 'piyaz_kase', label: 'Piyaz', onTap: game.tapPiyaz, locked: !p.allows('piyaz'), lockedText: '', drag: const IngredientDrag(Ingredient.piyaz, 'piyaz_kase')),
+              Station(left: 1150, top: 706, width: 140, asset: 'aci_kase', label: 'Acı', onTap: game.tapAci, drag: const IngredientDrag(Ingredient.aci, 'aci_kase')),
+              Station(left: 1290, top: 706, width: 140, asset: 'kizartma_kase', label: 'Kızartma', onTap: game.tapFried, locked: !game.friedUnlocked || !p.allows('fried'), lockedText: game.friedUnlocked ? '' : 'Bölüm 2', drag: const IngredientDrag(Ingredient.fried, 'kizartma_kase'), steam: SteamAnim(width: 90, height: 70, animate: animations, puffs: 3)),
+              Station(left: 1430, top: 706, width: 140, asset: 'sumak_kase', label: 'Sumak', onTap: game.tapSumak, locked: !game.sumakUnlocked || !p.allows('sumak'), lockedText: game.sumakUnlocked ? '' : 'Bölüm 2', drag: const IngredientDrag(Ingredient.sumak, 'sumak_kase')),
 
-          // üç hazırlık tezgâhı: malzemeleri sürükle ya da dokun; hazır dürümü müşteriye sürükle
-          for (var i = 0; i < GameController.boardCount; i++) BoardSlot(game: game, index: i, left: 500.0 + i * 172, top: 684, animations: animations, playing: playing),
+              // sos rafı (Bölüm 2+): tezgâhın üstünde şişeler
+              if (game.chapter >= 2)
+                for (var i = 0; i < _sauceAssets.length; i++)
+                  Station(
+                    left: 1010.0 + i * 118,
+                    top: 556,
+                    width: 112,
+                    asset: _sauceAssets.values.elementAt(i),
+                    label: game.cfg.sauce(_sauceAssets.keys.elementAt(i)).name,
+                    onTap: () => game.tapSauce(_sauceAssets.keys.elementAt(i)),
+                    drag: IngredientDrag(Ingredient.sauce, _sauceAssets.values.elementAt(i), sauce: _sauceAssets.keys.elementAt(i)),
+                    locked: !allowSauce || !game.sauces.any((s) => s.id == _sauceAssets.keys.elementAt(i)),
+                    lockedText: game.sauces.any((s) => s.id == _sauceAssets.keys.elementAt(i)) ? '' : 'Bölüm 3',
+                  ),
 
-          // ipucu
-          if (game.hint.isNotEmpty && playing) Positioned(left: 560, width: 480, top: 636, child: Center(child: HintChip(text: game.hint))),
+              // bahşiş kavanozu
+              Positioned(left: 1470, top: 470, child: TipJarView(game: game)),
+
+              // üç hazırlık tezgâhı: malzemeleri sürükle ya da dokun; hazır dürümü müşteriye sürükle
+              for (var i = 0; i < GameController.boardCount; i++) BoardSlot(game: game, index: i, left: 500.0 + i * 172, top: 684, animations: animations, playing: playing),
+
+              // ipucu
+              if (game.hint.isNotEmpty && playing) Positioned(left: 560, width: 480, top: 636, child: Center(child: HintChip(text: game.hint))),
+              ]),
+            ),
+          ),
 
           // paket servis (Bölüm 4+)
           if (game.deliveryActive && game.phase == Phase.playing) DeliveryPanel(game: game),
@@ -266,12 +283,15 @@ class _Scene extends StatelessWidget {
           if (game.phase != Phase.title) Positioned(right: hudRight, top: hudTop, child: Opacity(opacity: playing ? 1 : 0.45, child: HudRight(game: game))),
           if (game.toast != null) Positioned(left: 0, right: 0, top: 70, child: Center(child: ToastBanner(title: game.toast!.title, line: game.toast!.line))),
 
-          // faz kaplamaları          // kaplama kartları 1600x900 içinde sığsın diye yazı çarpanı en çok 1.15
+          // faz kaplamaları          // başlık ve ayarlar tam yazı çarpanıyla (basit ekranlar; düğmeler telefonda okunur olsun)
+          if (game.phase == Phase.title) TitleOverlay(game: game),
+          if (game.settingsOpen) SettingsOverlay(game: game),
+
+          // kaplama kartları 1600x900 içinde sığsın diye yazı çarpanı en çok 1.15
           Positioned.fill(
             child: MediaQuery(
               data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(MediaQuery.textScalerOf(context).scale(1.0), 1.15))),
               child: Stack(clipBehavior: Clip.none, children: [
-              if (game.phase == Phase.title) TitleOverlay(game: game),
               if (game.phase == Phase.dayEnd) DayEndOverlay(game: game),
               if (game.phase == Phase.gameOver) GameOverOverlay(game: game),
               if (game.phase == Phase.shop) ShopOverlay(game: game),
@@ -280,7 +300,6 @@ class _Scene extends StatelessWidget {
               if (game.notebookOpen) NotebookOverlay(game: game),
               if (game.recipeOpen) RecipeBookOverlay(game: game),
               if (game.leaderboard?.open ?? false) LeaderboardOverlay(manager: game.leaderboard!),
-              if (game.settingsOpen) SettingsOverlay(game: game),
               if (game.adMenuOpen) AdMenuOverlay(game: game),
               if (game.sceneLines != null) SceneOverlay(game: game),
               if (game.tutorialActive) TutorialOverlay(game: game),
@@ -429,8 +448,8 @@ class BoardSlot extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         SizedBox(
-          height: 38,
-          width: 164,
+          height: 52,
+          width: 172,
           child: FittedBox(fit: BoxFit.scaleDown, child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             if (a.bread && !a.wrapped)
               _MiniButton(key: ValueKey('wrap-$index'), label: bowl ? 'SERVİS ET' : 'SAR', color: const Color(0xFF2E7D5B), onTap: () => game.wrap(board: index)),
@@ -455,11 +474,11 @@ class _MiniButton extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: label != null ? 14 : 10, vertical: 5),
+          padding: EdgeInsets.symmetric(horizontal: label != null ? 18 : 12, vertical: 8),
           decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(22), border: Border.all(color: Colors.white, width: 2.5), boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 5, offset: Offset(0, 2))]),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
-            if (icon != null) Icon(icon, color: Colors.white, size: 22),
-            if (label != null) Text(label!, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: 1)),
+            if (icon != null) Icon(icon, color: Colors.white, size: 28),
+            if (label != null) Text(label!, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 1)),
           ]),
         ),
       );
@@ -524,11 +543,12 @@ class _HelperTags extends StatelessWidget {
 }
 
 class _CustomerView extends StatelessWidget {
-  const _CustomerView({required this.game, required this.slot, required this.x, required this.serveReady});
+  const _CustomerView({required this.game, required this.slot, required this.x, required this.serveReady, this.lift = 0});
   final GameController game;
   final int slot;
   final double x;
   final bool serveReady;
+  final double lift; // büyütülmüş alt tezgâh yüzünden ad etiketi ve sabır çubuğunun yukarı kayması
 
   @override
   Widget build(BuildContext context) {
@@ -543,7 +563,7 @@ class _CustomerView extends StatelessWidget {
     final bubbleCount = game.slots.where((x) => x?.bubble != null).length;
     final compactBubble = showOrder && bubbleCount > 1 && game.focusSlot != slot;
     // odaktaki balon küçük ekranda biraz yana açılır (komşunun sipariş çipleriyle çakışmayacak kadar)
-    final bubbleWiden = compactBubble ? 0.0 : (boost - 1) * 80;
+    final bubbleWiden = compactBubble ? 0.0 : (boost - 1) * 150;
     Widget? footer;
     if (showOrder) {
       footer = switch (c.kind) {
@@ -622,7 +642,7 @@ class _CustomerView extends StatelessWidget {
               right: -6 - bubbleWiden,
               bottom: 345, // balonun alt kenarı kafanın hemen üstünde; metin uzadıkça yukarı büyür
               child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(boost, 1.15))),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(boost, 1.3))),
                 child: SpeechBubble(
                 compact: compactBubble,
                 text: c.bubble!.text,
@@ -634,9 +654,9 @@ class _CustomerView extends StatelessWidget {
               ),
             ),
           // ad etiketi (usta bu müşteriye konuşuyorsa vurgulanır)
-          Positioned(left: 0, right: 0, top: 505, child: Center(child: NameTag(text: c.name.ref, highlighted: game.usta?.toSlot == slot))),
+          Positioned(left: 0, right: 0, top: 505 - lift, child: Center(child: NameTag(text: c.name.ref, highlighted: game.usta?.toSlot == slot))),
           // sabır çubuğu
-          if (c.state == CustomerState.waiting) Positioned(left: 70, right: 70, top: 545, child: PatienceBar(fraction: frac)),
+          if (c.state == CustomerState.waiting) Positioned(left: 70, right: 70, top: 545 - lift, child: PatienceBar(fraction: frac)),
           if (c.state == CustomerState.reacting && c.gain != 0) Positioned(left: 0, right: 0, top: 190, child: Center(child: GainChip(amount: c.gain))),
         ]),
       ),
