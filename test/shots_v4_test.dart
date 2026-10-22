@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nohut_durumu/game/game_controller.dart';
+import 'package:nohut_durumu/leaderboard/leaderboard.dart';
 import 'package:nohut_durumu/ui/game_screen.dart';
 import 'package:nohut_durumu/ui/splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -243,6 +244,80 @@ void main() {
     await snap('dukkan');
     g.openGarden();
     await snap('bahce');
+    g.dispose();
+  });
+
+  testWidgets('telefon: diğer ekranlar (sıralama, reklam, sahne, bahçe, soruşturma, paket servis)', skip: outDir == null, (t) async {
+    SharedPreferences.setMockInitialValues({'tutorial_done': true});
+    final prefs = await SharedPreferences.getInstance();
+    final board = LeaderboardManager(prefs: prefs, random: Random(3));
+    final g = GameController(
+      cfg: loadCfg(),
+      dialog: loadDialog(8),
+      questData: loadQuests(),
+      story: loadStory(),
+      riddles: loadRiddles(),
+      detectiveData: loadDetective(),
+      random: Random(8),
+      prefs: prefs,
+      leaderboard: board,
+      gameOverEnabled: true,
+    )..load();
+    g.quests.chapter = 5;
+    g.quests.chapterIntroSeen = true;
+    g.upgrades['yardimci'] = 2;
+    g.money = 4000;
+    g.startDay();
+    skipScenes(g);
+    final key = await pumpApp(t, GameScreen(game: g, animations: false), size: const Size(1688, 780), dpr: 2.0);
+    for (var i = 0; i < 3000 && g.slots.whereType<Customer>().length < 3; i++) {
+      g.tick(0.1);
+      skipScenes(g);
+    }
+    for (var i = 0; i < 60; i++) {
+      g.tick(0.1);
+    }
+    await settle(t);
+    await settle(t);
+    await shot(t, key, 'diger_01_oyun_bolum5_paket_servis');
+    board.toggle();
+    await t.pump();
+    await settle(t);
+    await shot(t, key, 'diger_02_siralama');
+    board.toggle();
+    g.startAd('money');
+    await settle(t);
+    await shot(t, key, 'diger_03_reklam_izleme');
+    g.cancelAd();
+    g.openCase();
+    await settle(t);
+    await shot(t, key, 'diger_04_sorusturma');
+    g.closeCase();
+    g.openGarden();
+    await settle(t);
+    await shot(t, key, 'diger_05_bahce');
+    g.dispose();
+  });
+
+  testWidgets('telefon: kepenk açılışı ve hikâye sahnesi', skip: outDir == null, (t) async {
+    SharedPreferences.setMockInitialValues({'tutorial_done': true});
+    final g = GameController(
+      cfg: loadCfg(),
+      dialog: loadDialog(4),
+      questData: loadQuests(),
+      story: loadStory(),
+      riddles: loadRiddles(),
+      detectiveData: loadDetective(),
+      random: Random(4),
+      introEnabled: true,
+    );
+    g.startDay();
+    final key = await pumpApp(t, GameScreen(game: g, animations: false), size: const Size(1688, 780), dpr: 2.0);
+    await settle(t);
+    await shot(t, key, 'kepenk_01_acilis');
+    g.skipIntro();
+    await settle(t);
+    await shot(t, key, 'kepenk_02_hikaye_sahnesi');
     g.dispose();
   });
 }

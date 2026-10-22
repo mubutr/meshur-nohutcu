@@ -5,8 +5,9 @@ import '../game/game_controller.dart';
 /// Her yeni günün başı: kepenk yukarı kalkar, ekranda "Ya Fettah, Ya Rezzak" yazar (ses: assets/sfx/yafettah.mp3 + kepenk.wav).
 /// Dokununca atlanır. [animate] false ise (testler/ekran görüntüsü) kepenk yarı açık sabit kare çizilir.
 class IntroOverlay extends StatelessWidget {
-  const IntroOverlay({super.key, required this.game, this.animate = true, this.staticProgress = 0.45});
+  const IntroOverlay({super.key, required this.game, this.animate = true, this.staticProgress = 0.45, this.extra = 0});
   final GameController game;
+  final double extra; // telefonda sahne kutusunun iki yanındaki ek genişlik: kepenk bunu da kaplar
   final bool animate;
   final double staticProgress;
 
@@ -28,7 +29,11 @@ class IntroOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final secs = game.cfg.eco('introSeconds');
     Widget body(double t) => _Frame(t: t, onTap: game.skipIntro);
-    return Positioned.fill(
+    return Positioned(
+      left: -extra,
+      right: -extra,
+      top: 0,
+      bottom: 0,
       child: animate
           ? TweenAnimationBuilder<double>(
               key: ValueKey('intro-${game.day}-${game.phase.name}'),

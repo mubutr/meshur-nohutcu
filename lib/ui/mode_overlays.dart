@@ -35,8 +35,11 @@ class _Card extends StatelessWidget {
 
 // =================================================================== paket servis paneli
 class DeliveryPanel extends StatelessWidget {
-  const DeliveryPanel({super.key, required this.game});
+  const DeliveryPanel({super.key, required this.game, this.right = 6, this.top = 84, this.width = 148});
   final GameController game;
+  final double right; // sahne kutusunun sağ kenarından uzaklık (telefonda ekran kenarına yaslanır)
+  final double top;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +47,9 @@ class DeliveryPanel extends StatelessWidget {
     final cap = d.boxCapacity(game.level('dagitim'));
     final ready = game.anyBoardWrapped;
     return Positioned(
-      left: 1446,
-      top: 84,
-      width: 148,
+      right: right,
+      top: top,
+      width: width,
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(color: const Color(0xDD2A1A0C), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFD9A25F), width: 2)),

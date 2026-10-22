@@ -66,7 +66,7 @@ class GameScreen extends StatelessWidget {
                       top: 0,
                       width: kW,
                       height: kH,
-                      child: _Scene(game: game, animations: animations, counterScale: counterScale, hudLeft: 14 + inset.left / scale - extra, hudRight: 14 + inset.right / scale - extra, hudTop: 14 + inset.top / scale),
+                      child: _Scene(game: game, animations: animations, counterScale: counterScale, extra: extra, hudLeft: 14 + inset.left / scale - extra, hudRight: 14 + inset.right / scale - extra, hudTop: 14 + inset.top / scale),
                     ),
                   ]),
                 ),
@@ -146,10 +146,11 @@ String _mainAsset(String id) => switch (id) {
 const _sauceAssets = {'sos': 'sos_sise', 'ketcap': 'ketcap_sise', 'mayonez': 'mayonez_sise', 'nar': 'nar_sise'};
 
 class _Scene extends StatelessWidget {
-  const _Scene({required this.game, required this.animations, this.counterScale = 1.0, this.hudLeft = 14, this.hudRight = 14, this.hudTop = 14});
+  const _Scene({required this.game, required this.animations, this.counterScale = 1.0, this.extra = 0, this.hudLeft = 14, this.hudRight = 14, this.hudTop = 14});
   final GameController game;
   final bool animations;
   final double counterScale; // alt tezgâhın büyütme çarpanı (telefon)
+  final double extra; // sahne kutusunun her iki yanındaki ek tasarım genişliği
   final double hudLeft;
   final double hudRight;
   final double hudTop;
@@ -285,7 +286,13 @@ class _Scene extends StatelessWidget {
           ),
 
           // paket servis (Bölüm 4+)
-          if (game.deliveryActive && game.phase == Phase.playing) DeliveryPanel(game: game),
+          if (game.deliveryActive && game.phase == Phase.playing)
+            DeliveryPanel(
+              game: game,
+              right: hudRight - 8, // masaüstünde sahnenin sağ kenarı; telefonda ekran kenarı (çentik payı dahil)
+              top: 84 + (MediaQuery.textScalerOf(context).scale(1.0) - 1) * 50,
+              width: 148 + (MediaQuery.textScalerOf(context).scale(1.0) - 1) * 120,
+            ),
 
           // HUD
           // kaplama açıkken HUD solar (sahne kutusunun dışına taşan kısımlar da karartılmış görünsün)
@@ -314,7 +321,7 @@ class _Scene extends StatelessWidget {
               if (game.sceneLines != null) SceneOverlay(game: game),
               if (game.tutorialActive) TutorialOverlay(game: game),
               if (game.adKind != null) AdWatchOverlay(game: game),
-              if (game.introActive) IntroOverlay(game: game, animate: animations),
+              if (game.introActive) IntroOverlay(game: game, animate: animations, extra: extra),
               ]),
             ),
           ),
@@ -572,8 +579,9 @@ class _CustomerView extends StatelessWidget {
     // kalabalıkta yalnızca odaktaki müşterinin balonu tam metinle açılır; diğerleri yalnızca sipariş çipleriyle (okunur kalsın)
     final bubbleCount = game.slots.where((x) => x?.bubble != null).length;
     final compactBubble = showOrder && bubbleCount > 1 && game.focusSlot != slot;
+    final crowded = bubbleCount > 2; // üç balon yan yana: genişleme yok, yazı sınırlı, küçük balonlar dar
     // odaktaki balon küçük ekranda biraz yana açılır (komşunun sipariş çipleriyle çakışmayacak kadar)
-    final bubbleWiden = compactBubble ? 0.0 : (boost - 1) * 150;
+    final bubbleWiden = (compactBubble || crowded) ? 0.0 : (boost - 1) * 150;
     Widget? footer;
     if (showOrder) {
       footer = switch (c.kind) {
@@ -648,11 +656,11 @@ class _CustomerView extends StatelessWidget {
           // konuşma balonu
           if (c.bubble != null)
             Positioned(
-              left: -6 - bubbleWiden,
-              right: -6 - bubbleWiden,
+              left: (compactBubble && crowded ? 16.0 : -6.0) - bubbleWiden,
+              right: (compactBubble && crowded ? 16.0 : -6.0) - bubbleWiden,
               bottom: 345, // balonun alt kenarı kafanın hemen üstünde; metin uzadıkça yukarı büyür
               child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(boost, 1.3))),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(boost, crowded ? 1.15 : 1.3))),
                 child: SpeechBubble(
                 compact: compactBubble,
                 text: c.bubble!.text,
