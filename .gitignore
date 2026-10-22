@@ -46,3 +46,15 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Yayın sırları: asla commit'lenmez (CI bunları GitHub Secrets'tan üretir)
+android/key.properties
+*.jks
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+*service-account*.json
+google-services.json
+GoogleService-Info.plist
+ios/ExportOptions.plist

@@ -69,6 +69,9 @@ Gerçek sunucuya karşı uçtan uca deneme: sunucuyu başlatıp `$env:LB_URL='ht
 - **Açılış:** Her yeni günün başında kepenk açılır, ekranda **"Ya Fettah, Ya Rezzak"** yazar (`assets/sfx/yafettah.mp3` kullanıcının kaydı + üretilmiş `kepenk.wav`); dokununca atlanır (`lib/ui/intro_overlay.dart`).
 - Kadro betiği: `tools/set_customer_roster.py`; sprite'lar `tools/blender/chars.py` (`CHARS` içinde ad = sprite öneki).
 
+## Yayın (TestFlight + Google Play)
+`main`'e push, iki GitHub Actions iş akışını başlatır: **iOS Release** (→ TestFlight) ve **Android Release** (→ Play Dahili test). Önce analiz ve test çalışır. iOS imzası sertifika dosyası gerektirmez (App Store Connect API anahtarı ile otomatik imza). Gerekli secret'lar, panel adımları ve mağaza listesi: **[docs/YAYIN.md](docs/YAYIN.md)**. Uygulama kimliği: `com.bigsoft.meshurnohutcu`. Simgeler `python -I tools/make_icons.py` ile sprite'lardan üretilir (`store/` altında 1024 ve 512 sürümleri).
+
 ## Klasörler
 | Yol | İçerik |
 |---|---|
