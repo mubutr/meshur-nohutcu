@@ -40,6 +40,8 @@ def main():
     if what in ("bg", "all"):
         bg = importlib.import_module("bg")
         bg.build_theme(out, sub) if sub else bg.build_all(out)
+    if what == "icon":
+        importlib.import_module("icon").build_icon(out)
     if what in ("decor", "all"):
         decor = importlib.import_module("decor")
         decor.build_all(out) if not sub else decor.build_one(out, sub)
