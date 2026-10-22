@@ -48,7 +48,7 @@ class TitleOverlay extends StatelessWidget {
         Positioned(right: 80, bottom: 0, width: 420, child: IgnorePointer(child: Image.asset('assets/sprites/fatma_mutlu.png'))),
         Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Text('Gaziantep’in en lezzetli köşesi', style: TextStyle(color: Color(0xFFFFD27A), fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: 2)),
+            const Text('Sıcak sıcak nohut dürümü', style: TextStyle(color: Color(0xFFFFD27A), fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: 2)),
             const SizedBox(height: 10),
             const Text('Meşhur\nNohutçu',
                 textAlign: TextAlign.center,

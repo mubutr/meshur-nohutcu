@@ -1,7 +1,7 @@
 # Meşhur Nohutçu
 
-Gaziantep'te bir nohut dürümü dükkânında geçen, Flutter ile yazılmış 2.5D restoran oyunu (çalışma adı).
-Müşteriler ve usta **Antep ağzıyla** konuşur. Tüm görseller ve sesler betikle sıfırdan üretilir.
+Bir mahalle nohut dürümü dükkânında geçen, Flutter ile yazılmış 2.5D restoran oyunu (çalışma adı).
+Müşteriler ve usta **yöresel ağızla** konuşur (şimdilik Antep ağzı; ileride başka lehçeler eklenecek, oyunda bölge adı geçmez). Tüm görseller ve sesler betikle sıfırdan üretilir.
 
 > **Marka notu:** Oyun adı **Meşhur Nohutçu**; yapımcı markası **bigsoft games** (açılış ekranı). Mağaza yayınından önce ad için marka/mağaza taraması yapılmalıdır.
 > **Temiz-oda ilkesi:** Kod, sanat, ses, metin, ürün/karakter adı ve denge değerlerinin tamamı bu depoda sıfırdan yazılmıştır; başka bir oyundan kopyalanmış hiçbir şey yoktur. Başka oyunlardan yalnızca tür düzeyindeki fikirler (bölümlü hikâye, günlük görevler, bahçe, paket servis, dedektiflik) alınmıştır.
@@ -25,7 +25,7 @@ Müşteriler ve usta **Antep ağzıyla** konuşur. Tüm görseller ve sesler bet
 
 - **₺ (para):** satıştan; **elmas:** reklam (günde 3), Gezgin müşteri (+1), **3 gün üst üste günlük görev** (+2). Elmas otomasyon modülleri (otomatik ekmek açıcı, nohut koyucu, sarıcı, ek malzeme) ve lüks dekor için harcanır; fiyatlar bölümle artar.
 - **Tarif Defteri** (HUD'da *Tarif*): ürünlerin ne olduğu, görseli, maliyeti ve fiyatı; kilitli ürünler silüet.
-- **Mekân temaları** bölümle lüksleşir: Mahalle Esnafı → Çarşı Lokantası → Antep Lokantası → Saray Sofrası; dekorlar para (+ elmas) ile alınır.
+- **Mekân temaları** bölümle lüksleşir: Mahalle Esnafı → Çarşı Lokantası → Lokanta → Saray Sofrası; dekorlar para (+ elmas) ile alınır.
 - Reklam şimdilik **sahte bir geri sayımdır** (`GameController._grantAd`); mağaza öncesi AdMob'a bağlanır.
 
 ## Bölümler (≈ 30+ oyun günü)

@@ -100,7 +100,7 @@ def _base():
 THEMES = {
     "t1": dict(title="Mahalle Esnafı", world=(0.66, 0.68, 0.70), sky_light=1.0),
     "t2": dict(title="Çarşı Lokantası", world=(0.80, 0.75, 0.68), sky_light=1.0),
-    "t3": dict(title="Antep Lokantası", world=(0.82, 0.72, 0.60), sky_light=1.0),
+    "t3": dict(title="Lokanta", world=(0.82, 0.72, 0.60), sky_light=1.0),
     "t4": dict(title="Saray Sofrası", world=(0.78, 0.72, 0.62), sky_light=1.0),
 }
 

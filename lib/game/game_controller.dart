@@ -358,7 +358,7 @@ class GameController extends ChangeNotifier {
   int get chapter => quests.chapter;
   bool get paused => sceneLines != null || notebookOpen || recipeOpen || adKind != null || adMenuOpen || introActive || tutorialActive;
 
-  /// Mekân teması (bölümle lüksleşir): t1 esnaf · t2 çarşı · t3 Antep lokantası · t4 saray sofrası.
+  /// Mekân teması (bölümle lüksleşir): t1 esnaf · t2 çarşı · t3 lokanta · t4 saray sofrası.
   String get theme => chapter >= 5 ? 't4' : (chapter == 4 ? 't3' : (chapter >= 2 ? 't2' : 't1'));
 
   // ------------------------------------------------------------- ödül / kayıt

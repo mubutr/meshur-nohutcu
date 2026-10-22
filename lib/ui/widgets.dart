@@ -171,7 +171,7 @@ class GainChip extends StatelessWidget {
       );
 }
 
-/// Çalışma tezgâhı: mekân temasına göre malzeme değiştirir (esnaf: paslanmaz, çarşı: ahşap, Antep: ceviz, saray: koyu mermer + altın).
+/// Çalışma tezgâhı: mekân temasına göre malzeme değiştirir (esnaf: paslanmaz, çarşı: ahşap, lokanta: ceviz, saray: koyu mermer + altın).
 class WoodPanel extends StatelessWidget {
   const WoodPanel({super.key, this.theme = 't2'});
   final String theme;

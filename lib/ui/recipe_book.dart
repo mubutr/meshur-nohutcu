@@ -61,7 +61,7 @@ class _RecipeBookOverlayState extends State<RecipeBookOverlay> {
       );
 
   Widget _extras(GameController g) => ListView(children: [
-        _extraRow(g, Icons.eco, 'Piyaz', 'Soğan, maydanoz ve sumakla ezilmiş Antep piyazı; nohutun en yakın dostu.', g.cfg.costs['piyaz']!, 1, 'piyaz_kase'),
+        _extraRow(g, Icons.eco, 'Piyaz', 'Soğan, maydanoz ve sumakla ezilmiş piyaz; nohutun en yakın dostu.', g.cfg.costs['piyaz']!, 1, 'piyaz_kase'),
         _extraRow(g, Icons.local_fire_department, 'Acı', 'Pul biber; bir tutam bile dili uyandırır.', g.cfg.costs['aci']!, 1, 'aci_kase'),
         _extraRow(g, Icons.fastfood, 'Kızartma eki', 'Patates, patlıcan ve biber kızartması; dürümün yanına ya da içine.', g.cfg.costs['fried']!, g.cfg.eco('friedMinChapter').round(), 'kizartma_kase'),
         for (final s in g.cfg.sauces) _extraRow(g, Icons.water_drop, s.name, s.desc, s.cost, s.minChapter, _sauceImages[s.id]!),

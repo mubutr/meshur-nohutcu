@@ -15,7 +15,7 @@ j["costs"] = {"bread": 24, "bowl": 14, "piyaz": 12, "aci": 5, "fried": 18}
 ALL = ["piyaz", "aci", "fried", "sauce", "sumak"]
 j["products"] = [
     {"id": "nohut", "name": "Nohut Dürümü", "fillName": "nohut", "minChapter": 1, "unit": 18, "maxAmount": 3, "weight": 5, "allow": ALL,
-     "desc": "Tırnaklı ekmeğin içine haşlanmış sıcak nohut, üstüne piyaz. Antep'in sabah dürümü."},
+     "desc": "Tırnaklı ekmeğin içine haşlanmış sıcak nohut, üstüne piyaz. Sabahın en sevilen dürümü."},
     {"id": "doner", "name": "Döner Dürümü", "fillName": "döner", "minChapter": 3, "unit": 44, "maxAmount": 2, "weight": 3, "allow": ALL,
      "desc": "Dikey şişten ince kesilmiş döner, tırnaklı ekmekte; piyaz ve sosla."},
     {"id": "kavurma", "name": "Kavurma Dürümü", "fillName": "kavurma", "minChapter": 4, "unit": 52, "maxAmount": 2, "weight": 3, "allow": ALL,
@@ -25,13 +25,13 @@ j["products"] = [
     {"id": "kizartma", "name": "Kızartma Dürümü", "fillName": "kızartma", "minChapter": 5, "unit": 28, "maxAmount": 2, "weight": 3, "allow": ALL,
      "desc": "Patates, patlıcan ve biber kızartması; ekmeğin içinde çıtır çıtır."},
     {"id": "beyran", "name": "Beyran", "fillName": "beyran", "minChapter": 5, "unit": 66, "maxAmount": 1, "weight": 2, "bowl": True, "allow": ["aci"],
-     "desc": "Antep'in sabah çorbası: kuzu etli, pirinçli, acı yağlı. Dürüm değil, kâsede servis edilir."},
+     "desc": "Sabahın şifa çorbası: kuzu etli, pirinçli, acı yağlı. Dürüm değil, kâsede servis edilir."},
 ]
 j["sauces"] = [
     {"id": "sos", "name": "Sos", "desc": "Dükkânın acılı kırmızı sosu.", "cost": 5, "minChapter": 2},
     {"id": "ketcap", "name": "Ketçap", "desc": "Tatlı domates sosu.", "cost": 5, "minChapter": 2},
     {"id": "mayonez", "name": "Mayonez", "desc": "Yumuşak, beyaz sos.", "cost": 5, "minChapter": 2},
-    {"id": "sumak", "name": "Sumak", "desc": "Ekşi, kırmızı toz; Antep'in baharı.", "cost": 6, "minChapter": 2},
+    {"id": "sumak", "name": "Sumak", "desc": "Ekşi, kırmızı toz; sofranın baharı.", "cost": 6, "minChapter": 2},
     {"id": "nar", "name": "Nar ekşisi", "desc": "Koyu, ekşi, kıvamlı. Döner ve çiğ köfteye yakışır.", "cost": 8, "minChapter": 3},
 ]
 
@@ -83,7 +83,7 @@ for dd in j["decor"]:
         dd["diamonds"] = dia[dd["id"]]
 have = {dd["id"] for dd in j["decor"]}
 for dd in [
-    {"id": "kilim2", "name": "İkinci Kilim", "desc": "Kapı önüne serilen kalın Antep kilimi.", "cost": 1200, "diamonds": 2, "layer": "back", "bonus": 0.03, "minChapter": 2},
+    {"id": "kilim2", "name": "İkinci Kilim", "desc": "Kapı önüne serilen kalın el dokuması kilim.", "cost": 1200, "diamonds": 2, "layer": "back", "bonus": 0.03, "minChapter": 2},
     {"id": "neon", "name": "Neon Tabela", "desc": "Gece sokağı aydınlatan nohut dürümü tabelası.", "cost": 1800, "diamonds": 4, "layer": "back", "bonus": 0.03, "minChapter": 3},
     {"id": "akvaryum", "name": "Akvaryum", "desc": "Bekleyenlerin gözünü dinlendiren balıklar.", "cost": 2400, "diamonds": 5, "layer": "back", "bonus": 0.04, "minChapter": 3},
     {"id": "avize", "name": "Kristal Avize", "desc": "Tavanda ışıl ışıl dönen avize.", "cost": 3200, "diamonds": 6, "layer": "back", "bonus": 0.05, "minChapter": 4},

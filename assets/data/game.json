@@ -625,7 +625,7 @@
   },
   {
    "id": "fistik",
-   "name": "Antep Fıstığı Kaseleri",
+   "name": "Fıstık Kaseleri",
    "desc": "Rafa iki kase fıstık",
    "cost": 1680,
    "layer": "back",
@@ -675,7 +675,7 @@
   {
    "id": "kilim2",
    "name": "İkinci Kilim",
-   "desc": "Kapı önüne serilen kalın Antep kilimi.",
+   "desc": "Kapı önüne serilen kalın el dokuması kilim.",
    "cost": 1200,
    "diamonds": 2,
    "layer": "back",
@@ -787,7 +787,7 @@
     "sauce",
     "sumak"
    ],
-   "desc": "Tırnaklı ekmeğin içine haşlanmış sıcak nohut, üstüne piyaz. Antep'in sabah dürümü."
+   "desc": "Tırnaklı ekmeğin içine haşlanmış sıcak nohut, üstüne piyaz. Sabahın en sevilen dürümü."
   },
   {
    "id": "doner",
@@ -869,7 +869,7 @@
    "allow": [
     "aci"
    ],
-   "desc": "Antep'in sabah çorbası: kuzu etli, pirinçli, acı yağlı. Dürüm değil, kâsede servis edilir."
+   "desc": "Sabahın şifa çorbası: kuzu etli, pirinçli, acı yağlı. Dürüm değil, kâsede servis edilir."
   }
  ],
  "sauces": [
@@ -897,7 +897,7 @@
   {
    "id": "sumak",
    "name": "Sumak",
-   "desc": "Ekşi, kırmızı toz; Antep'in baharı.",
+   "desc": "Ekşi, kırmızı toz; sofranın baharı.",
    "cost": 6,
    "minChapter": 2
   },

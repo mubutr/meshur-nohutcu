@@ -248,7 +248,7 @@ add("usta_penalty", "usta", "cirak",
     "Eyvah çırak, küsen müşteri {ceza} liraya mal oldu.")
 add("bonus_greet", "usta", "musteri",
     "Hoşgeldin gezgin, uzak yoldan mı geldin?",
-    "Buyur gezgin, hoşgeldin. Antep'in nohudunu tatmadan gitme.")
+    "Buyur gezgin, hoşgeldin. Mahallenin nohudunu tatmadan gitme.")
 add("bonus_reply", "musteri", "usta",
     "Hoşbuldum usta, yollarda adın duyuldu.",
     "Hoşbuldum usta, burnuma güzel koku geldi.")

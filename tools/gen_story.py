@@ -16,7 +16,7 @@ def scene(sid, *lines):
 
 # ====================================================================== BÖLÜM 1
 scene("c1_intro",
-      ("anlatici", "cirak", "Gaziantep, Bey Mahallesi. Sabahın köründe tandırın külü daha sıcak, nohut kazanı fokur fokur."),
+      ("anlatici", "cirak", "Bey Mahallesi. Sabahın köründe tandırın külü daha sıcak, nohut kazanı fokur fokur."),
       ("usta", "cirak", "Hoşgeldin çırak! Bu dükkânı babamdan devraldım. Tırnaklı ekmeğimizin, nohudumuzun adı bütün mahalleye yayılmıştı."),
       ("usta", "cirak", "Ama şu karşıya bak evlat. Kalaycı Nohut Evi açılmış. Neon ışık, davul zurna... Müşteri hep oraya akıyor."),
       ("rakip", "usta", "Günaydın usta! Eski usul nohut kaç gün dayanır bakalım? Mahalle yenilikten hoşlanır."),
@@ -47,7 +47,7 @@ scene("c2_outro",
 
 # ====================================================================== BÖLÜM 3
 scene("c3_intro",
-      ("anlatici", "cirak", "Gaziantep Gastronomi Şenliği başladı! Bütün mahalle sokağa dökülmüş, tezgâhlar boy boy dizilmiş."),
+      ("anlatici", "cirak", "Mahalle Lezzet Şenliği başladı! Bütün mahalle sokağa dökülmüş, tezgâhlar boy boy dizilmiş."),
       ("rakip", "usta", "Şenlikte jüri benim dürümüme bakacak usta. Sen nohuduna bakarsın."),
       ("usta", "cirak", "Kalabalık çok olacak evlat. Tek başımıza yetişemeyiz; bi yardımcı çırak tutmanın zamanı geldi."),
       ("usta", "cirak", "Şenlik boyunca para biriktirelim, Yardımcı Çırak'ı işe alak. Jüri 'Yılın Nohut Ustası'nı seçecek!"))
