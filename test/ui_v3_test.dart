@@ -19,6 +19,7 @@ Future<void> show(WidgetTester t, GameController g) async {
 }
 
 void main() {
+  phoneLayoutTests();
   final cfg = loadCfg();
 
   group('gün-gece', () {
@@ -249,6 +250,46 @@ void main() {
       expect(find.text('SERVİS ET'), findsOneWidget);
       expect(find.text('SAR'), findsNothing);
       g.dispose();
+    });
+  });
+}
+
+void phoneLayoutTests() {
+  group('telefon yerleşimi', () {
+    testWidgets('çok yatay ekranda sahne genişler, yazılar büyütülür, HUD kenarlara yaslanır', (t) async {
+      t.view.physicalSize = const Size(844, 390);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.reset);
+      final g = makeGame(3)..quests.chapterIntroSeen = true;
+      g.startDay();
+      skipScenes(g);
+      await t.pumpWidget(MaterialApp(home: Scaffold(body: GameScreen(game: g, animations: false))));
+      await t.pump();
+      final gun = find.text('Gün 1');
+      expect(gun, findsOneWidget);
+      expect(MediaQuery.textScalerOf(t.element(gun)).scale(10), greaterThan(10));
+      // HUD ekranın sol kenarına yakın (tasarım genişliği 1600'ün ötesine uzandığı için)
+      expect(t.getTopLeft(gun).dx, lessThan(60));
+      g.dispose();
+    });
+
+    testWidgets('masaüstü oranında (16:9) yazı çarpanı 1 ve sahne 1600 geniş kalır', (t) async {
+      t.view.physicalSize = const Size(1600, 900);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.reset);
+      final g = makeGame(3)..quests.chapterIntroSeen = true;
+      g.startDay();
+      skipScenes(g);
+      await t.pumpWidget(MaterialApp(home: Scaffold(body: GameScreen(game: g, animations: false))));
+      await t.pump();
+      expect(MediaQuery.textScalerOf(t.element(find.text('Gün 1'))).scale(10), 10);
+      g.dispose();
+    });
+
+    test('yazı çarpanı ölçeğe göre', () {
+      expect(GameScreen.textBoost(1.0), 1.0);
+      expect(GameScreen.textBoost(0.433), closeTo(1.5, 0.001));
+      expect(GameScreen.textBoost(0.2), 1.5);
     });
   });
 }

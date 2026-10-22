@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../data/models.dart';
@@ -24,24 +26,104 @@ class GameScreen extends StatelessWidget {
   static const slotX = [760.0, 1070.0, 1380.0];
   static const slotXDelivery = [700.0, 990.0, 1280.0];
 
+  /// Telefon gibi çok yatay ekranlarda tasarım genişliği 1600'ün ötesine uzar (kenar boşlukları sahneyle doldurulur).
+  static const double maxDesignW = 2200;
+
+  /// Küçük ekranda yazıları büyütme çarpanı: sahne küçüldükçe metin okunur kalsın diye.
+  static double textBoost(double scale) => (0.66 / scale).clamp(1.0, 1.5);
+
   @override
   Widget build(BuildContext context) {
+    final inset = MediaQuery.paddingOf(context); // çentik / ana ekran çubuğu
     return ColoredBox(
       color: const Color(0xFF1B1209),
-      child: Center(
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: SizedBox(
-            width: kW,
-            height: kH,
-            child: ListenableBuilder(
-              listenable: Listenable.merge([game, if (game.leaderboard != null) game.leaderboard!]),
-              builder: (context, _) => _Scene(game: game, animations: animations),
+      child: LayoutBuilder(builder: (context, c) {
+        final w = (kH * c.maxWidth / c.maxHeight).clamp(kW, maxDesignW);
+        final scale = (c.maxWidth / w).clamp(0.0, c.maxHeight / kH);
+        final extra = (w - kW) / 2;
+        final mq = MediaQuery.of(context);
+        return Center(
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: MediaQuery(
+              data: mq.copyWith(textScaler: TextScaler.linear(textBoost(scale))),
+              child: SizedBox(
+                width: w,
+                height: kH,
+                child: ListenableBuilder(
+                  listenable: Listenable.merge([game, if (game.leaderboard != null) game.leaderboard!]),
+                  builder: (context, _) => Stack(clipBehavior: Clip.hardEdge, children: [
+                    if (extra > 0) Positioned.fill(child: _SideFill(game: game, extra: extra)),
+                    // HUD ekranın gerçek kenarlarına yaslanır (sahne kutusunun dışına taşar); çentik payı bırakılır
+                    Positioned(
+                      left: extra,
+                      top: 0,
+                      width: kW,
+                      height: kH,
+                      child: _Scene(game: game, animations: animations, hudLeft: 14 + inset.left / scale - extra, hudRight: 14 + inset.right / scale - extra, hudTop: 14 + inset.top / scale),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+/// Sahnenin iki yanındaki genişletme: duvar ve tezgâhın kenar sütunu uzatılır, köşelere doğru kararır.
+class _SideFill extends StatelessWidget {
+  const _SideFill({required this.game, required this.extra});
+  final GameController game;
+  final double extra;
+
+  Widget _strip(bool left) {
+    final theme = game.theme;
+    final slice = SizedBox(
+      width: kW,
+      height: kH,
+      child: Stack(children: [
+        Positioned.fill(child: Image.asset('assets/sprites/bg_$theme.png', fit: BoxFit.fill)),
+        Positioned.fill(child: Image.asset('assets/sprites/tezgah_$theme.png', fit: BoxFit.fill)),
+      ]),
+    );
+    return SizedBox(
+      width: extra,
+      height: kH,
+      child: Stack(children: [
+        Positioned.fill(
+          child: FittedBox(
+            fit: BoxFit.fill,
+            child: ClipRect(child: Align(alignment: left ? Alignment.centerLeft : Alignment.centerRight, widthFactor: 40 / kW, child: slice)),
+          ),
+        ),
+        // dış kenara doğru kararma
+        Positioned.fill(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: left ? Alignment.centerRight : Alignment.centerLeft,
+                end: left ? Alignment.centerLeft : Alignment.centerRight,
+                colors: const [Color(0x001B1209), Color(0xCC1B1209)],
+              ),
             ),
           ),
         ),
-      ),
+      ]),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final light = DayLight.at(game.dayProgress);
+    final dim = game.paused || game.phase != Phase.playing;
+    return Stack(children: [
+      Positioned(left: 0, top: 0, child: TimeTint(light: light, child: _strip(true))),
+      Positioned(right: 0, top: 0, child: TimeTint(light: light, child: _strip(false))),
+      if (dim) Positioned.fill(child: ColoredBox(color: Colors.black.withValues(alpha: 0.6))),
+    ]);
   }
 }
 
@@ -57,9 +139,12 @@ String _mainAsset(String id) => switch (id) {
 const _sauceAssets = {'sos': 'sos_sise', 'ketcap': 'ketcap_sise', 'mayonez': 'mayonez_sise', 'nar': 'nar_sise'};
 
 class _Scene extends StatelessWidget {
-  const _Scene({required this.game, required this.animations});
+  const _Scene({required this.game, required this.animations, this.hudLeft = 14, this.hudRight = 14, this.hudTop = 14});
   final GameController game;
   final bool animations;
+  final double hudLeft;
+  final double hudRight;
+  final double hudTop;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +160,7 @@ class _Scene extends StatelessWidget {
       duration: const Duration(milliseconds: 1400),
       builder: (context, progress, _) {
         final light = DayLight.at(progress);
-        return Stack(clipBehavior: Clip.hardEdge, children: [
+        return Stack(clipBehavior: Clip.none, children: [
           // pencerenin arkasındaki gökyüzü (bg katmanında şeffaf delik var)
           SkyView(light: light),
           // ------- dünya: duvar, süsler, karakterler, tezgâh (saat rengiyle çarpılır)
@@ -176,26 +261,34 @@ class _Scene extends StatelessWidget {
           if (game.deliveryActive && game.phase == Phase.playing) DeliveryPanel(game: game),
 
           // HUD
-          if (game.phase != Phase.title) Positioned(left: 14, top: 14, child: Hud(game: game)),
-          if (game.phase != Phase.title) Positioned(right: 14, top: 14, child: HudRight(game: game)),
+          // kaplama açıkken HUD solar (sahne kutusunun dışına taşan kısımlar da karartılmış görünsün)
+          if (game.phase != Phase.title) Positioned(left: hudLeft, top: hudTop, child: Opacity(opacity: playing ? 1 : 0.45, child: Hud(game: game))),
+          if (game.phase != Phase.title) Positioned(right: hudRight, top: hudTop, child: Opacity(opacity: playing ? 1 : 0.45, child: HudRight(game: game))),
           if (game.toast != null) Positioned(left: 0, right: 0, top: 70, child: Center(child: ToastBanner(title: game.toast!.title, line: game.toast!.line))),
 
-          // faz kaplamaları
-          if (game.phase == Phase.title) TitleOverlay(game: game),
-          if (game.phase == Phase.dayEnd) DayEndOverlay(game: game),
-          if (game.phase == Phase.gameOver) GameOverOverlay(game: game),
-          if (game.phase == Phase.shop) ShopOverlay(game: game),
-          if (game.phase == Phase.garden) GardenOverlay(game: game),
-          if (game.phase == Phase.detective && game.caseState != null) DetectiveOverlay(game: game),
-          if (game.notebookOpen) NotebookOverlay(game: game),
-          if (game.recipeOpen) RecipeBookOverlay(game: game),
-          if (game.leaderboard?.open ?? false) LeaderboardOverlay(manager: game.leaderboard!),
-          if (game.settingsOpen) SettingsOverlay(game: game),
-          if (game.adMenuOpen) AdMenuOverlay(game: game),
-          if (game.sceneLines != null) SceneOverlay(game: game),
-          if (game.tutorialActive) TutorialOverlay(game: game),
-          if (game.adKind != null) AdWatchOverlay(game: game),
-          if (game.introActive) IntroOverlay(game: game, animate: animations),
+          // faz kaplamaları          // kaplama kartları 1600x900 içinde sığsın diye yazı çarpanı en çok 1.15
+          Positioned.fill(
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(MediaQuery.textScalerOf(context).scale(1.0), 1.15))),
+              child: Stack(clipBehavior: Clip.none, children: [
+              if (game.phase == Phase.title) TitleOverlay(game: game),
+              if (game.phase == Phase.dayEnd) DayEndOverlay(game: game),
+              if (game.phase == Phase.gameOver) GameOverOverlay(game: game),
+              if (game.phase == Phase.shop) ShopOverlay(game: game),
+              if (game.phase == Phase.garden) GardenOverlay(game: game),
+              if (game.phase == Phase.detective && game.caseState != null) DetectiveOverlay(game: game),
+              if (game.notebookOpen) NotebookOverlay(game: game),
+              if (game.recipeOpen) RecipeBookOverlay(game: game),
+              if (game.leaderboard?.open ?? false) LeaderboardOverlay(manager: game.leaderboard!),
+              if (game.settingsOpen) SettingsOverlay(game: game),
+              if (game.adMenuOpen) AdMenuOverlay(game: game),
+              if (game.sceneLines != null) SceneOverlay(game: game),
+              if (game.tutorialActive) TutorialOverlay(game: game),
+              if (game.adKind != null) AdWatchOverlay(game: game),
+              if (game.introActive) IntroOverlay(game: game, animate: animations),
+              ]),
+            ),
+          ),
         ]);
       },
     );
@@ -235,7 +328,7 @@ class _ProductSwitcher extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 4),
             padding: const EdgeInsets.symmetric(vertical: 5),
             decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(16)),
-            child: Text(game.selectedProduct.name, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.w900)),
+            child: FittedBox(fit: BoxFit.scaleDown, child: Text(game.selectedProduct.name, maxLines: 1, style: const TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.w900))),
           ),
         ),
         if (multi) arrow(Icons.chevron_right, 1) else const SizedBox(width: 40),
@@ -445,6 +538,8 @@ class _CustomerView extends StatelessWidget {
     final courierReady = c.isCourier && c.state != CustomerState.reacting;
     final frac = c.patienceFraction;
     final showOrder = c.state == CustomerState.waiting && !c.waitLineShown;
+    final boost = MediaQuery.textScalerOf(context).scale(1.0); // küçük ekranda yazı çarpanı
+    final bubbleWiden = (boost - 1) * 120;
     Widget? footer;
     if (showOrder) {
       footer = switch (c.kind) {
@@ -519,15 +614,19 @@ class _CustomerView extends StatelessWidget {
           // konuşma balonu
           if (c.bubble != null)
             Positioned(
-              left: -6,
-              right: -6,
+              // küçük ekranda yazı büyüyünce balon yana genişler, boyu üst çubuğa (HUD) çarpmasın
+              left: -6 - bubbleWiden,
+              right: -6 - bubbleWiden,
               bottom: 345, // balonun alt kenarı kafanın hemen üstünde; metin uzadıkça yukarı büyür
-              child: SpeechBubble(
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(boost, 1.2))),
+                child: SpeechBubble(
                 text: c.bubble!.text,
                 who: c.bubble!.whoLabel,
                 to: c.bubble!.toLabel,
                 size: showOrder ? 15.5 : 17,
                 footer: footer,
+                ),
               ),
             ),
           // ad etiketi (usta bu müşteriye konuşuyorsa vurgulanır)

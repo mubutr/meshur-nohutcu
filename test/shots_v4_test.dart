@@ -33,16 +33,16 @@ void main() {
   Future<void> shot(WidgetTester t, GlobalKey key, String name) async {
     await t.runAsync(() async {
       final boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final img = await boundary.toImage(pixelRatio: 1.0);
+      final img = await boundary.toImage(pixelRatio: t.view.devicePixelRatio);
       final data = await img.toByteData(format: ui.ImageByteFormat.png);
       Directory(outDir!).createSync(recursive: true);
       File('$outDir/$name.png').writeAsBytesSync(data!.buffer.asUint8List());
     });
   }
 
-  Future<GlobalKey> pumpApp(WidgetTester t, Widget child) async {
-    t.view.physicalSize = const Size(1600, 900);
-    t.view.devicePixelRatio = 1.0;
+  Future<GlobalKey> pumpApp(WidgetTester t, Widget child, {Size size = const Size(1600, 900), double dpr = 1.0}) async {
+    t.view.physicalSize = size;
+    t.view.devicePixelRatio = dpr;
     addTearDown(t.view.reset);
     final key = GlobalKey();
     await t.runAsync(() => loadFonts());
@@ -117,6 +117,125 @@ void main() {
     }
     await settle(t);
     await shot(t, key, '05_oyun_bitti');
+    g.dispose();
+  });
+
+  testWidgets('telefon (844x390) görünümü', skip: outDir == null, (t) async {
+    SharedPreferences.setMockInitialValues({'tutorial_done': true});
+    final prefs = await SharedPreferences.getInstance();
+    final g = GameController(
+      cfg: loadCfg(),
+      dialog: loadDialog(7),
+      questData: loadQuests(),
+      story: loadStory(),
+      riddles: loadRiddles(),
+      detectiveData: loadDetective(),
+      random: Random(7),
+      prefs: prefs,
+      tutorialEnabled: true,
+      gameOverEnabled: true,
+    )..load();
+    g.quests.chapter = 3;
+    g.quests.chapterIntroSeen = true;
+    g.startDay();
+    skipScenes(g);
+    g.money = 1500;
+    for (var i = 0; i < 300; i++) {
+      g.tick(0.1);
+      if (g.slots.whereType<Customer>().length >= 2) break;
+    }
+    final key = await pumpApp(t, GameScreen(game: g, animations: false), size: const Size(1688, 780), dpr: 2.0);
+    g.tapBread(board: 0);
+    g.tapMain(board: 0);
+    g.tapPiyaz(board: 0);
+    await settle(t);
+    await settle(t);
+    await shot(t, key, 'tel_01_oyun');
+    g.toggleNotebook();
+    await settle(t);
+    await shot(t, key, 'tel_02_defter');
+    g.toggleNotebook();
+    g.replayTutorial();
+    g.nextTutorial();
+    g.tick(0.1);
+    g.nextTutorial();
+    await settle(t);
+    await shot(t, key, 'tel_03_tanitim');
+    g.skipTutorial();
+    g.lives = 1;
+    for (var i = 0; i < 8000 && g.phase == Phase.playing; i++) {
+      g.tick(0.1);
+      skipScenes(g);
+    }
+    await settle(t);
+    await shot(t, key, 'tel_04_oyun_bitti');
+    g.dispose();
+
+    // başlık ve gün sonu
+    final g2 = GameController(
+      cfg: loadCfg(),
+      dialog: loadDialog(9),
+      questData: loadQuests(),
+      story: loadStory(),
+      riddles: loadRiddles(),
+      detectiveData: loadDetective(),
+      random: Random(9),
+    );
+    final key2 = await pumpApp(t, GameScreen(game: g2, animations: false), size: const Size(1688, 780), dpr: 2.0);
+    await settle(t);
+    await shot(t, key2, 'tel_05_baslik');
+    g2.quests.chapterIntroSeen = true;
+    g2.startDay();
+    skipScenes(g2);
+    g2.toSpawn = 0;
+    for (var i = 0; i < 200 && g2.phase == Phase.playing; i++) {
+      g2.tick(0.1);
+    }
+    await settle(t);
+    await shot(t, key2, 'tel_06_gun_sonu');
+    g2.dispose();
+  });
+
+  testWidgets('telefon: kaplamalar taşmıyor', skip: outDir == null, (t) async {
+    SharedPreferences.setMockInitialValues({'tutorial_done': true});
+    final prefs = await SharedPreferences.getInstance();
+    final g = GameController(
+      cfg: loadCfg(),
+      dialog: loadDialog(5),
+      questData: loadQuests(),
+      story: loadStory(),
+      riddles: loadRiddles(),
+      detectiveData: loadDetective(),
+      random: Random(5),
+      prefs: prefs,
+      gameOverEnabled: true,
+    )..load();
+    g.quests.chapter = 5;
+    g.quests.chapterIntroSeen = true;
+    g.startDay();
+    skipScenes(g);
+    g.money = 5000;
+    final key = await pumpApp(t, GameScreen(game: g, animations: false), size: const Size(1688, 780), dpr: 2.0);
+    await settle(t);
+    Future<void> snap(String name) async {
+      await settle(t);
+      await shot(t, key, 'ov_$name');
+    }
+
+    g.toggleSettings();
+    await snap('ayarlar');
+    g.toggleSettings();
+    g.toggleRecipe();
+    await snap('tarif');
+    g.toggleRecipe();
+    g.openAdMenu();
+    await snap('reklam_menu');
+    g.closeAdMenu();
+    g.leaderboard;
+    g.openShop();
+    await snap('dukkan');
+    g.openGarden();
+    await snap('bahce');
     g.dispose();
   });
 }

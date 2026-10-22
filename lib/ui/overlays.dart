@@ -169,7 +169,10 @@ class DayEndOverlay extends StatelessWidget {
         );
     final rep = (game.reputationToday * 100).round();
     return _Dim(
-      child: _Card(
+      // küçük ekranda yazı büyüyünce kart taşarsa ekrana sığacak kadar küçülür
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: _Card(
         width: 820,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Text('Gün ${game.day - 1} bitti!', style: const TextStyle(fontSize: 46, fontWeight: FontWeight.w900, color: kWood)),
@@ -203,6 +206,7 @@ class DayEndOverlay extends StatelessWidget {
             WoodButton(label: 'Sonraki gün', icon: Icons.arrow_forward, onTap: game.startDay, color: const Color(0xFF2E7D5B)),
           ]),
         ]),
+      ),
       ),
     );
   }

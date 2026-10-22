@@ -257,9 +257,10 @@ class _StationState extends State<Station> {
             if (widget.locked) const Icon(Icons.lock, color: Colors.white, size: 44),
           ]),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(12)),
-            child: Text(widget.locked && widget.lockedText.isNotEmpty ? widget.lockedText : widget.label, style: const TextStyle(color: kCream, fontSize: 17, fontWeight: FontWeight.w800)),
+            // yazı büyütülünce istasyon genişliğine sığmazsa küçülür (kırılmaz)
+            child: IntrinsicWidth(child: FittedBox(fit: BoxFit.scaleDown, child: Text(widget.locked && widget.lockedText.isNotEmpty ? widget.lockedText : widget.label, maxLines: 1, style: const TextStyle(color: kCream, fontSize: 17, fontWeight: FontWeight.w800)))),
           ),
         ]),
       ),
