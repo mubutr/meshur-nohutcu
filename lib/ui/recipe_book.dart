@@ -130,7 +130,7 @@ class _ProductCard extends StatelessWidget {
             child: Center(
               child: ColorFiltered(
                 colorFilter: locked ? const ColorFilter.mode(Colors.black87, BlendMode.srcIn) : const ColorFilter.mode(Colors.transparent, BlendMode.dst),
-                child: Image.asset('assets/sprites/$image.png', fit: BoxFit.contain),
+                child: ConstrainedBox(constraints: const BoxConstraints(maxHeight: 130), child: Image.asset('assets/sprites/$image.png', fit: BoxFit.contain)), // dar şişeler satırı uzatmasın
               ),
             ),
           ),

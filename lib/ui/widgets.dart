@@ -229,8 +229,9 @@ class BoardDrag {
 
 /// Dokununca hafifçe büyüyüp küçülen, sürüklenebilen malzeme istasyonu.
 class Station extends StatefulWidget {
-  const Station({super.key, required this.left, required this.top, required this.width, required this.asset, required this.label, required this.onTap, this.locked = false, this.lockedText = '', this.drag, this.steam});
+  const Station({super.key, required this.left, required this.top, required this.width, required this.asset, required this.label, required this.onTap, this.locked = false, this.lockedText = '', this.drag, this.steam, this.imageWidth});
   final double left, top, width;
+  final double? imageWidth; // görsel genişliği (verilmezse [width]); dar şişelerde etiket geniş kalsın diye ayrı
   final String asset, label;
   final VoidCallback onTap;
   final bool locked; // kilitliyse soluk görünür, dokunulmaz
@@ -253,7 +254,7 @@ class _StationState extends State<Station> {
         opacity: widget.locked ? 0.35 : 1,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Stack(alignment: Alignment.center, clipBehavior: Clip.none, children: [
-            Image.asset('assets/sprites/${widget.asset}.png', width: widget.width, fit: BoxFit.contain),
+            Image.asset('assets/sprites/${widget.asset}.png', width: widget.imageWidth ?? widget.width, fit: BoxFit.contain),
             if (widget.steam != null && !widget.locked) Positioned(top: -widget.width * 0.42, child: widget.steam!),
             if (widget.locked) const Icon(Icons.lock, color: Colors.white, size: 44),
           ]),
@@ -271,7 +272,11 @@ class _StationState extends State<Station> {
       core = Draggable<IngredientDrag>(
         data: d,
         dragAnchorStrategy: pointerDragAnchorStrategy,
-        feedback: IgnorePointer(child: Transform.translate(offset: const Offset(-55, -55), child: Image.asset('assets/sprites/${d.asset}.png', width: 110))),
+        feedback: IgnorePointer(
+          child: d.asset.endsWith('_sise')
+              ? Transform.translate(offset: const Offset(-23, -55), child: Image.asset('assets/sprites/${d.asset}.png', width: 46))
+              : Transform.translate(offset: const Offset(-55, -55), child: Image.asset('assets/sprites/${d.asset}.png', width: 110)),
+        ),
         childWhenDragging: Opacity(opacity: 0.45, child: core),
         child: core,
       );

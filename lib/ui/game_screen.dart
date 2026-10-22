@@ -186,7 +186,7 @@ class _Scene extends StatelessWidget {
 
                 // müşteriler (paket servis paneli açıkken biraz sola kayar)
                 for (var i = 0; i < game.slotCount; i++)
-                  if (game.slots[i] != null) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: game.anyBoardWrapped && playing, lift: (counterScale - 1) * 320),
+                  if (game.slots[i] != null) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: game.anyBoardWrapped && playing, lift: (counterScale - 1) * 400),
 
                 Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/tezgah_$theme.png', fit: BoxFit.fill))),
                 for (final d in front) Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/decor_${d.id}.png', fit: BoxFit.fill))),
@@ -248,12 +248,22 @@ class _Scene extends StatelessWidget {
               Station(left: 1430, top: 706, width: 140, asset: 'sumak_kase', label: 'Sumak', onTap: game.tapSumak, locked: !game.sumakUnlocked || !p.allows('sumak'), lockedText: game.sumakUnlocked ? '' : 'Bölüm 2', drag: const IngredientDrag(Ingredient.sumak, 'sumak_kase')),
 
               // sos rafı (Bölüm 2+): tezgâhın üstünde şişeler
+              // sos tepsisi: şişeler tabanları tezgâh kenarına oturacak şekilde hizalı, etiketleri hemen altında
+              if (game.chapter >= 2)
+                Positioned(
+                  left: 1002,
+                  top: 622,
+                  width: 4 * 118 + 2,
+                  height: 88,
+                  child: DecoratedBox(decoration: BoxDecoration(color: const Color(0x40000000), borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0x33FFFFFF), width: 1.5))),
+                ),
               if (game.chapter >= 2)
                 for (var i = 0; i < _sauceAssets.length; i++)
                   Station(
                     left: 1010.0 + i * 118,
-                    top: 556,
+                    top: 676 - 46 * 316 / 137 - 4,
                     width: 112,
+                    imageWidth: 46,
                     asset: _sauceAssets.values.elementAt(i),
                     label: game.cfg.sauce(_sauceAssets.keys.elementAt(i)).name,
                     onTap: () => game.tapSauce(_sauceAssets.keys.elementAt(i)),

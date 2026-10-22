@@ -231,6 +231,9 @@ void main() {
     g.toggleSettings();
     g.toggleRecipe();
     await snap('tarif');
+    await t.tap(find.text('Ekler ve soslar'));
+    await t.pump();
+    await snap('tarif_soslar');
     g.toggleRecipe();
     g.openAdMenu();
     await snap('reklam_menu');
