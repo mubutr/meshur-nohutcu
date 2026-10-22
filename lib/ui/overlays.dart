@@ -42,10 +42,10 @@ class TitleOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final started = game.day > 1 || game.money > 0 || game.quests.done.isNotEmpty;
     return _Dim(
-      opacity: 0.62,
+      opacity: game.hasResumable ? 0.84 : 0.62, // yarım gün varsa arkadaki donmuş sahne (balonlar) belli olmasın
       child: Stack(children: [
-        Positioned(left: 80, bottom: 0, width: 420, child: IgnorePointer(child: Image.asset('assets/sprites/usta_mutlu.png'))),
-        Positioned(right: 80, bottom: 0, width: 420, child: IgnorePointer(child: Image.asset('assets/sprites/fatma_mutlu.png'))),
+        Positioned(left: 24, bottom: 0, width: 340, child: IgnorePointer(child: Image.asset('assets/sprites/usta_mutlu.png'))),
+        Positioned(right: 24, bottom: 0, width: 340, child: IgnorePointer(child: Image.asset('assets/sprites/fatma_mutlu.png'))),
         Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             const Text('Sıcak sıcak nohut dürümü', style: TextStyle(color: Color(0xFFFFD27A), fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: 2)),
@@ -59,7 +59,11 @@ class TitleOverlay extends StatelessWidget {
             const SizedBox(height: 18),
             WoodButton(label: started ? (game.hasResumable ? 'DEVAM  (Gün ${game.day}, kaldığın yerden)' : 'DEVAM  (Gün ${game.day})') : 'BAŞLA', icon: Icons.play_arrow, big: true, color: const Color(0xFF2E7D5B), onTap: game.continueGame),
             const SizedBox(height: 18),
-            Wrap(alignment: WrapAlignment.center, spacing: 16, children: [
+            Wrap(alignment: WrapAlignment.center, spacing: 16, runSpacing: 12, children: [
+              if (started) WoodButton(label: 'Dükkân', icon: Icons.storefront, onTap: game.openShopFromMenu, color: const Color(0xFF9A5B1E)),
+              if (started && game.gardenUnlocked) WoodButton(label: 'Bahçe', icon: Icons.yard, onTap: game.openGardenFromMenu, color: const Color(0xFF5E8C3A)),
+              if (started) WoodButton(label: 'Defter', icon: Icons.menu_book, onTap: game.toggleNotebook, color: const Color(0xFF5A3A7A)),
+              if (started) WoodButton(label: 'Tarif', icon: Icons.restaurant_menu, onTap: game.toggleRecipe, color: const Color(0xFF2F7FA8)),
               WoodButton(label: 'Ayarlar', icon: Icons.settings, onTap: game.toggleSettings, color: const Color(0xFF6B5A4A)),
               if (game.leaderboard != null) WoodButton(label: 'Sıralama', icon: Icons.emoji_events, onTap: game.leaderboard!.toggle, color: const Color(0xFFB07A1E)),
               if (started)
@@ -251,7 +255,7 @@ class ShopOverlay extends StatelessWidget {
             ]),
           ),
           const SizedBox(height: 12),
-          WoodButton(label: 'Sonraki gün', icon: Icons.arrow_forward, onTap: game.startDay, color: const Color(0xFF2E7D5B)),
+          WoodButton(label: game.fromMenu ? 'Ana ekrana dön' : 'Sonraki gün', icon: game.fromMenu ? Icons.home : Icons.arrow_forward, onTap: game.closeShop, color: const Color(0xFF2E7D5B)),
         ]),
       ),
     );

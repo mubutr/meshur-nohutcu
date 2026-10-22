@@ -599,6 +599,7 @@ class GameController extends ChangeNotifier {
   void _writeSnapshot() {
     final p = prefs;
     if (p == null) return;
+    if (fromMenu) return; // ana ekrandan dükkân/bahçe: kayıtlı yarım gün olduğu gibi kalır
     if (phase == Phase.playing || phase == Phase.gameOver || (phase == Phase.title && hasResumable)) {
       if (phase != Phase.title) p.setString(_snapKey, jsonEncode(toDaySnapshot()));
     } else {
@@ -780,6 +781,7 @@ class GameController extends ChangeNotifier {
 
   // ------------------------------------------------------------- akış
   void startDay() {
+    fromMenu = false;
     phase = Phase.playing;
     slots = List.filled(slotCount, null);
     toSpawn = cfg.customersForDay(day);
@@ -1379,7 +1381,12 @@ class GameController extends ChangeNotifier {
   }
 
   void closeGarden() {
-    phase = Phase.dayEnd;
+    if (fromMenu) {
+      fromMenu = false;
+      phase = Phase.title;
+    } else {
+      phase = Phase.dayEnd;
+    }
     save();
     notifyListeners();
   }
@@ -2013,6 +2020,37 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Ana ekrandan açılan dükkân/bahçe: kapatınca yeni gün başlatmaz, ana ekrana döner.
+  bool fromMenu = false;
+
+  void openShopFromMenu() {
+    if (phase != Phase.title) return;
+    fromMenu = true;
+    phase = Phase.shop;
+    usta = null;
+    notifyListeners();
+  }
+
+  void openGardenFromMenu() {
+    if (phase != Phase.title || !gardenUnlocked) return;
+    fromMenu = true;
+    garden.ensurePlots(plotCount);
+    phase = Phase.garden;
+    notifyListeners();
+  }
+
+  /// Dükkândaki alt düğme: günün sonundaysa yeni gün, ana ekrandansa ana ekrana dön.
+  void closeShop() {
+    if (fromMenu) {
+      fromMenu = false;
+      phase = Phase.title;
+      save();
+      notifyListeners();
+    } else {
+      startDay();
+    }
+  }
+
   int? nextCost(UpgradeDef u) {
     final l = level(u.id);
     return l >= u.max ? null : u.costs[l];
@@ -2058,6 +2096,7 @@ class GameController extends ChangeNotifier {
     adKind = null;
     introLeft = 0;
     tutorialStep = -1;
+    fromMenu = false;
     phase = Phase.title;
     notifyListeners();
   }

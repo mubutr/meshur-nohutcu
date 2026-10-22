@@ -49,6 +49,7 @@ void loseCustomers(GameController g, {int maxTicks = 6000}) {
 
 void main() {
   focusBubbleTests();
+  menuTests();
   group('açılış (bigsoft) yükleme ekranı', () {
     testWidgets('logo, "games sunar" ve yüzde gösterilir', (t) async {
       t.view.physicalSize = const Size(1600, 900);
@@ -469,6 +470,80 @@ void focusBubbleTests() {
       g.tapCustomer(other); // dürüm hazır değil: yalnızca odak değişir
       expect(g.focusSlot, other);
       expect(g.slots[other]!.state, isNot(CustomerState.reacting));
+      g.dispose();
+    });
+  });
+}
+
+void menuTests() {
+  group('ana ekran: dükkân ve menü', () {
+    testWidgets('Menü simgesi ana ekrana götürür; ana ekranda Dükkân/Defter/Tarif düğmeleri var', (t) async {
+      t.view.physicalSize = const Size(1600, 900);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.reset);
+      final g = makeV4(await freshPrefs())..load();
+      begin(g);
+      g.money = 300;
+      await t.pumpWidget(MaterialApp(home: Scaffold(body: GameScreen(game: g, animations: false))));
+      await t.pump();
+      await t.tap(find.byKey(const ValueKey('hud-menu')));
+      await t.pump();
+      expect(g.phase, Phase.title);
+      expect(find.text('DEVAM  (Gün 1, kaldığın yerden)'), findsOneWidget);
+      expect(find.text('Dükkân'), findsOneWidget);
+      expect(find.text('Defter'), findsOneWidget);
+      expect(find.text('Tarif'), findsOneWidget);
+      await t.tap(find.text('Dükkân'));
+      await t.pump();
+      expect(g.phase, Phase.shop);
+      expect(find.text('Ana ekrana dön'), findsOneWidget);
+      await t.tap(find.text('Ana ekrana dön'));
+      await t.pump();
+      expect(g.phase, Phase.title);
+      g.dispose();
+    });
+
+    test('ana ekrandan alışveriş: para düşer, yarım gün kaydı korunur, DEVAM aynı günden sürer', () async {
+      final prefs = await freshPrefs();
+      final g = makeV4(prefs)..load();
+      begin(g);
+      g.money = 5000;
+      final day = g.day;
+      g.toTitle();
+      await pumpEventQueue();
+      expect(g.hasResumable, isTrue);
+      g.openShopFromMenu();
+      expect(g.phase, Phase.shop);
+      expect(g.fromMenu, isTrue);
+      final u = g.cfg.upgrades.firstWhere((u) => g.canAffordUpgrade(u));
+      final before = g.money;
+      expect(g.buy(u), isTrue);
+      expect(g.money, lessThan(before));
+      await pumpEventQueue();
+      expect(prefs.getString('day_snapshot'), isNotNull, reason: 'alışveriş yarım günü silmemeli');
+      g.closeShop();
+      expect(g.phase, Phase.title);
+      expect(g.fromMenu, isFalse);
+      expect(g.hasResumable, isTrue);
+      final money = g.money;
+      g.continueGame();
+      expect(g.phase, Phase.playing);
+      expect(g.day, day);
+      expect(g.money, money);
+      g.dispose();
+    });
+
+    test('gün sonu dükkânı eskisi gibi: Sonraki gün yeni gün başlatır; ana ekran dışından Bahçe/Dükkân açılmaz', () async {
+      final g = makeV4(await freshPrefs())..load();
+      begin(g);
+      g.openShopFromMenu(); // oyun sürerken (ana ekranda değil) çalışmaz
+      expect(g.phase, Phase.playing);
+      g.openShop();
+      expect(g.fromMenu, isFalse);
+      final d = g.day;
+      g.closeShop();
+      expect(g.phase, Phase.playing);
+      expect(g.day, d);
       g.dispose();
     });
   });

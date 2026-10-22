@@ -176,7 +176,7 @@ class GardenOverlay extends StatelessWidget {
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             WoodButton(label: 'Hepsini sula', icon: Icons.water_drop, onTap: game.gardenWaterAll, color: const Color(0xFF3B6EA5)),
             const SizedBox(width: 18),
-            WoodButton(label: 'Tamam', icon: Icons.check, onTap: game.closeGarden, color: const Color(0xFF2E7D5B)),
+            WoodButton(label: game.fromMenu ? 'Ana ekrana dön' : 'Tamam', icon: game.fromMenu ? Icons.home : Icons.check, onTap: game.closeGarden, color: const Color(0xFF2E7D5B)),
           ]),
         ]),
       ),

@@ -187,7 +187,7 @@ class _Scene extends StatelessWidget {
 
                 // müşteriler (paket servis paneli açıkken biraz sola kayar)
                 for (var i = 0; i < game.slotCount; i++)
-                  if (game.slots[i] != null) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: game.anyBoardWrapped && playing, lift: (counterScale - 1) * 400),
+                  if (game.slots[i] != null && game.phase != Phase.title) _CustomerView(game: game, slot: i, x: (game.deliveryActive ? GameScreen.slotXDelivery : GameScreen.slotX)[i], serveReady: game.anyBoardWrapped && playing, lift: (counterScale - 1) * 400),
 
                 Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/tezgah_$theme.png', fit: BoxFit.fill))),
                 for (final d in front) Positioned.fill(child: IgnorePointer(child: Image.asset('assets/sprites/decor_${d.id}.png', fit: BoxFit.fill))),
@@ -198,7 +198,7 @@ class _Scene extends StatelessWidget {
           LightOverlay(light: light, neon: game.decorOwned.contains('neon')),
 
           // usta konuşma balonu
-          if (game.usta != null)
+          if (game.usta != null && game.phase != Phase.title)
             Positioned(
               left: 24,
               top: 120,

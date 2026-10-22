@@ -296,6 +296,13 @@ void main() {
     g.openGarden();
     await settle(t);
     await shot(t, key, 'diger_05_bahce');
+    g.closeGarden();
+    g.toTitle();
+    await settle(t);
+    await shot(t, key, 'diger_06_ana_ekran_menu');
+    g.openShopFromMenu();
+    await settle(t);
+    await shot(t, key, 'diger_07_ana_ekrandan_dukkan');
     g.dispose();
   });
 
