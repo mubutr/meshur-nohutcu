@@ -9,7 +9,7 @@ const kWoodDark = Color(0xFF3A200E);
 const kCream = Color(0xFFFFF7E2);
 
 class SpeechBubble extends StatelessWidget {
-  const SpeechBubble({super.key, required this.text, this.tail = Alignment.bottomCenter, this.size = 17, this.footer, this.color = Colors.white, this.who, this.to});
+  const SpeechBubble({super.key, required this.text, this.tail = Alignment.bottomCenter, this.size = 17, this.footer, this.color = Colors.white, this.who, this.to, this.compact = false});
   final String text;
   final Alignment tail;
   final double size;
@@ -17,6 +17,7 @@ class SpeechBubble extends StatelessWidget {
   final Color color;
   final String? who; // konuşan
   final String? to; // muhatap
+  final bool compact; // true: konuşma metni gizlenir, yalnızca altbilgi (sipariş çipleri) görünür
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +42,8 @@ class SpeechBubble extends StatelessWidget {
                 ],
               ]),
             ),
-          Text(text, style: TextStyle(fontSize: size, height: 1.22, color: kWoodDark, fontWeight: FontWeight.w600)),
-          if (footer != null) ...[const SizedBox(height: 6), footer!],
+          if (!compact || footer == null) Text(text, style: TextStyle(fontSize: size, height: 1.22, color: kWoodDark, fontWeight: FontWeight.w600)),
+          if (footer != null) ...[SizedBox(height: compact ? 0 : 6), footer!],
         ]),
       ),
       CustomPaint(size: const Size(26, 14), painter: _TailPainter(color)),
@@ -344,12 +345,13 @@ class Pill extends StatelessWidget {
   final bool small;
   @override
   Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: small ? 12 : 16, vertical: small ? 6 : 8),
+        padding: EdgeInsets.symmetric(horizontal: text.isEmpty ? 14 : (small ? 12 : 16), vertical: small ? 6 : 8),
         decoration: BoxDecoration(color: const Color(0xCC2A1A0C), borderRadius: BorderRadius.circular(24), border: Border.all(color: const Color(0xFFD9A25F), width: 2)),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (icon != null) Icon(icon, color: iconColor, size: small ? 20 : 24),
-          if (icon != null) SizedBox(width: small ? 6 : 8),
-          Text(text, style: TextStyle(color: kCream, fontSize: small ? 20 : 24, fontWeight: FontWeight.w800)),
+          // text boşsa yalnızca simge (üst çubuk düğmeleri)
+          if (icon != null) Icon(icon, color: iconColor, size: text.isEmpty ? 30 : (small ? 20 : 24)),
+          if (icon != null && text.isNotEmpty) SizedBox(width: small ? 6 : 8),
+          if (text.isNotEmpty) Text(text, style: TextStyle(color: kCream, fontSize: small ? 20 : 24, fontWeight: FontWeight.w800)),
         ]),
       );
 }
@@ -389,25 +391,39 @@ class HudRight extends StatelessWidget {
     return Row(children: [
       Pill(text: '$left müşteri', icon: Icons.people, small: true),
       const SizedBox(width: 8),
-      GestureDetector(onTap: game.openAdMenu, child: const Pill(text: 'Reklam', icon: Icons.smart_display, small: true)),
+      _HudIcon(keyName: 'hud-ad', label: 'Reklam', onTap: game.openAdMenu, child: const Pill(text: '', icon: Icons.smart_display, small: true)),
       const SizedBox(width: 8),
-      GestureDetector(onTap: game.toggleRecipe, child: const Pill(text: 'Tarif', icon: Icons.restaurant_menu, small: true)),
+      _HudIcon(keyName: 'hud-recipe', label: 'Tarif', onTap: game.toggleRecipe, child: const Pill(text: '', icon: Icons.restaurant_menu, small: true)), // kaşık-çatal
       const SizedBox(width: 8),
-      GestureDetector(
+      _HudIcon(
+        keyName: 'hud-book',
+        label: 'Defter',
         onTap: game.toggleNotebook,
         child: Stack(clipBehavior: Clip.none, children: [
-          const Pill(text: 'Defter', icon: Icons.checklist, small: true),
+          const Pill(text: '', icon: Icons.menu_book, small: true),
           if (game.quests.unseenChange)
             Positioned(right: -4, top: -4, child: Container(width: 18, height: 18, decoration: BoxDecoration(color: const Color(0xFFD9473B), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)))),
         ]),
       ),
       const SizedBox(width: 8),
-      GestureDetector(
-        onTap: game.toTitle,
-        child: const Pill(text: 'Menü', icon: Icons.menu, small: true),
-      ),
+      _HudIcon(keyName: 'hud-menu', label: 'Menü', onTap: game.toTitle, child: const Pill(text: '', icon: Icons.menu, small: true)), // üç çizgi
     ]);
   }
+}
+
+/// Üst çubuktaki simge düğmesi: yazısız; erişilebilirlik etiketi ve test anahtarı taşır.
+class _HudIcon extends StatelessWidget {
+  const _HudIcon({required this.keyName, required this.label, required this.onTap, required this.child});
+  final String keyName;
+  final String label;
+  final VoidCallback onTap;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: label,
+        child: GestureDetector(key: ValueKey(keyName), behavior: HitTestBehavior.opaque, onTap: onTap, child: child),
+      );
 }
 
 /// Tezgâhın köşesindeki bahşiş kavanozu: biriken bahşiş görünür, dokununca kasaya geçer.

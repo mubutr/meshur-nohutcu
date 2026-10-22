@@ -140,9 +140,13 @@ void main() {
     g.startDay();
     skipScenes(g);
     g.money = 1500;
-    for (var i = 0; i < 300; i++) {
+    for (var i = 0; i < 2000; i++) {
       g.tick(0.1);
-      if (g.slots.whereType<Customer>().length >= 2) break;
+      skipScenes(g);
+      if (g.slots.whereType<Customer>().length >= 3) break;
+    }
+    for (var i = 0; i < 40; i++) {
+      g.tick(0.1);
     }
     final key = await pumpApp(t, GameScreen(game: g, animations: false), size: const Size(1688, 780), dpr: 2.0);
     g.tapBread(board: 0);

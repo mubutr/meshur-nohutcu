@@ -179,7 +179,7 @@ void main() {
         ..startDay();
       skipScenes(g);
       await show(t, g);
-      await t.tap(find.text('Tarif'));
+      await t.tap(find.byKey(const ValueKey('hud-recipe')));
       await t.pump();
       expect(g.recipeOpen, isTrue);
       expect(g.paused, isTrue);
@@ -202,7 +202,7 @@ void main() {
       skipScenes(g);
       await show(t, g);
       final m0 = g.money;
-      await t.tap(find.text('Reklam'));
+      await t.tap(find.byKey(const ValueKey('hud-ad')));
       await t.pump();
       expect(g.adMenuOpen, isTrue);
       expect(find.text('Reklam izle, kazan'), findsOneWidget);

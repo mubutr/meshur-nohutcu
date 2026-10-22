@@ -48,8 +48,8 @@ const List<TutorialStep> kTutorialSteps = [
     cardAt: Alignment.centerLeft,
   ),
   TutorialStep(
-    title: '6 · Defter, Tarif, Reklam',
-    text: 'Defter: görevler ve günlük hedefler. Tarif: ürünlerin ne olduğu ve fiyatı. Reklam izleyerek para ya da elmas kazanabilirsin. Bol şans, usta seni bekliyor!',
+    title: '6 · Üst simgeler',
+    text: 'Üstteki simgeler: defter (görevler ve günlük hedefler), kaşık-çatal (tarifler ve fiyatlar), oynat düğmesi (reklam izleyip para ya da elmas kazan), üç çizgi (menü). Bol şans, usta seni bekliyor!',
     spot: Rect.fromLTWH(960, 8, 636, 62),
     cardAt: Alignment.bottomRight,
   ),

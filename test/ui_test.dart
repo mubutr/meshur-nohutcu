@@ -88,7 +88,7 @@ void main() {
     await t.pump();
     skipScenes(g);
     await t.pump();
-    await t.tap(find.text('Defter'));
+    await t.tap(find.byKey(const ValueKey('hud-book')));
     await t.pump();
     expect(g.notebookOpen, isTrue);
     expect(find.textContaining('Çırak Elleri'), findsWidgets);

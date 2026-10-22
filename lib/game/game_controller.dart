@@ -30,11 +30,12 @@ enum CustomerKind { normal, riddle, garip, maskeli, bonus, kurye }
 
 /// Ekranda görünen tek konuşma: kim, kime, ne diyor.
 class Speech {
-  const Speech({required this.whoLabel, required this.toLabel, required this.text, this.toSlot});
+  const Speech({required this.whoLabel, required this.toLabel, required this.text, this.toSlot, this.seq = 0});
   final String whoLabel; // "USTA", "MUSLU EMMİ"
   final String toLabel; // "ÇIRAK (SEN)", "USTA", "PENBE BACI"
   final String text;
   final int? toSlot; // usta bir müşteriye konuşuyorsa onun yuvası
+  final int seq; // müşteri sözlerinin sıra numarası (en yenisi odaktaki balondur)
 }
 
 const String kCirakLabel = 'ÇIRAK (SEN)';
@@ -721,7 +722,28 @@ class GameController extends ChangeNotifier {
     return '${p.name.toLowerCase()}: ${parts.join(', ')}';
   }
 
-  Speech _customerSays(Customer c, DialogLine l) => Speech(whoLabel: c.label, toLabel: 'USTA', text: l.text);
+  Speech _customerSays(Customer c, DialogLine l) => Speech(whoLabel: c.label, toLabel: 'USTA', text: l.text, seq: ++_custSeq);
+
+  // Birden çok müşteri konuşurken yalnızca biri tam balonla gösterilir (diğerleri sipariş çipleriyle).
+  int _custSeq = 0;
+  int? _pinnedSlot; // oyuncunun dokunarak seçtiği müşteri
+  int _pinnedAt = 0;
+
+  /// Tam konuşma balonunu gösterilecek müşterinin yuvası: dokunulan, yoksa en son konuşan.
+  int? get focusSlot {
+    final p = _pinnedSlot;
+    if (p != null && _pinnedAt == _custSeq && slots[p]?.bubble != null) return p;
+    int? best;
+    var bestSeq = -1;
+    for (var i = 0; i < slots.length; i++) {
+      final b = slots[i]?.bubble;
+      if (b != null && b.seq >= bestSeq) {
+        best = i;
+        bestSeq = b.seq;
+      }
+    }
+    return best;
+  }
 
   // ------------------------------------------------------------- sahneler (hikâye)
   void _openNextScene() {
@@ -1831,6 +1853,13 @@ class GameController extends ChangeNotifier {
     if (c == null || phase != Phase.playing || paused) return;
     if (c.isCourier) {
       if (c.state != CustomerState.reacting) _courierHandOver(slot, c);
+      return;
+    }
+    if (board == null && !anyBoardWrapped) {
+      // verilecek dürüm yok: dokunulan müşterinin siparişi tam balonla okunur
+      _pinnedSlot = slot;
+      _pinnedAt = _custSeq;
+      notifyListeners();
       return;
     }
     serve(slot, board: board);

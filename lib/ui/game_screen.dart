@@ -539,7 +539,11 @@ class _CustomerView extends StatelessWidget {
     final frac = c.patienceFraction;
     final showOrder = c.state == CustomerState.waiting && !c.waitLineShown;
     final boost = MediaQuery.textScalerOf(context).scale(1.0); // küçük ekranda yazı çarpanı
-    final bubbleWiden = (boost - 1) * 120;
+    // kalabalıkta yalnızca odaktaki müşterinin balonu tam metinle açılır; diğerleri yalnızca sipariş çipleriyle (okunur kalsın)
+    final bubbleCount = game.slots.where((x) => x?.bubble != null).length;
+    final compactBubble = showOrder && bubbleCount > 1 && game.focusSlot != slot;
+    // odaktaki balon küçük ekranda biraz yana açılır (komşunun sipariş çipleriyle çakışmayacak kadar)
+    final bubbleWiden = compactBubble ? 0.0 : (boost - 1) * 80;
     Widget? footer;
     if (showOrder) {
       footer = switch (c.kind) {
@@ -614,13 +618,13 @@ class _CustomerView extends StatelessWidget {
           // konuşma balonu
           if (c.bubble != null)
             Positioned(
-              // küçük ekranda yazı büyüyünce balon yana genişler, boyu üst çubuğa (HUD) çarpmasın
               left: -6 - bubbleWiden,
               right: -6 - bubbleWiden,
               bottom: 345, // balonun alt kenarı kafanın hemen üstünde; metin uzadıkça yukarı büyür
               child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(boost, 1.2))),
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(math.min(boost, 1.15))),
                 child: SpeechBubble(
+                compact: compactBubble,
                 text: c.bubble!.text,
                 who: c.bubble!.whoLabel,
                 to: c.bubble!.toLabel,

@@ -48,6 +48,7 @@ void loseCustomers(GameController g, {int maxTicks = 6000}) {
 }
 
 void main() {
+  focusBubbleTests();
   group('açılış (bigsoft) yükleme ekranı', () {
     testWidgets('logo, "games sunar" ve yüzde gösterilir', (t) async {
       t.view.physicalSize = const Size(1600, 900);
@@ -447,3 +448,28 @@ void main() {
   });
 }
 
+
+void focusBubbleTests() {
+  group('kalabalıkta konuşma balonu', () {
+    test('en son konuşan müşteri odaktadır; dokunulan müşteri odağı alır; yeni söz odağı geri alır', () async {
+      final g = makeV4(await freshPrefs())..load();
+      begin(g);
+      for (var i = 0; i < 600 && g.slots.whereType<Customer>().length < 2; i++) {
+        g.tick(0.1);
+        skipScenes(g);
+      }
+      final idx = [for (var i = 0; i < g.slots.length; i++) if (g.slots[i]?.bubble != null) i];
+      if (idx.length < 2) {
+        g.dispose();
+        return; // bu tohumda iki müşteri aynı anda konuşmadı
+      }
+      final newest = idx.reduce((a, b) => g.slots[a]!.bubble!.seq >= g.slots[b]!.bubble!.seq ? a : b);
+      expect(g.focusSlot, newest);
+      final other = idx.firstWhere((i) => i != newest);
+      g.tapCustomer(other); // dürüm hazır değil: yalnızca odak değişir
+      expect(g.focusSlot, other);
+      expect(g.slots[other]!.state, isNot(CustomerState.reacting));
+      g.dispose();
+    });
+  });
+}
